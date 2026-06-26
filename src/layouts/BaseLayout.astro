@@ -1,0 +1,78 @@
+---
+import "../styles/global.css";
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+---
+<!doctype html>
+<html lang="es-MX">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href="https://vialterna.com/" />
+    <link rel="alternate" hreflang="es-MX" href="https://vialterna.com/" />
+    <link rel="alternate" hreflang="en" href="https://vialterna.com/en/" />
+    <link rel="alternate" hreflang="x-default" href="https://vialterna.com/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content="https://vialterna.com/" />
+    <meta name="theme-color" content="#080b0a" />
+    <script is:inline type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      name: "Vialterna",
+      url: "https://vialterna.com/",
+      email: "atencionaclientes@vialterna.com",
+      telephone: "+52 55 8062 6884",
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: "Montes Urales 720",
+        addressLocality: "Lomas de Chapultepec",
+        postalCode: "11000",
+        addressCountry: "MX"
+      },
+      sameAs: ["https://www.linkedin.com/company/vialterna/"]
+    })} />
+  </head>
+  <body>
+    <slot />
+    <script is:inline>
+      const nav = document.querySelector('[data-header]');
+      const menuButton = document.querySelector('[data-menu-button]');
+      const menu = document.querySelector('[data-menu]');
+      const onScroll = () => nav?.classList.toggle('is-scrolled', scrollY > 20);
+      addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+      menuButton?.addEventListener('click', () => {
+        const open = menu?.classList.toggle('is-open');
+        menuButton.setAttribute('aria-expanded', String(Boolean(open)));
+      });
+      menu?.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => {
+        menu.classList.remove('is-open');
+        menuButton?.setAttribute('aria-expanded', 'false');
+      }));
+      const items = document.querySelectorAll('.reveal');
+      if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver((entries) => entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+          }
+        }), { threshold: .1, rootMargin: '0px 0px -6% 0px' });
+        items.forEach((item, index) => {
+          item.style.setProperty('--delay', `${Math.min((index % 4) * 70, 210)}ms`);
+          observer.observe(item);
+        });
+      } else {
+        items.forEach((item) => item.classList.add('visible'));
+      }
+    </script>
+  </body>
+</html>

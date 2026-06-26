@@ -1,0 +1,19 @@
+---
+import { navigation } from "../data/site";
+---
+<header class="header" data-header>
+  <div class="shell header-inner">
+    <a class="brand" href="/" aria-label="Vialterna inicio">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span>Vialterna</span>
+    </a>
+    <button class="menu-button" type="button" aria-label="Abrir menú" aria-expanded="false" data-menu-button>
+      <span></span><span></span>
+    </button>
+    <nav class="nav-links" aria-label="Navegación principal" data-menu>
+      {navigation.map((item) => <a href={item.href}>{item.label}</a>)}
+      <a class="language-link" href="/en/" lang="en">EN</a>
+    </nav>
+    <a class="button header-cta" href="/contacto/">Habla con un experto <span aria-hidden="true">↗</span></a>
+  </div>
+</header>

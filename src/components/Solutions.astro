@@ -1,0 +1,30 @@
+---
+import SectionHeading from "./SectionHeading.astro";
+import { solutions } from "../data/site";
+---
+<section class="section solutions-section" id="soluciones">
+  <div class="shell">
+    <SectionHeading kicker="Soluciones" title="Cuatro soluciones. Una plataforma." intro="Lo que necesites para mantener tus operaciones en línea, diseñado y gestionado bajo una misma lógica de disponibilidad." />
+    <div class="solutions">
+      {solutions.map((solution, index) => (
+        <article class="solution">
+          <div class="solution-copy reveal">
+            <div>
+              <div class="number">{String(index + 1).padStart(2, "0")} — {solution.eyebrow}</div>
+              <h3>{solution.title}</h3>
+              <p>{solution.text}</p>
+            </div>
+            <a href={solution.href}>Ver más <span aria-hidden="true">↗</span></a>
+          </div>
+          <div class:list={["solution-visual", solution.type, "reveal"]} aria-hidden="true">
+            {solution.type === "rings" && <><i></i><i></i><i></i></>}
+            {solution.type === "signal" && <div class="signal-waves"></div>}
+            {solution.type === "cells" && <div class="cell-grid">{Array.from({ length: 35 }, () => <i></i>)}</div>}
+            {solution.type === "backup" && <div class="backup-lines"><i></i><i></i><i></i></div>}
+            <span class="visual-label">{solution.label}</span>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>

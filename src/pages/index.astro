@@ -1,0 +1,101 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Header from "../components/Header.astro";
+import Hero from "../components/Hero.astro";
+import SectionHeading from "../components/SectionHeading.astro";
+import OperationsVisual from "../components/OperationsVisual.astro";
+import Solutions from "../components/Solutions.astro";
+import Footer from "../components/Footer.astro";
+import { approaches, pillars, phases, industries } from "../data/site";
+
+const title = "Conectividad empresarial resiliente en México | Vialterna";
+const description = "Vialterna diseña, despliega y opera conectividad administrada para empresas con operaciones distribuidas en México.";
+---
+<BaseLayout title={title} description={description}>
+  <Header />
+  <main>
+    <Hero />
+
+    <section class="section risk" id="modelo">
+      <div class="shell">
+        <div class="kicker reveal">El riesgo operativo</div>
+        <h2 class="risk-title reveal">La conectividad no es un servicio básico. <span class="accent">Es un riesgo operativo.</span></h2>
+        <p class="risk-lead reveal">Cuando uno de tus sitios se desconecta, los ingresos se detienen. Las transacciones fallan. Tus equipos regresan a procesos manuales. Cada minuto fuera de línea es una exposición financiera que puedes cuantificar.</p>
+        <h3 class="approaches-title reveal">Probablemente has intentado uno de estos tres enfoques. Los tres te dejan expuesto.</h3>
+        <div class="approaches">
+          {approaches.map((approach, index) => (
+            <article class="approach reveal">
+              <div class="number">{String(index + 1).padStart(2, "0")}</div>
+              <h3>{approach.title}</h3>
+              <p>{approach.text}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="section pillars-section">
+      <div class="shell">
+        <SectionHeading kicker="El modelo Vialterna" title="No vendemos conectividad. Diseñamos disponibilidad." intro="Vialterna es el socio de redes agnóstico de operador para empresas distribuidas en México. Todo se estructura como un servicio administrado, respaldado por SLAs." />
+        <div class="pillars">
+          {pillars.map((pillar, index) => (
+            <article class="pillar reveal">
+              <div class="pillar-number">{String(index + 1).padStart(2, "0")}</div>
+              <h3>{pillar.title}</h3>
+              <p>{pillar.text}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <OperationsVisual />
+
+    <section class="section phases-section">
+      <div class="shell">
+        <SectionHeading kicker="Implementación" title="Una plataforma. Un solo modelo de interacción. Cuatro fases." />
+        <div class="phases">
+          {phases.map((phase, index) => (
+            <article class="phase reveal">
+              <span>{String(index + 1).padStart(2, "0")}</span>
+              <h3>{phase[0]}</h3>
+              <p>{phase[1]}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <Solutions />
+
+    <section class="section industries-section" id="industrias">
+      <div class="shell">
+        <SectionHeading kicker="Industrias" title="Construido para operaciones distribuidas donde el tiempo de inactividad tiene precio." />
+        <div class="industries">
+          {industries.map((industry, index) => (
+            <a class="industry reveal" href={industry[2]}>
+              <div class="industry-orbit"></div>
+              <span>{String(index + 1).padStart(2, "0")}</span>
+              <h3>{industry[0]}</h3>
+              <p>{industry[1]}</p>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="cta-section" id="contacto">
+      <div class="shell reveal">
+        <div class="kicker">Diagnóstico</div>
+        <h2>Solicita un diagnóstico de conectividad.</h2>
+        <p>Identifica riesgos de desconexión, puntos únicos de falla, oportunidades de optimización y mejoras posibles en tu infraestructura.</p>
+        <a class="button primary" href="/contacto/">Habla con un experto</a>
+        <div class="direct-contact">
+          <a href="mailto:atencionaclientes@vialterna.com">atencionaclientes@vialterna.com</a>
+          <a href="https://wa.me/525580626884">55 8062 6884</a>
+        </div>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</BaseLayout>
