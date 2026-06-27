@@ -20,7 +20,8 @@ const description = "Vialterna diseña, despliega y opera conectividad administr
       <div class="shell">
         <div class="kicker reveal">El riesgo operativo</div>
         <h2 class="risk-title reveal">La conectividad no es un servicio básico. <span class="accent">Es un riesgo operativo.</span></h2>
-        <p class="risk-lead reveal">Cuando uno de tus sitios se desconecta, los ingresos se detienen. Las transacciones fallan. Tus equipos regresan a procesos manuales. Cada minuto fuera de línea es una exposición financiera que puedes cuantificar.</p>
+        <p class="risk-lead reveal">Cuando uno de tus sitios se desconecta, los ingresos se detienen. Las transacciones fallan. Tus equipos regresan a procesos manuales. Si operas sitios distribuidos donde cualquier ubicación desconectada tiene un costo operativo o de ingresos medible, cada minuto fuera de línea es una exposición financiera que puedes cuantificar.</p>
+        <p class="risk-proof reveal">El tiempo de inactividad impacta directamente tu P&amp;L. La mayoría de las empresas nunca lo han cuantificado.</p>
         <h3 class="approaches-title reveal">Probablemente has intentado uno de estos tres enfoques. Los tres te dejan expuesto.</h3>
         <div class="approaches">
           {approaches.map((approach, index) => (
@@ -36,7 +37,8 @@ const description = "Vialterna diseña, despliega y opera conectividad administr
 
     <section class="section pillars-section">
       <div class="shell">
-        <SectionHeading kicker="El modelo Vialterna" title="No vendemos conectividad. Diseñamos disponibilidad." intro="Vialterna es el socio de redes agnóstico de operador para empresas distribuidas en México. Todo se estructura como un servicio administrado, respaldado por SLAs." />
+        <SectionHeading kicker="El modelo Vialterna" title="No vendemos conectividad. Diseñamos disponibilidad." intro="Vialterna es el socio de redes agnóstico de operador para empresas distribuidas en México. Todo lo que entregamos está estructurado como un servicio administrado: diseñado, desplegado, optimizado y respaldado por SLAs a través de contratos multianuales." />
+        <p class="pillars-lead reveal">Tres pilares sustentan el servicio. Juntos, son la forma en que diseñamos disponibilidad en lugar de vender enlaces.</p>
         <div class="pillars">
           {pillars.map((pillar, index) => (
             <article class="pillar reveal">
@@ -68,6 +70,24 @@ const description = "Vialterna diseña, despliega y opera conectividad administr
 
     <Solutions />
 
+    <section class="section network-services">
+      <div class="shell">
+        <SectionHeading kicker="Arquitectura" title="SD-WAN y conectividad de respaldo." intro="Redes SD-WAN multioperador para continuidad del negocio, combinadas con respaldo satelital y celular antes de que una falla detenga la operación." />
+        <div class="service-lines">
+          <article class="service-line reveal">
+            <span>01</span>
+            <h3>SD-WAN</h3>
+            <p>Combinamos fibra, LTE, 5G, satélite y enlaces inalámbricos en una arquitectura administrada con failover automático, agregación de enlaces, QoS, túneles seguros y monitoreo NOC centralizado.</p>
+          </article>
+          <article class="service-line reveal">
+            <span>02</span>
+            <h3>Conectividad de respaldo</h3>
+            <p>Vialterna diseña capas de redundancia con LTE, 5G, satélite y acceso multioperador para mantener activos sitios críticos.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
     <section class="section industries-section" id="industrias">
       <div class="shell">
         <SectionHeading kicker="Industrias" title="Construido para operaciones distribuidas donde el tiempo de inactividad tiene precio." />
@@ -88,7 +108,7 @@ const description = "Vialterna diseña, despliega y opera conectividad administr
       <div class="shell reveal">
         <div class="kicker">Diagnóstico</div>
         <h2>Solicita un diagnóstico de conectividad.</h2>
-        <p>Identifica riesgos de desconexión, puntos únicos de falla, oportunidades de optimización y mejoras posibles en tu infraestructura.</p>
+        <p>Cuéntanos dónde tu operación está expuesta a riesgo de conectividad. Evaluamos puntos únicos de falla, contratos con operadores, gasto, redundancias, desempeño y oportunidades de optimización.</p>
         <a class="button primary" href="/contacto/">Habla con un experto</a>
         <div class="direct-contact">
           <a href="mailto:atencionaclientes@vialterna.com">atencionaclientes@vialterna.com</a>

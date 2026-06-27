@@ -17,22 +17,22 @@ export const approaches = [
   },
   {
     title: "Empaquetarlo con un integrador de TI",
-    text: "La conectividad termina empaquetada junto con seguridad, hardware o nube. Las redes resilientes requieren especialización arquitectónica y relaciones operativas con operadores."
+    text: "La conectividad termina empaquetada junto con seguridad, hardware o nube. El problema es estructural: las redes resilientes requieren especialización arquitectónica y relaciones operativas con operadores."
   }
 ];
 
 export const pillars = [
   {
     title: "Siempre activos por diseño",
-    text: "Diseñamos para eliminar puntos únicos de falla, combinando fibra, LTE, 5G, satélite y enlaces inalámbricos según las necesidades de cada sitio."
+    text: "La resiliencia multirred elimina puntos únicos de falla. Nuestra arquitectura combina fibra, celular, satélite y otras fuentes en una conectividad de alta disponibilidad."
   },
   {
     title: "Gestión proactiva 24/7 con visibilidad total",
-    text: "Monitoreamos la infraestructura de extremo a extremo, coordinamos operadores y respondemos a incidentes antes de que afecten la operación."
+    text: "Nuestro NOC monitorea cada sitio en tiempo real en todo el país. Detectamos y resolvemos problemas antes de que los notes."
   },
   {
     title: "Telco como Servicio Administrado",
-    text: "Arquitectura, despliegue, operación, optimización y SLAs reunidos en un solo modelo de servicio y un único punto de responsabilidad."
+    text: "Auditamos el gasto en telecomunicaciones, sacamos a la luz operadores redundantes, enlaces de bajo rendimiento y fugas silenciosas de SLA."
   }
 ];
 
@@ -46,32 +46,32 @@ export const phases = [
 export const solutions = [
   {
     eyebrow: "Edge · Última milla",
-    title: "Soluciones Edge",
-    text: "Conectividad administrada para sitios distribuidos: sucursales, cajeros automáticos, tiendas, franquicias, terminales e instalaciones remotas. Una arquitectura diseñada alrededor de cada ubicación.",
+    title: "Soluciones Edge (Última Milla)",
+    text: "Para endpoints distribuidos dentro de tu red: cajeros automáticos, sucursales minoristas, franquicias e instalaciones remotas. Diseñamos la arquitectura por sitio, administramos el hardware, supervisamos la conectividad y automatizamos el failover con disponibilidad respaldada por SLA.",
     href: "/soluciones/conectividad-sitios-distribuidos/",
     type: "rings",
     label: "Endpoint / Failover / Monitoreo"
   },
   {
     eyebrow: "Sitios centrales",
-    title: "El núcleo nunca se detiene.",
-    text: "Conectividad de alto rendimiento, diversidad de rutas y redundancia multioperador para corporativos, centros de datos y ubicaciones donde converge la operación.",
+    title: "Sitios centrales",
+    text: "Conectividad resiliente y de alto rendimiento para corporativos, centros de datos, hubs regionales, centros de distribución y sitios transaccionales. Integramos diversidad de rutas, redundancia multioperador y failover automático.",
     href: "/soluciones/sitios-centrales/",
     type: "signal",
     label: "Core / Diversidad / Baja latencia"
   },
   {
     eyebrow: "IoT / SIM",
-    title: "Miles de dispositivos. Una sola vista.",
-    text: "Conectividad celular administrada para flotas de dispositivos, terminales y sensores. Gestionamos activación, consumo, operación y ciclo de vida de SIMs y eSIMs.",
+    title: "Soluciones IoT/SIM",
+    text: "Gestión de SIMs, conectividad celular administrada, control de consumo, alertas, optimización de planes y ciclo de vida. Centralizamos el aprovisionamiento y la operación de terminales, sensores y flotas de dispositivos.",
     href: "/soluciones/iot-sim-administradas/",
     type: "cells",
     label: "SIM / eSIM / Telemetría / Sensores"
   },
   {
     eyebrow: "Respaldo",
-    title: "La segunda red entra antes de la falla.",
-    text: "Capas de redundancia con LTE, 5G, satélite y acceso multioperador para mantener activos sitios críticos cuando el enlace principal deja de responder.",
+    title: "Soluciones de Respaldo",
+    text: "Conectividad secundaria con failover satelital LEO, LTE o 5G para sitios remotos, retail, banca e infraestructura crítica. Diseñamos capas de redundancia para mantener activos los sitios cuando el enlace principal deja de responder.",
     href: "/soluciones/respaldo-satelital-celular/",
     type: "backup",
     label: "LTE / 5G / Satelital / Multioperador"
@@ -79,8 +79,8 @@ export const solutions = [
 ];
 
 export const industries = [
-  ["Servicios financieros", "Cajeros automáticos, sucursales bancarias e infraestructura transaccional.", "/industrias/servicios-financieros/"],
-  ["Retail y franquicias", "Tiendas, POS, inventarios, pedidos en línea y centros de distribución.", "/industrias/retail-franquicias/"],
-  ["Energía e industria", "Sitios remotos, SCADA, seguridad operativa, sensores IoT y telemetría industrial.", "/industrias/energia-industria/"],
-  ["Infraestructura de pagos", "Terminales, SIMs, sitios de procesamiento y continuidad transaccional.", "/industrias/infraestructura-pagos/"]
+  ["Servicios financieros", "Las instituciones financieras dependen de conectividad resiliente para cajeros automáticos, sucursales, terminales y procesamiento transaccional. Vialterna integra respaldo, supervisión y arquitectura multioperador.", "/industrias/servicios-financieros/"],
+  ["Retail y franquicias", "Cada tienda desconectada puede significar ventas perdidas, procesos manuales y presión sobre el corporativo. Conectamos tiendas, POS, inventarios, pedidos en línea y centros de distribución.", "/industrias/retail-franquicias/"],
+  ["Energía e industria", "Los sitios operativos remotos dependen de conectividad para telemetría, seguridad, sistemas industriales y control operativo. Combinamos enlaces terrestres, celulares y satelitales.", "/industrias/energia-industria/"],
+  ["Infraestructura de pagos", "Las empresas de pagos necesitan administrar miles de SIMs, detectar terminales desconectadas, optimizar planes y proteger sitios de procesamiento.", "/industrias/infraestructura-pagos/"]
 ];
