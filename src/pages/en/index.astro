@@ -1,21 +1,23 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import Header from "../../components/Header.astro";
 import Footer from "../../components/Footer.astro";
+import { solutionPagesEn, industryPagesEn } from "../../data/detailPagesEn";
+const pillars = [
+  ["Always-on by design","Multi-network resilience removes single points of failure by combining fiber, cellular, satellite and other sources."],
+  ["Proactive 24/7 management","Our NOC monitors every site in real time and resolves issues before they affect operations."],
+  ["Telco as a Managed Service","Architecture, deployment, operations, optimization and SLAs under one accountable service model."]
+];
 ---
-<BaseLayout title="Resilient enterprise connectivity in Mexico | Vialterna" description="Vialterna designs, deploys and operates managed connectivity for distributed enterprises in Mexico.">
+<BaseLayout title="Resilient enterprise connectivity in Mexico | Vialterna" description="Vialterna designs, deploys and operates managed connectivity for distributed enterprises in Mexico." lang="en">
+  <Header lang="en" />
   <main>
-    <section class="detail-hero">
-      <div class="shell detail-hero-grid">
-        <div>
-          <a class="brand" href="/en/" aria-label="Vialterna home"><img class="brand-logo" src="/brand/vialterna-logo-white.svg" alt="Vialterna" width="168" height="50" /></a>
-          <div class="eyebrow" style="margin-top: 70px">Critical infrastructure in Mexico</div>
-          <h1 class="detail-title">Availability as a Service for distributed operations.</h1>
-          <p class="detail-lead">Carrier-agnostic, multi-network architecture delivered as a managed service for companies where a disconnected site has a measurable cost.</p>
-          <div class="actions"><a class="button primary" href="mailto:atencionaclientes@vialterna.com">Talk to an expert</a><a class="button" href="/">ES</a></div>
-        </div>
-        <div class="detail-network" aria-hidden="true"><i></i><i></i><i></i><span>NOC<br />24 / 7</span></div>
-      </div>
-    </section>
+    <section class="hero"><div class="shell hero-grid"><div class="hero-content"><div class="eyebrow reveal">Critical infrastructure in Mexico</div><h1 class="reveal">Availability as a Service for <span class="accent">distributed operations.</span></h1><p class="hero-copy reveal">Carrier-agnostic, multi-network architecture delivered as a managed service for companies where a disconnected site has a measurable cost.</p><div class="actions"><a class="button primary" href="/en/contacto/">Talk to an expert</a><a class="button" href="#model">Explore the model</a></div></div><div class="network-scene" aria-hidden="true"><div class="orbit orbit-outer"><i></i><i></i><i></i><i></i></div><div class="orbit orbit-middle"></div><div class="orbit orbit-inner"></div><div class="network-center"><strong>NOC</strong><span>24 / 7</span></div></div></div></section>
+    <section class="section risk" id="model"><div class="shell"><div class="kicker">Operational risk</div><h2 class="risk-title">Connectivity is not a utility. <span class="accent">It is an operational risk.</span></h2><p class="risk-lead">When a site disconnects, revenue stops, transactions fail and teams return to manual processes. Every offline minute is measurable financial exposure.</p></div></section>
+    <section class="section pillars-section"><div class="shell"><div class="kicker">The Vialterna model</div><h2>We do not sell connectivity. We design availability.</h2><div class="pillars">{pillars.map((p,i)=><article class="pillar"><div class="pillar-number">0{i+1}</div><h3>{p[0]}</h3><p>{p[1]}</p></article>)}</div></div></section>
+    <section class="section solutions-section" id="solutions"><div class="shell"><div class="section-head"><div class="kicker">Solutions</div><div><h2>Four solutions. One platform.</h2><p class="section-intro">Everything required to keep operations online, designed and managed under one availability model.</p></div></div><div class="editorial-list">{solutionPagesEn.map((s,i)=><article><span>0{i+1}</span><h2><a href={`/en/soluciones/${s.slug}/`}>{s.eyebrow}</a></h2><p>{s.description}</p></article>)}</div></div></section>
+    <section class="section industries-section" id="industries"><div class="shell"><div class="section-head"><div class="kicker">Industries</div><div><h2>Built for distributed operations where downtime has a price.</h2></div></div><div class="industries">{industryPagesEn.map((s,i)=><a class="industry" href={`/en/industrias/${s.slug}/`}><div class="industry-orbit"></div><span>0{i+1}</span><h3>{s.eyebrow}</h3><p>{s.description}</p></a>)}</div></div></section>
+    <section class="cta-section"><div class="shell"><div class="kicker">Assessment</div><h2>Request a connectivity assessment.</h2><p>Identify disconnection risks, single points of failure and optimization opportunities.</p><a class="button primary" href="/en/contacto/">Talk to an expert</a></div></section>
   </main>
-  <Footer />
+  <Footer lang="en" />
 </BaseLayout>

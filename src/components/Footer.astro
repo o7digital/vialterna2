@@ -1,26 +1,31 @@
+---
+interface Props { lang?: "es" | "en" }
+const { lang = "es" } = Astro.props;
+const en = lang === "en";
+---
 <footer>
   <div class="shell footer-main">
     <div>
-      <a class="brand" href="/" aria-label="Vialterna inicio"><img class="brand-logo" src="/brand/vialterna-logo-white.svg" alt="Vialterna" width="168" height="50" /></a>
-      <p>Conectividad resiliente</p>
+      <a class="brand" href={en ? "/en/" : "/"} aria-label="Vialterna"><img class="brand-logo" src="/brand/vialterna-logo-white.svg" alt="Vialterna" width="168" height="50" /></a>
+      <p>{en ? "Resilient connectivity" : "Conectividad resiliente"}</p>
     </div>
     <div>
-      <h4>Soluciones</h4>
-      <a href="/soluciones/conectividad-sitios-distribuidos/">Soluciones Edge</a>
-      <a href="/soluciones/sitios-centrales/">Sitios centrales</a>
-      <a href="/soluciones/iot-sim-administradas/">Soluciones IoT/SIM</a>
-      <a href="/soluciones/respaldo-satelital-celular/">Soluciones de Respaldo</a>
+      <h4>{en ? "Solutions" : "Soluciones"}</h4>
+      <a href={`${en ? "/en" : ""}/soluciones/conectividad-sitios-distribuidos/`}>{en ? "Edge Solutions" : "Soluciones Edge"}</a>
+      <a href={`${en ? "/en" : ""}/soluciones/sitios-centrales/`}>{en ? "Central Sites" : "Sitios centrales"}</a>
+      <a href={`${en ? "/en" : ""}/soluciones/iot-sim-administradas/`}>{en ? "IoT/SIM Solutions" : "Soluciones IoT/SIM"}</a>
+      <a href={`${en ? "/en" : ""}/soluciones/respaldo-satelital-celular/`}>{en ? "Backup Solutions" : "Soluciones de Respaldo"}</a>
     </div>
     <div>
-      <h4>Empresa</h4>
-      <a href="/industrias/">Industrias</a>
-      <a href="/empresa/">Empresa</a>
-      <a href="/insights/">Noticias</a>
-      <a href="/faq/">FAQ</a>
-      <a href="/aviso-de-privacidad/">Aviso de privacidad</a>
+      <h4>{en ? "Company" : "Empresa"}</h4>
+      <a href={`${en ? "/en" : ""}/industrias/`}>{en ? "Industries" : "Industrias"}</a>
+      <a href={`${en ? "/en" : ""}/empresa/`}>{en ? "Company" : "Empresa"}</a>
+      <a href={`${en ? "/en" : ""}/insights/`}>{en ? "Insights" : "Noticias"}</a>
+      <a href={`${en ? "/en" : ""}/faq/`}>FAQ</a>
+      <a href={`${en ? "/en" : ""}/aviso-de-privacidad/`}>{en ? "Privacy notice" : "Aviso de privacidad"}</a>
     </div>
     <div>
-      <h4>Contacto</h4>
+      <h4>{en ? "Contact" : "Contacto"}</h4>
       <a href="mailto:atencionaclientes@vialterna.com">atencionaclientes@vialterna.com</a>
       <a href="https://wa.me/525580626884">+52 55 8062 6884</a>
       <a href="https://www.linkedin.com/company/vialterna/">LinkedIn</a>

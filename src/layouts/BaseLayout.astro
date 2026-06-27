@@ -4,25 +4,30 @@ import "../styles/global.css";
 interface Props {
   title: string;
   description: string;
+  lang?: "es-MX" | "en";
 }
 
-const { title, description } = Astro.props;
+const { title, description, lang = "es-MX" } = Astro.props;
+const pathname = Astro.url.pathname;
+const spanishPath = pathname.startsWith("/en/") ? pathname.replace(/^\/en/, "") || "/" : pathname;
+const englishPath = pathname.startsWith("/en/") ? pathname : `/en${pathname === "/" ? "/" : pathname}`;
+const canonical = `https://vialterna.com${pathname}`;
 ---
 <!doctype html>
-<html lang="es-MX">
+<html lang={lang}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <link rel="canonical" href="https://vialterna.com/" />
-    <link rel="alternate" hreflang="es-MX" href="https://vialterna.com/" />
-    <link rel="alternate" hreflang="en" href="https://vialterna.com/en/" />
-    <link rel="alternate" hreflang="x-default" href="https://vialterna.com/" />
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" hreflang="es-MX" href={`https://vialterna.com${spanishPath}`} />
+    <link rel="alternate" hreflang="en" href={`https://vialterna.com${englishPath}`} />
+    <link rel="alternate" hreflang="x-default" href={`https://vialterna.com${spanishPath}`} />
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:url" content="https://vialterna.com/" />
+    <meta property="og:url" content={canonical} />
     <meta name="theme-color" content="#000000" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

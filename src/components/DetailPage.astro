@@ -4,11 +4,12 @@ import Header from "./Header.astro";
 import Footer from "./Footer.astro";
 import type { DetailPage as DetailPageData } from "../data/detailPages";
 
-interface Props { page: DetailPageData }
-const { page } = Astro.props;
+interface Props { page: DetailPageData; lang?: "es" | "en" }
+const { page, lang = "es" } = Astro.props;
+const en = lang === "en";
 ---
-<BaseLayout title={`${page.title} | Vialterna`} description={page.description}>
-  <Header />
+<BaseLayout title={`${page.title} | Vialterna`} description={page.description} lang={en ? "en" : "es-MX"}>
+  <Header lang={lang} />
   <main>
     <section class="detail-hero">
       <div class="shell detail-hero-grid">
@@ -16,7 +17,7 @@ const { page } = Astro.props;
           <div class="eyebrow reveal">{page.eyebrow}</div>
           <h1 class="detail-title reveal">{page.title}</h1>
           <p class="detail-lead reveal">{page.description}</p>
-          <a class="button primary reveal" href="/#contacto">Habla con un experto</a>
+          <a class="button primary reveal" href={en ? "/en/contacto/" : "/contacto/"}>{en ? "Talk to an expert" : "Habla con un experto"}</a>
         </div>
         <div class="detail-network" aria-hidden="true"><i></i><i></i><i></i><span>NOC<br />24 / 7</span></div>
       </div>
@@ -33,7 +34,7 @@ const { page } = Astro.props;
     {page.problem && (
       <section class="section detail-problem">
         <div class="shell detail-copy">
-          <div class="kicker reveal">Riesgo operativo</div>
+          <div class="kicker reveal">{en ? "Operational risk" : "Riesgo operativo"}</div>
           <h2 class="reveal">{page.problemTitle}</h2>
           <p class="reveal">{page.problem}</p>
         </div>
@@ -42,7 +43,7 @@ const { page } = Astro.props;
 
     <section class="section detail-includes">
       <div class="shell">
-        <div class="kicker reveal">Gestión administrada</div>
+        <div class="kicker reveal">{en ? "Managed service" : "Gestión administrada"}</div>
         <h2 class="detail-section-title reveal">{page.sectionTitle}</h2>
         <div class="detail-items">
           {page.items.map((item, index) => (
@@ -59,8 +60,8 @@ const { page } = Astro.props;
     <section class="section detail-benefits">
       <div class="shell detail-benefits-grid">
         <div>
-          <div class="kicker reveal">Beneficios</div>
-          <h2 class="reveal">Disponibilidad diseñada alrededor de tu operación.</h2>
+          <div class="kicker reveal">{en ? "Benefits" : "Beneficios"}</div>
+          <h2 class="reveal">{en ? "Availability designed around your operation." : "Disponibilidad diseñada alrededor de tu operación."}</h2>
         </div>
         <ul class="reveal">
           {page.benefits.map((benefit) => <li>{benefit}</li>)}
@@ -70,12 +71,12 @@ const { page } = Astro.props;
 
     <section class="cta-section" id="contacto">
       <div class="shell reveal">
-        <div class="kicker">Diagnóstico</div>
-        <h2>Empieza con un diagnóstico de conectividad.</h2>
-        <p>Analizamos infraestructura, contratos, redundancias y desempeño para identificar riesgos y oportunidades de optimización.</p>
-        <a class="button primary" href="mailto:atencionaclientes@vialterna.com">Habla con un experto</a>
+        <div class="kicker">{en ? "Assessment" : "Diagnóstico"}</div>
+        <h2>{en ? "Start with a connectivity assessment." : "Empieza con un diagnóstico de conectividad."}</h2>
+        <p>{en ? "We analyze infrastructure, contracts, redundancy and performance to identify risk and optimization opportunities." : "Analizamos infraestructura, contratos, redundancias y desempeño para identificar riesgos y oportunidades de optimización."}</p>
+        <a class="button primary" href="mailto:atencionaclientes@vialterna.com">{en ? "Talk to an expert" : "Habla con un experto"}</a>
       </div>
     </section>
   </main>
-  <Footer />
+  <Footer lang={lang} />
 </BaseLayout>
