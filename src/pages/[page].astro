@@ -1,0 +1,92 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+
+const pages = {
+  empresa: {
+    title: "Empresa de telecomunicaciones empresariales en México | Vialterna",
+    eyebrow: "Empresa",
+    heading: "Vialterna, conectividad empresarial resiliente para operaciones distribuidas en México",
+    intro: "Conectamos a todos, cualquier cosa, en todos lados, siempre. Vialterna es una empresa mexicana de telecomunicaciones enfocada en conectividad empresarial, redes administradas, SD-WAN, IoT, internet móvil, internet satelital y conectividad resiliente.",
+    sections: [
+      ["Más de 10 años innovando en telecomunicaciones empresariales", "Vialterna fue fundada en diciembre de 2010 como alternativa de valor frente a modelos tradicionales del sector."],
+      ["Conectar el mundo físico con la estrategia digital", "La conectividad permite acceder a información relevante en tiempo real, monitorear variables críticas y tomar decisiones con mayor visibilidad operativa."],
+      ["Experiencia y capacidades", "Más de 10 años de experiencia. Servicios para empresas con presencia nacional. Experiencia en SD-WAN, IoT, M2M, internet móvil e internet satelital. Arquitecturas robustas mediante múltiples enlaces, operadores y tecnologías."]
+    ]
+  },
+  faq: {
+    title: "FAQ | Preguntas frecuentes de conectividad | Vialterna",
+    eyebrow: "FAQ",
+    heading: "Preguntas frecuentes sobre conectividad empresarial",
+    intro: "Información esencial para entender cómo Vialterna diseña, despliega y opera conectividad resiliente para empresas distribuidas.",
+    sections: [
+      ["¿Qué hace Vialterna?", "Vialterna diseña, despliega y opera conectividad empresarial resiliente para empresas con sitios distribuidos en México. Integramos diferentes operadores y tecnologías para mantener conectadas operaciones críticas."],
+      ["¿Vialterna es un operador tradicional?", "No. Vialterna es agnóstico de operador. Diseñamos la arquitectura alrededor de la operación del cliente, no alrededor de una red propia. Podemos combinar fibra, LTE, 5G, satélite y otras tecnologías según cada ubicación."],
+      ["¿Qué tipo de empresas atiende Vialterna?", "Trabajamos con empresas que operan múltiples sitios, sucursales, cajeros automáticos, tiendas, franquicias, centros de distribución, sitios industriales, dispositivos IoT o infraestructura transaccional."],
+      ["¿Qué significa Disponibilidad como Servicio?", "No entregamos solamente enlaces. Diseñamos, implementamos, monitoreamos y gestionamos una arquitectura orientada a mantener la operación disponible, con visibilidad, soporte y continuidad."],
+      ["¿Pueden trabajar con mis operadores actuales?", "Sí. Evaluamos enlaces existentes, identificamos riesgos y redundancias, proponemos mejoras y complementamos la arquitectura cuando es necesario."],
+      ["¿Vialterna ofrece respaldo satelital o celular?", "Sí. Diseñamos respaldo con LTE, 5G, satélite LEO u otras rutas secundarias para reducir la dependencia de un solo enlace o tecnología."],
+      ["¿Qué incluye un diagnóstico de conectividad?", "Revisa cobertura, operadores, enlaces, puntos únicos de falla, criticidad por sitio, gasto, desempeño, riesgos de desconexión y oportunidades de optimización."],
+      ["¿Pueden iniciar con un piloto?", "Sí. El proceso puede iniciar con pocos sitios para validar cobertura, desempeño, failover y operación antes de escalar."],
+      ["¿Vialterna gestiona SIMs empresariales e IoT?", "Sí. Administramos SIMs, conectividad celular, consumo, activaciones, alertas, optimización de planes y ciclo de vida."],
+      ["¿Cómo puedo contactar a Vialterna?", "Escribe a atencionaclientes@vialterna.com o comunícate por WhatsApp al 55 8062 6884."]
+    ]
+  },
+  contacto: {
+    title: "Contacto Vialterna | Diagnóstico de conectividad",
+    eyebrow: "Contacto",
+    heading: "¿Listo para cerrar la brecha?",
+    intro: "Deja de gestionar operadores. Empieza a gestionar tu negocio.",
+    sections: [
+      ["Diseño de Soluciones", "Inicia una conversación directa con nuestro equipo de desarrollo de negocios. WhatsApp: 55 8062 6884."],
+      ["Especificaciones de Proyecto", "Envíanos tus requerimientos de infraestructura a atencionaclientes@vialterna.com para recibir una propuesta técnica detallada."],
+      ["Conectemos en Persona", "Montes Urales 720, Lomas de Chapultepec, Delegación Miguel Hidalgo, C.P. 11000 PB. Lun–Vie | 09:00–18:00 CST."],
+      ["Empieza con un diagnóstico", "Analizamos infraestructura, contratos con operadores, gasto, redundancias y desempeño para identificar riesgos de desconexión y oportunidades de optimización."]
+    ]
+  },
+  insights: {
+    title: "Noticias de conectividad y redes empresariales | Vialterna",
+    eyebrow: "Noticias",
+    heading: "Análisis de conectividad, redes empresariales y soluciones Edge",
+    intro: "Perspectivas técnicas sobre conectividad administrada, Soluciones Edge, redes SD-WAN, IoT, SIMs empresariales y continuidad operativa.",
+    sections: [
+      ["Cómo diseñar conectividad resiliente para sitios distribuidos", "Criterios prácticos para combinar operadores, tecnologías y rutas de respaldo sin depender de un solo enlace."],
+      ["Cuándo migrar de MPLS a una arquitectura SD-WAN multioperador", "Señales operativas, riesgos y beneficios de pasar a una red flexible con failover y visibilidad centralizada."],
+      ["SIMs empresariales: control de consumo y ciclo de vida para flotas IoT", "Buenas prácticas para administrar activaciones, alertas, planes y dispositivos conectados en operación nacional."],
+      ["Respaldo satelital y celular: cómo evitar un punto único de falla", "Cuándo usar LTE, 5G o satélite LEO como rutas secundarias para sitios críticos y ubicaciones remotas."],
+      ["Qué debe medir un NOC para proteger disponibilidad empresarial", "Indicadores clave para anticipar degradaciones, incidentes y fallas antes de que afecten al negocio."],
+      ["El costo oculto de una tienda, sucursal o cajero desconectado", "Cómo traducir downtime en impacto operativo y financiero para priorizar inversiones de conectividad."]
+    ]
+  },
+  "aviso-de-privacidad": {
+    title: "Aviso de Privacidad Integral | Vialterna",
+    eyebrow: "Legal",
+    heading: "Aviso de Privacidad Integral",
+    intro: "VIALTERNA COMUNICACIONES. RFC: VCO1012206A8. Última actualización: 16 de junio de 2026.",
+    sections: [
+      ["Identidad y domicilio del Responsable", "Vialterna Comunicaciones, S.A. de C.V. es responsable de sus datos personales. Domicilio: Montes Pirineos 720-B, Lomas de Chapultepec, Miguel Hidalgo, C.P. 11000, Ciudad de México, México."],
+      ["Datos personales tratados", "Podremos tratar datos identificativos y de contacto, patrimoniales o financieros, así como datos de navegación, dispositivos y geolocalización. No recabamos datos personales sensibles."],
+      ["Finalidades del tratamiento", "Los datos se utilizan para informar sobre servicios, facilitar contratación, instalar equipos, procesar pagos, facturar, administrar clientes, brindar atención y generar estadísticas de navegación."],
+      ["Transferencias", "Los datos podrán transferirse a organismos públicos y autoridades competentes para cumplir obligaciones legales, y a prestadores de servicios para resguardo, administración y análisis."],
+      ["Derechos ARCO", "Puedes solicitar acceso, rectificación, cancelación u oposición al correo protecciondedatos@vialterna.com o en el domicilio del Responsable."],
+      ["Revocación y limitación", "Puedes solicitar la revocación del consentimiento o limitar el uso y divulgación siguiendo el procedimiento aplicable a los Derechos ARCO."],
+      ["Cookies", "El sitio utiliza cookies para facilitar la navegación y analizar información técnica. Puedes deshabilitarlas desde tu navegador."],
+      ["Modificaciones y contacto", "Vialterna puede actualizar este aviso. Para dudas escribe a atencionautoridades@vialterna.com o protecciondedatos@vialterna.com."]
+    ]
+  }
+};
+
+export function getStaticPaths() {
+  return ["empresa", "faq", "contacto", "insights", "aviso-de-privacidad"].map((page) => ({ params: { page } }));
+}
+const data = pages[Astro.params.page as keyof typeof pages];
+---
+<BaseLayout title={data.title} description={data.intro}>
+  <Header />
+  <main>
+    <section class="editorial-hero"><div class="shell"><div class="eyebrow">{data.eyebrow}</div><h1 class="detail-title">{data.heading}</h1><p class="detail-lead">{data.intro}</p>{data.eyebrow === "Contacto" && <a class="button primary" href="https://wa.me/525580626884">Habla con un experto</a>}</div></section>
+    <section class="section"><div class="shell editorial-list">{data.sections.map((section, index) => <article><span>{String(index + 1).padStart(2, "0")}</span><h2>{section[0]}</h2><p>{section[1]}</p></article>)}</div></section>
+  </main>
+  <Footer />
+</BaseLayout>
