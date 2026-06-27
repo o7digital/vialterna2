@@ -19,7 +19,20 @@ const [eyebrow, heading, intro, sections] = data as [string, string, string, str
   <main>
     <section class="editorial-hero"><div class="shell"><div class="eyebrow">{eyebrow}</div><h1 class="detail-title">{heading}</h1><p class="detail-lead">{intro}</p></div></section>
     {Astro.params.page === "empresa" && <section class="company-image-section"><div class="shell"><figure class="company-image"><img src="/images/vialterna-meeting-room.webp" alt="Vialterna office meeting room" width="4000" height="2250" /><figcaption>Vialterna · Mexico City</figcaption></figure></div></section>}
-    {Astro.params.page === "aviso-de-privacidad" && <section class="section legal-documents"><div class="shell"><div class="kicker">Legal documents</div><div class="legal-downloads"><a href="/legal/carta-derechos-minimos.pdf"><strong>Minimum rights charter</strong></a><a href="/legal/registro-contrato-adhesion-profeco.pdf"><strong>PROFECO adhesion contract registration</strong></a><a href="/legal/vialterna-codigo-practicas-comerciales.pdf"><strong>Commercial practices code</strong></a><a href="/legal/vialterna-colaboracion-seguridad-justicia.pdf"><strong>Security and justice cooperation</strong></a></div></div></section>}
+    {Astro.params.page === "aviso-de-privacidad" && (
+      <section class="section legal-documents">
+        <div class="shell">
+          <div class="kicker">Legal documents</div>
+          <h2>Legal documents published by Vialterna</h2>
+          <div class="legal-downloads">
+            <a href="/legal/carta-derechos-minimos.pdf" target="_blank"><span>PDF</span><strong>Minimum rights charter</strong><i>Download ↗</i></a>
+            <a href="/legal/registro-contrato-adhesion-profeco.pdf" target="_blank"><span>PDF</span><strong>PROFECO adhesion contract registration</strong><i>Download ↗</i></a>
+            <a href="/legal/vialterna-codigo-practicas-comerciales.pdf" target="_blank"><span>PDF</span><strong>Commercial practices code</strong><i>Download ↗</i></a>
+            <a href="/legal/vialterna-colaboracion-seguridad-justicia.pdf" target="_blank"><span>PDF</span><strong>Security and justice cooperation</strong><i>Download ↗</i></a>
+          </div>
+        </div>
+      </section>
+    )}
     <section class="section"><div class="shell editorial-list">{sections.map((section, index) => <article><span>{String(index+1).padStart(2,"0")}</span><h2>{section[0]}</h2><p>{section[1]}</p></article>)}</div></section>
     {Astro.params.page === "aviso-de-privacidad" && <section class="section"><article class="shell legal-content" set:html={privacyHtml} /></section>}
   </main>
