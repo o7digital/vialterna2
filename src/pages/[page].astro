@@ -87,6 +87,16 @@ const data = pages[Astro.params.page as keyof typeof pages];
   <Header />
   <main>
     <section class="editorial-hero"><div class="shell"><div class="eyebrow">{data.eyebrow}</div><h1 class="detail-title">{data.heading}</h1><p class="detail-lead">{data.intro}</p>{data.eyebrow === "Contacto" && <a class="button primary" href="https://wa.me/525580626884">Habla con un experto</a>}</div></section>
+    {Astro.params.page === "empresa" && (
+      <section class="company-image-section">
+        <div class="shell">
+          <figure class="company-image">
+            <img src="/images/vialterna-meeting-room.webp" alt="Sala de reuniones de las oficinas de Vialterna" width="4000" height="2250" loading="eager" />
+            <figcaption>Vialterna · Ciudad de México</figcaption>
+          </figure>
+        </div>
+      </section>
+    )}
     {Astro.params.page === "aviso-de-privacidad"
       ? <>
           <section class="section legal-documents">
