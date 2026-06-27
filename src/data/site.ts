@@ -3,7 +3,8 @@ export const navigation = [
   { label: "Industrias", href: "#industrias" },
   { label: "Empresa", href: "/empresa/" },
   { label: "Noticias", href: "/insights/" },
-  { label: "FAQ", href: "/faq/" }
+  { label: "FAQ", href: "/faq/" },
+  { label: "Contacto", href: "/contacto/" }
 ];
 
 export const approaches = [
