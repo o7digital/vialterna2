@@ -9,16 +9,12 @@ export const navigation = [
 
 export const approaches = [
   {
-    title: "Hacerlo internamente (In-house)",
-    text: "Tu equipo de TI asume la gestión de operadores, el diseño de redundancia y la respuesta a incidentes, además de todo lo que ya tiene a su cargo."
+    title: "SD-WAN sobre una sola red",
+    text: "El tráfico se gestiona, pero la red subyacente sigue siendo un punto único de falla y los firewalls por sitio elevan el costo."
   },
   {
-    title: "Depender de un operador tradicional",
-    text: "Un operador tradicional está estructuralmente sesgado hacia la red que posee. Te vende un enlace, no disponibilidad diseñada alrededor de tu operación."
-  },
-  {
-    title: "Empaquetarlo con un integrador de TI",
-    text: "La conectividad termina empaquetada junto con seguridad, hardware o nube. El problema es estructural: las redes resilientes requieren especialización arquitectónica y relaciones operativas con operadores."
+    title: "Internet básico sin capa administrada",
+    text: "Sin SLA, monitoreo ni failover, el downtime se absorbe silenciosamente a través de toda la operación."
   }
 ];
 
@@ -32,7 +28,7 @@ export const pillars = [
     text: "Nuestro NOC monitorea cada sitio en tiempo real en todo el país. Detectamos y resolvemos problemas antes de que los notes."
   },
   {
-    title: "Telco como Servicio Administrado",
+    title: "Telco as a Service",
     text: "Auditamos el gasto en telecomunicaciones, sacamos a la luz operadores redundantes, enlaces de bajo rendimiento y fugas silenciosas de SLA."
   }
 ];
@@ -46,36 +42,36 @@ export const phases = [
 
 export const solutions = [
   {
-    eyebrow: "Edge · Última milla",
-    title: "Soluciones Edge (Última Milla)",
-    text: "Para endpoints distribuidos dentro de tu red: cajeros automáticos, sucursales minoristas, franquicias e instalaciones remotas. Diseñamos la arquitectura por sitio, administramos el hardware, supervisamos la conectividad y automatizamos el failover con disponibilidad respaldada por SLA.",
-    href: "/soluciones/conectividad-sitios-distribuidos/",
+    eyebrow: "Edge · SuperWAN",
+    title: "Edge",
+    text: "Conectividad resiliente por sitio con enlaces independientes, SuperWAN, failover automático, monitoreo NOC 24/7 y hasta 99.97% de disponibilidad.",
+    href: "/soluciones/edge/",
     type: "rings",
     label: "Endpoint / Failover / Monitoreo"
   },
   {
-    eyebrow: "Sitios centrales",
-    title: "Sitios centrales",
-    text: "Conectividad resiliente y de alto rendimiento para corporativos, centros de datos, hubs regionales, centros de distribución y sitios transaccionales. Integramos diversidad de rutas, redundancia multioperador y failover automático.",
-    href: "/soluciones/sitios-centrales/",
+    eyebrow: "Core · Managed SD-WAN",
+    title: "Core",
+    text: "Orquestación y gobierno de SLA sobre toda tu red y todos tus proveedores, con un responsable único y reportes auditables.",
+    href: "/soluciones/core/",
     type: "signal",
     label: "Core / Diversidad / Baja latencia"
   },
   {
-    eyebrow: "IoT / SIM",
-    title: "Soluciones IoT/SIM",
-    text: "Gestión de SIMs, conectividad celular administrada, control de consumo, alertas, optimización de planes y ciclo de vida. Centralizamos el aprovisionamiento y la operación de terminales, sensores y flotas de dispositivos.",
-    href: "/soluciones/iot-sim-administradas/",
-    type: "cells",
-    label: "SIM / eSIM / Telemetría / Sensores"
+    eyebrow: "Telco as a Service",
+    title: "Telco as a Service",
+    text: "Auditoría, reestructuración y gobierno continuo de tu gasto Telco para reducir costos, fugas de SLA y complejidad.",
+    href: "/soluciones/telco-as-a-service/",
+    type: "backup",
+    label: "Auditoría / TCO / Gobierno"
   },
   {
-    eyebrow: "Respaldo",
-    title: "Soluciones de Respaldo",
-    text: "Conectividad secundaria con failover satelital LEO, LTE o 5G para sitios remotos, retail, banca e infraestructura crítica. Diseñamos capas de redundancia para mantener activos los sitios cuando el enlace principal deja de responder.",
-    href: "/soluciones/respaldo-satelital-celular/",
-    type: "backup",
-    label: "LTE / 5G / Satelital / Multioperador"
+    eyebrow: "IoT / SIM",
+    title: "Soluciones IoT y SIM",
+    text: "SIM, eSIM y sensores administrados a escala, con monitoreo, alertas, optimización de planes, IMEI lock y ciclo de vida completo.",
+    href: "/soluciones/iot-sim/",
+    type: "cells",
+    label: "SIM / eSIM / Sensores / MVNO"
   }
 ];
 
@@ -84,4 +80,5 @@ export const industries = [
   ["Retail y franquicias", "Cada tienda desconectada puede significar ventas perdidas, procesos manuales y presión sobre el corporativo. Conectamos tiendas, POS, inventarios, pedidos en línea y centros de distribución.", "/industrias/retail-franquicias/"],
   ["Energía e industria", "Los sitios operativos remotos dependen de conectividad para telemetría, seguridad, sistemas industriales y control operativo. Combinamos enlaces terrestres, celulares y satelitales.", "/industrias/energia-industria/"],
   ["Infraestructura de pagos", "Las empresas de pagos necesitan administrar miles de SIMs, detectar terminales desconectadas, optimizar planes y proteger sitios de procesamiento.", "/industrias/infraestructura-pagos/"]
+  ,["Logística y cadena de frío", "Conectividad resiliente para centros de distribución, cross docks, última milla y cámaras frías, con monitoreo continuo de variables críticas.", "/industrias/logistica-cadena-frio/"]
 ];

@@ -11,18 +11,33 @@ const en = lang === "en";
     </div>
     <div>
       <h4>{en ? "Solutions" : "Soluciones"}</h4>
-      <a href={`${en ? "/en" : ""}/soluciones/conectividad-sitios-distribuidos/`}>{en ? "Edge Solutions" : "Soluciones Edge"}</a>
-      <a href={`${en ? "/en" : ""}/soluciones/sitios-centrales/`}>{en ? "Central Sites" : "Sitios centrales"}</a>
-      <a href={`${en ? "/en" : ""}/soluciones/iot-sim-administradas/`}>{en ? "IoT/SIM Solutions" : "Soluciones IoT/SIM"}</a>
-      <a href={`${en ? "/en" : ""}/soluciones/respaldo-satelital-celular/`}>{en ? "Backup Solutions" : "Soluciones de Respaldo"}</a>
+      {en ? <>
+        <a href="/en/solutions/edge/">Edge / SuperWAN</a>
+        <a href="/en/solutions/core/">Core</a>
+        <a href="/en/solutions/telco-as-a-service/">Telco as a Service</a>
+        <a href="/en/solutions/iot-sim/">IoT and SIM</a>
+      </> : <>
+        <a href="/soluciones/edge/">Soluciones Edge</a>
+        <a href="/soluciones/core/">Core</a>
+        <a href="/soluciones/telco-as-a-service/">Telco as a Service</a>
+        <a href="/soluciones/iot-sim/">Soluciones IoT/SIM</a>
+      </>}
     </div>
     <div>
-      <h4>{en ? "Company" : "Empresa"}</h4>
-      <a href={`${en ? "/en" : ""}/industrias/`}>{en ? "Industries" : "Industrias"}</a>
-      <a href={`${en ? "/en" : ""}/empresa/`}>{en ? "Company" : "Empresa"}</a>
-      <a href={`${en ? "/en" : ""}/insights/`}>{en ? "Insights" : "Noticias"}</a>
-      <a href={`${en ? "/en" : ""}/faq/`}>FAQ</a>
-      <a href={`${en ? "/en" : ""}/aviso-de-privacidad/`}>{en ? "Privacy notice" : "Aviso de privacidad"}</a>
+      <h4>{en ? "Industries" : "Empresa"}</h4>
+      {en ? <>
+        <a href="/en/industries/financial-services/">Financial Services</a>
+        <a href="/en/industries/retail-franchise/">Retail and Franchise Chains</a>
+        <a href="/en/industries/energy-industrial/">Energy and Industrial</a>
+        <a href="/en/industries/payments-infrastructure/">Payments Infrastructure</a>
+        <a href="/en/industries/logistics-cold-chain/">Logistics and Cold Chain</a>
+      </> : <>
+        <a href="/industrias/">Industrias</a>
+        <a href="/empresa/">Empresa</a>
+        <a href="/insights/">Noticias</a>
+        <a href="/faq/">FAQ</a>
+        <a href="/aviso-de-privacidad/">Aviso de privacidad</a>
+      </>}
     </div>
     <div>
       <h4>{en ? "Contact" : "Contacto"}</h4>
@@ -31,5 +46,12 @@ const en = lang === "en";
       <a href="https://www.linkedin.com/company/vialterna/">LinkedIn</a>
     </div>
   </div>
-  <div class="shell footer-bottom"><span>© 2026 Vialterna</span><span>Montes Urales 720 · Lomas de Chapultepec · CDMX 11000</span></div>
+  <div class="shell footer-bottom">
+    <span>© 2026 Vialterna</span>
+    <span>Montes Urales 720 · Lomas de Chapultepec · CDMX 11000</span>
+    <a class="back-to-top" href="#top">
+      {en ? "Back to top" : "Volver arriba"}
+      <span aria-hidden="true">↑</span>
+    </a>
+  </div>
 </footer>

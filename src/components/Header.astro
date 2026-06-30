@@ -3,6 +3,10 @@ import { navigation } from "../data/site";
 interface Props { lang?: "es" | "en" }
 const { lang = "es" } = Astro.props;
 const isEnglish = lang === "en";
+const currentPath = Astro.url.pathname;
+const languageHref = isEnglish
+  ? currentPath.replace(/^\/en(?=\/|$)/, "") || "/"
+  : `/en${currentPath === "/" ? "/" : currentPath}`;
 const items = isEnglish ? [
   { label: "Solutions", href: "/en/#solutions" },
   { label: "Industries", href: "/en/#industries" },
@@ -11,6 +15,32 @@ const items = isEnglish ? [
   { label: "FAQ", href: "/en/faq/" },
   { label: "Contact", href: "/en/contacto/" }
 ] : navigation;
+const dropdowns = {
+  [isEnglish ? "Solutions" : "Soluciones"]: isEnglish ? [
+    { label: "Edge / SuperWAN", href: "/en/solutions/edge/" },
+    { label: "Core", href: "/en/solutions/core/" },
+    { label: "Telco as a Service", href: "/en/solutions/telco-as-a-service/" },
+    { label: "IoT and SIM", href: "/en/solutions/iot-sim/" }
+  ] : [
+    { label: "Edge / SuperWAN", href: "/soluciones/edge/" },
+    { label: "Core", href: "/soluciones/core/" },
+    { label: "Telco as a Service", href: "/soluciones/telco-as-a-service/" },
+    { label: "IoT y SIM", href: "/soluciones/iot-sim/" }
+  ],
+  [isEnglish ? "Industries" : "Industrias"]: isEnglish ? [
+    { label: "Financial Services", href: "/en/industries/financial-services/" },
+    { label: "Retail and Franchise Chains", href: "/en/industries/retail-franchise/" },
+    { label: "Energy and Industrial", href: "/en/industries/energy-industrial/" },
+    { label: "Payments Infrastructure", href: "/en/industries/payments-infrastructure/" },
+    { label: "Logistics and Cold Chain", href: "/en/industries/logistics-cold-chain/" }
+  ] : [
+    { label: "Servicios financieros", href: "/industrias/servicios-financieros/" },
+    { label: "Retail y franquicias", href: "/industrias/retail-franquicias/" },
+    { label: "Energía e industria", href: "/industrias/energia-industria/" },
+    { label: "Infraestructura de pagos", href: "/industrias/infraestructura-pagos/" },
+    { label: "Logística y cadena de frío", href: "/industrias/logistica-cadena-frio/" }
+  ]
+};
 ---
 <header class="header" data-header>
   <div class="shell header-inner">
@@ -21,8 +51,27 @@ const items = isEnglish ? [
       <span></span><span></span>
     </button>
     <nav class="nav-links" aria-label="Navegación principal" data-menu>
-      {items.map((item) => <a href={item.href}>{item.label}</a>)}
-      <a class="language-link" href={isEnglish ? "/" : "/en/"} lang={isEnglish ? "es" : "en"}>{isEnglish ? "ES" : "EN"}</a>
+      {items.map((item) => {
+        const dropdown = dropdowns[item.label];
+        return (
+          <div class:list={["nav-item", { "has-dropdown": dropdown }]}>
+            <a
+              href={item.href}
+              aria-haspopup={dropdown ? "true" : undefined}
+              aria-expanded={dropdown ? "false" : undefined}
+              data-dropdown-trigger={dropdown ? true : undefined}
+            >{item.label}</a>
+            {dropdown && (
+              <div class="nav-dropdown">
+                <div class="nav-dropdown-panel">
+                  {dropdown.map((child) => <a href={child.href}>{child.label}</a>)}
+                </div>
+              </div>
+            )}
+          </div>
+        );
+      })}
+      <a class="language-link" href={languageHref} lang={isEnglish ? "es" : "en"}>{isEnglish ? "ES" : "EN"}</a>
     </nav>
     <a class="button primary header-cta" href={isEnglish ? "/en/contacto/" : "/contacto/"}>{isEnglish ? "Talk to an expert" : "Habla con un experto"} <span aria-hidden="true">↗</span></a>
   </div>

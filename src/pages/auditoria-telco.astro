@@ -1,0 +1,20 @@
+---
+import DetailPage from "../components/DetailPage.astro";
+const page = {
+  slug: "auditoria-telco",
+  eyebrow: "Gratis. Sin compromiso. Reporte escrito.",
+  title: "Descubre exactamente dónde tu conectividad te está costando dinero",
+  description: "Analizamos tu infraestructura, cuantificamos el costo del downtime y recomendamos una arquitectura específica en dos semanas.",
+  problemTitle: "Probablemente no conoces el costo real de tu conectividad",
+  problem: "La factura es solo una parte. Transacciones fallidas, ingresos perdidos, escalaciones, operación manual y fugas de SLA son el costo real.",
+  sectionTitle: "Cinco componentes. Dos semanas. Un reporte.",
+  items: [
+    { title: "Contratos y gasto", text: "Mapeamos cada sitio, red, plazo y costo mensual." },
+    { title: "Redundancia y SLA", text: "Detectamos puntos únicos de falla y comparamos desempeño contratado contra desempeño real." },
+    { title: "Ciclo de vida de hardware", text: "Identificamos CPE obsoleto y CAPEX evitable." },
+    { title: "Caso de negocio", text: "Recibes mapa de vulnerabilidad, modelo de downtime, arquitectura recomendada y comparación TCO." }
+  ],
+  benefits: ["Auditoría Telco gratuita", "Reporte escrito", "Respuesta en un día hábil"]
+};
+---
+<DetailPage page={page} />

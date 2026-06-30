@@ -6,14 +6,16 @@ import privacyHtml from "../content/privacy.html?raw";
 
 const pages = {
   empresa: {
-    title: "Empresa de telecomunicaciones empresariales en México | Vialterna",
-    eyebrow: "Empresa",
-    heading: "Vialterna, conectividad empresarial resiliente para operaciones distribuidas en México",
-    intro: "Conectamos a todos, cualquier cosa, en todos lados, siempre. Vialterna es una empresa mexicana de telecomunicaciones enfocada en conectividad empresarial, redes administradas, SD-WAN, IoT, internet móvil, internet satelital y conectividad resiliente.",
+    title: "Continuidad operativa para empresas distribuidas | Vialterna",
+    eyebrow: "Empresa mexicana, cobertura nacional",
+    heading: "Diseñamos continuidad operativa para empresas distribuidas en México",
+    intro: "Más de 15 años operando infraestructura crítica. Vialterna es la capa de resiliencia multinetwork para grandes empresas distribuidas en México.",
     sections: [
-      ["Más de 10 años innovando en telecomunicaciones empresariales", "Vialterna fue fundada en diciembre de 2010 como alternativa de valor frente a modelos tradicionales del sector."],
-      ["Conectar el mundo físico con la estrategia digital", "La conectividad permite acceder a información relevante en tiempo real, monitorear variables críticas y tomar decisiones con mayor visibilidad operativa."],
-      ["Experiencia y capacidades", "Más de 10 años de experiencia. Servicios para empresas con presencia nacional. Experiencia en SD-WAN, IoT, M2M, internet móvil e internet satelital. Arquitecturas robustas mediante múltiples enlaces, operadores y tecnologías."]
+      ["Quiénes somos", "Entregamos continuidad operativa mediante conectividad siempre activa, con NOC propio 24/7, AIr Connect, cobertura nacional mediante ER Network, MVNO propio y alianza oficial con Starlink."],
+      ["Qué nos hace diferentes", "Vendemos uptime, somos independientes de red y tecnología, auditamos todo el stack Telco y administramos proactivamente más de 2,500 sitios y dispositivos."],
+      ["Dónde estamos en el mercado", "Los telcos venden capacidad y los integradores proyectos. Nosotros diseñamos y operamos conectividad resiliente como servicio administrado responsable."],
+      ["Prueba", "+2,500 sitios y dispositivos. 15+ años. 99.97%+ en Edge y SLA de 99.99% en Core. Cobertura nacional."],
+      ["Clientes de referencia", "Bancos nacionales, retail y franquicias, industria, pagos, logística y cadena de frío. Referencias específicas disponibles bajo NDA."]
     ]
   },
   faq: {
@@ -36,14 +38,14 @@ const pages = {
   },
   contacto: {
     title: "Contacto Vialterna | Diagnóstico de conectividad",
-    eyebrow: "Contacto",
-    heading: "¿Listo para cerrar la brecha?",
-    intro: "Deja de gestionar operadores. Empieza a gestionar tu negocio.",
+    eyebrow: "Dos caminos",
+    heading: "Hablemos.",
+    intro: "La auditoría Telco es la forma más rápida de evaluar el encaje. El formulario es la forma más rápida de hablar con una persona.",
     sections: [
-      ["Diseño de Soluciones", "Inicia una conversación directa con nuestro equipo de desarrollo de negocios. WhatsApp: 55 8062 6884."],
-      ["Especificaciones de Proyecto", "Envíanos tus requerimientos de infraestructura a atencionaclientes@vialterna.com para recibir una propuesta técnica detallada."],
-      ["Conectemos en Persona", "Montes Urales 720, Lomas de Chapultepec, Delegación Miguel Hidalgo, C.P. 11000 PB. Lun–Vie | 09:00–18:00 CST."],
-      ["Empieza con un diagnóstico", "Analizamos infraestructura, contratos con operadores, gasto, redundancias y desempeño para identificar riesgos de desconexión y oportunidades de optimización."]
+      ["Solicita tu auditoría Telco gratuita", "Recibe mapa de vulnerabilidades, modelo de costo de downtime, comparación TCO y recomendación de arquitectura en dos semanas."],
+      ["Habla con un experto", "Una conversación directa sobre tu situación, una solución específica o nuestra forma de trabajo. Sin compromiso."],
+      ["Contacto", "atencionaclientes@vialterna.com · +52 55 8062 6884"],
+      ["Qué sucede después", "Respondemos en un día hábil, hacemos una llamada inicial y coordinamos la auditoría o al experto adecuado. Sin secuencias automatizadas."]
     ]
   },
   insights: {
@@ -86,17 +88,7 @@ const data = pages[Astro.params.page as keyof typeof pages];
 <BaseLayout title={data.title} description={data.intro}>
   <Header />
   <main>
-    <section class="editorial-hero"><div class="shell"><div class="eyebrow">{data.eyebrow}</div><h1 class="detail-title">{data.heading}</h1><p class="detail-lead">{data.intro}</p>{data.eyebrow === "Contacto" && <a class="button primary" href="https://wa.me/525580626884">Habla con un experto</a>}</div></section>
-    {Astro.params.page === "empresa" && (
-      <section class="company-image-section">
-        <div class="shell">
-          <figure class="company-image">
-            <img src="/images/vialterna-meeting-room.webp" alt="Sala de reuniones de las oficinas de Vialterna" width="4000" height="2250" loading="eager" />
-            <figcaption>Vialterna · Ciudad de México</figcaption>
-          </figure>
-        </div>
-      </section>
-    )}
+    <section class:list={["editorial-hero", Astro.params.page === "empresa" && "company-hero"]}><div class="shell"><div class="eyebrow">{data.eyebrow}</div><h1 class="detail-title">{data.heading}</h1><p class="detail-lead">{data.intro}</p>{data.eyebrow === "Contacto" && <a class="button primary" href="https://wa.me/525580626884">Habla con un experto</a>}</div></section>
     {Astro.params.page === "aviso-de-privacidad"
       ? <>
           <section class="section legal-documents">

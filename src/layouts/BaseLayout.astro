@@ -14,7 +14,7 @@ const englishPath = pathname.startsWith("/en/") ? pathname : `/en${pathname === 
 const canonical = `https://vialterna.com${pathname}`;
 ---
 <!doctype html>
-<html lang={lang}>
+<html lang={lang} id="top">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -62,7 +62,14 @@ const canonical = `https://vialterna.com${pathname}`;
         const open = menu?.classList.toggle('is-open');
         menuButton.setAttribute('aria-expanded', String(Boolean(open)));
       });
-      menu?.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => {
+      menu?.querySelectorAll('[data-dropdown-trigger]').forEach((trigger) => trigger.addEventListener('click', (event) => {
+        if (!matchMedia('(max-width: 900px)').matches) return;
+        event.preventDefault();
+        const item = trigger.closest('.nav-item');
+        const open = item?.classList.toggle('is-dropdown-open');
+        trigger.setAttribute('aria-expanded', String(Boolean(open)));
+      }));
+      menu?.querySelectorAll('a:not([data-dropdown-trigger])').forEach((link) => link.addEventListener('click', () => {
         menu.classList.remove('is-open');
         menuButton?.setAttribute('aria-expanded', 'false');
       }));

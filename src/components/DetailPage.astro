@@ -7,6 +7,8 @@ import type { DetailPage as DetailPageData } from "../data/detailPages";
 interface Props { page: DetailPageData; lang?: "es" | "en" }
 const { page, lang = "es" } = Astro.props;
 const en = lang === "en";
+const contact = en ? "/en/contact/" : "/contacto/";
+const audit = en ? "/en/telco-audit/" : "/auditoria-telco/";
 ---
 <BaseLayout title={`${page.title} | Vialterna`} description={page.description} lang={en ? "en" : "es-MX"}>
   <Header lang={lang} />
@@ -17,7 +19,7 @@ const en = lang === "en";
           <div class="eyebrow reveal">{page.eyebrow}</div>
           <h1 class="detail-title reveal">{page.title}</h1>
           <p class="detail-lead reveal">{page.description}</p>
-          <a class="button primary reveal" href={en ? "/en/contacto/" : "/contacto/"}>{en ? "Talk to an expert" : "Habla con un experto"}</a>
+          <div class="actions reveal"><a class="button primary" href={audit}>{en ? "Get your free Telco audit" : "Solicita tu auditoría Telco gratuita"}</a><a class="button" href={contact}>{en ? "Talk to an expert" : "Habla con un experto"}</a></div>
         </div>
         <div class="detail-network" aria-hidden="true"><i></i><i></i><i></i><span>NOC<br />24 / 7</span></div>
       </div>
@@ -25,9 +27,9 @@ const en = lang === "en";
 
     <section class="detail-strip">
       <div class="shell detail-strip-grid">
-        <div><strong>Multioperador</strong><span>Arquitectura flexible</span></div>
-        <div><strong>SLA</strong><span>Disponibilidad respaldada</span></div>
-        <div><strong>Respaldo</strong><span>Continuidad operativa</span></div>
+        <div><strong>{en ? "Multi-network" : "Multinetwork"}</strong><span>{en ? "Independent architecture" : "Arquitectura independiente"}</span></div>
+        <div><strong>SLA</strong><span>{en ? "SLA-backed availability" : "Disponibilidad respaldada"}</span></div>
+        <div><strong>{en ? "Resilience" : "Resiliencia"}</strong><span>{en ? "Operational continuity" : "Continuidad operativa"}</span></div>
       </div>
     </section>
 
@@ -71,10 +73,10 @@ const en = lang === "en";
 
     <section class="cta-section" id="contacto">
       <div class="shell reveal">
-        <div class="kicker">{en ? "Assessment" : "Diagnóstico"}</div>
-        <h2>{en ? "Start with a connectivity assessment." : "Empieza con un diagnóstico de conectividad."}</h2>
-        <p>{en ? "We analyze infrastructure, contracts, redundancy and performance to identify risk and optimization opportunities." : "Analizamos infraestructura, contratos, redundancias y desempeño para identificar riesgos y oportunidades de optimización."}</p>
-        <a class="button primary" href="mailto:atencionaclientes@vialterna.com">{en ? "Talk to an expert" : "Habla con un experto"}</a>
+        <div class="kicker">{en ? "Telco audit" : "Auditoría Telco"}</div>
+        <h2>{en ? "Start with a diagnostic." : "Empieza con un diagnóstico."}</h2>
+        <p>{en ? "We respond within one business day. Free. No commitment." : "Respondemos en un día hábil. Gratis. Sin compromiso."}</p>
+        <div class="actions"><a class="button primary" href={audit}>{en ? "Get your free Telco audit" : "Solicita tu auditoría Telco gratuita"}</a><a class="button" href={contact}>{en ? "Talk to an expert" : "Habla con un experto"}</a></div>
       </div>
     </section>
   </main>
