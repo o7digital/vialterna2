@@ -1,13 +1,13 @@
 <div class="olivia" data-olivia>
   <section class="olivia__panel" hidden>
-    <header><div><strong>o7 Olivia AI</strong><small>Asistente Vialterna · En línea</small></div><button data-close aria-label="Cerrar">×</button></header>
-    <div class="olivia__messages" data-messages><p class="bot">Hola, soy o7 Olivia AI. ¿Cómo puedo ayudarte con la conectividad de tu empresa?</p></div>
+    <header><div><strong>o7 Olivia AI</strong><small data-subtitle>Asistente Vialterna · En línea</small></div><button data-close aria-label="Cerrar">×</button></header>
+    <div class="olivia__messages" data-messages><p class="bot" data-welcome>Hola, soy o7 Olivia AI. ¿Cómo puedo ayudarte con la conectividad de tu empresa?</p></div>
     <form data-form>
-      <label><input type="checkbox" data-consent required /> Acepto compartir mis datos para recibir atención de Vialterna.</label>
-      <div><input data-input required placeholder="Escribe tu pregunta…" /><button>Enviar</button></div>
+      <label><input type="checkbox" data-consent required /> <span data-consent-label>Acepto compartir mis datos para recibir atención de Vialterna.</span></label>
+      <div><input data-input required placeholder="Escribe tu pregunta…" /><button data-send>Enviar</button></div>
     </form>
   </section>
-  <button class="olivia__teaser" data-open><b>O</b><span>¿Necesitas ayuda?</span></button>
+  <button class="olivia__teaser" data-open><b>O</b><span data-teaser>¿Necesitas ayuda?</span></button>
 </div>
 
 <script>
@@ -18,6 +18,30 @@
   const form = root?.querySelector("[data-form]");
   const input = root?.querySelector<HTMLInputElement>("[data-input]");
   const messages = root?.querySelector("[data-messages]");
+  const english = document.documentElement.lang.toLowerCase().startsWith("en");
+  const copy = english ? {
+    subtitle: "Vialterna Assistant · Online",
+    welcome: "Hello, I’m o7 Olivia AI. How can I help with your company’s connectivity?",
+    consent: "I agree to share my data to receive assistance from Vialterna.",
+    placeholder: "Write your question…", send: "Send", teaser: "Need help?",
+    fallback: "I’m unable to answer right now. Email us at atencionaclientes@vialterna.com."
+  } : {
+    subtitle: "Asistente Vialterna · En línea",
+    welcome: "Hola, soy o7 Olivia AI. ¿Cómo puedo ayudarte con la conectividad de tu empresa?",
+    consent: "Acepto compartir mis datos para recibir atención de Vialterna.",
+    placeholder: "Escribe tu pregunta…", send: "Enviar", teaser: "¿Necesitas ayuda?",
+    fallback: "No pude responder ahora. Escríbenos a atencionaclientes@vialterna.com."
+  };
+  const setText = (selector: string, value: string) => {
+    const element = root?.querySelector(selector);
+    if (element) element.textContent = value;
+  };
+  setText("[data-subtitle]", copy.subtitle);
+  setText("[data-welcome]", copy.welcome);
+  setText("[data-consent-label]", copy.consent);
+  setText("[data-teaser]", copy.teaser);
+  setText("[data-send]", copy.send);
+  if (input) input.placeholder = copy.placeholder;
   open?.addEventListener("click", () => { panel?.removeAttribute("hidden"); open.setAttribute("hidden", ""); });
   close?.addEventListener("click", () => { panel?.setAttribute("hidden", ""); open?.removeAttribute("hidden"); });
   form?.addEventListener("submit", async (event) => {
@@ -30,11 +54,11 @@
     try {
       const response = await fetch("https://www.o7digital.com/api/o7-chat", {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message, language: "es", siteCode: "vialterna" })
+        body: JSON.stringify({ message, language: english ? "en" : "es", siteCode: "vialterna" })
       });
       const data = await response.json();
       pending.textContent = data.reply || "Un asesor Vialterna continuará contigo.";
-    } catch { pending.textContent = "No pude responder ahora. Escríbenos a atencionaclientes@vialterna.com."; }
+    } catch { pending.textContent = copy.fallback; }
     messages.scrollTop = messages.scrollHeight;
   });
 </script>
