@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css";
+import OliviaAI from "../components/OliviaAI.astro";
 
 interface Props {
   title: string;
@@ -51,6 +52,7 @@ const canonical = `https://vialterna.com${pathname}`;
   </head>
   <body>
     <slot />
+    <OliviaAI />
     <script is:inline>
       const nav = document.querySelector('[data-header]');
       const menuButton = document.querySelector('[data-menu-button]');
