@@ -3,11 +3,20 @@
     <header><div><strong>o7 Olivia AI</strong><small data-subtitle>Asistente Vialterna · En línea</small></div><button data-close aria-label="Cerrar">×</button></header>
     <div class="olivia__messages" data-messages><p class="bot" data-welcome>Hola, soy o7 Olivia AI. ¿Cómo puedo ayudarte con la conectividad de tu empresa?</p></div>
     <form data-form>
-      <label><input type="checkbox" data-consent required /> <span data-consent-label>Acepto compartir mis datos para recibir atención de Vialterna.</span></label>
+      <label><input type="checkbox" data-consent required /> <span><span data-consent-label>Acepto compartir mis datos para recibir atención de Vialterna.</span> <button type="button" class="olivia__privacy-link" data-privacy-open>Aviso de Privacidad</button></span></label>
       <div><input data-input required placeholder="Escribe tu pregunta…" /><button data-send>Enviar</button></div>
     </form>
   </section>
   <button class="olivia__teaser" data-open><b>O</b><span data-teaser>¿Necesitas ayuda?</span></button>
+  <div class="olivia__privacy" data-privacy hidden role="dialog" aria-modal="true">
+    <div>
+      <button type="button" data-privacy-close aria-label="Cerrar">×</button>
+      <h3 data-privacy-title>Aviso de Privacidad - Olivia AI</h3>
+      <p data-privacy-body></p>
+      <a href="/privacy/" data-privacy-url>Ver aviso completo</a>
+      <button type="button" data-privacy-accept>He leído y acepto</button>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -18,7 +27,12 @@
   const form = root?.querySelector("[data-form]");
   const input = root?.querySelector<HTMLInputElement>("[data-input]");
   const messages = root?.querySelector("[data-messages]");
-  const api = "https://suitesmine-bot.vercel.app/api";
+  const consentInput = root?.querySelector<HTMLInputElement>("[data-consent]");
+  const privacy = root?.querySelector("[data-privacy]");
+  const privacyOpen = root?.querySelector("[data-privacy-open]");
+  const privacyClose = root?.querySelector("[data-privacy-close]");
+  const privacyAccept = root?.querySelector("[data-privacy-accept]");
+  const api = "https://olivia-ai.o7digital.com/api";
   const visitorId = localStorage.getItem("vialterna-visitor-id") || crypto.randomUUID();
   localStorage.setItem("vialterna-visitor-id", visitorId);
   const english = document.documentElement.lang.toLowerCase().startsWith("en");
@@ -26,12 +40,22 @@
     subtitle: "Vialterna Assistant · Online",
     welcome: "Hello, I’m o7 Olivia AI. How can I help with your company’s connectivity?",
     consent: "I agree to share my data to receive assistance from Vialterna.",
+    privacy: "Privacy Notice",
+    privacyTitle: "Privacy Notice - Olivia AI",
+    privacyBody: "By using this chat, you authorize Vialterna to process the personal data you provide, including contact details, messages, language, page visited and connectivity needs, to answer your request, follow up commercially and contact you by electronic means. Vialterna processes personal data under Mexico’s Federal Law on Protection of Personal Data Held by Private Parties. You may exercise ARCO rights, revoke consent or limit data use by writing to protecciondedatos@vialterna.com.",
+    privacyAccept: "I have read and accept",
+    privacyUrl: "/privacy/",
     placeholder: "Write your question…", send: "Send", teaser: "Need help?",
     fallback: "I’m unable to answer right now. Email us at atencionaclientes@vialterna.com."
   } : {
     subtitle: "Asistente Vialterna · En línea",
     welcome: "Hola, soy o7 Olivia AI. ¿Cómo puedo ayudarte con la conectividad de tu empresa?",
     consent: "Acepto compartir mis datos para recibir atención de Vialterna.",
+    privacy: "Aviso de Privacidad",
+    privacyTitle: "Aviso de Privacidad - Olivia AI",
+    privacyBody: "Al usar este chat autorizas a Vialterna a tratar los datos personales que compartas, incluyendo datos de contacto, mensajes, idioma, página visitada y necesidades de conectividad, con la finalidad de atender tu solicitud, dar seguimiento comercial y contactarte por medios electrónicos. Vialterna trata los datos conforme a la Ley Federal de Protección de Datos Personales en Posesión de los Particulares. Puedes ejercer tus derechos ARCO, revocar tu consentimiento o limitar el uso de tus datos escribiendo a protecciondedatos@vialterna.com.",
+    privacyAccept: "He leído y acepto",
+    privacyUrl: "/privacy/",
     placeholder: "Escribe tu pregunta…", send: "Enviar", teaser: "¿Necesitas ayuda?",
     fallback: "No pude responder ahora. Escríbenos a atencionaclientes@vialterna.com."
   };
@@ -42,11 +66,25 @@
   setText("[data-subtitle]", copy.subtitle);
   setText("[data-welcome]", copy.welcome);
   setText("[data-consent-label]", copy.consent);
+  setText("[data-privacy-open]", copy.privacy);
+  setText("[data-privacy-title]", copy.privacyTitle);
+  setText("[data-privacy-body]", copy.privacyBody);
+  setText("[data-privacy-accept]", copy.privacyAccept);
+  const privacyUrl = root?.querySelector<HTMLAnchorElement>("[data-privacy-url]");
+  if (privacyUrl) privacyUrl.href = copy.privacyUrl;
   setText("[data-teaser]", copy.teaser);
   setText("[data-send]", copy.send);
   if (input) input.placeholder = copy.placeholder;
   open?.addEventListener("click", () => { panel?.removeAttribute("hidden"); open.setAttribute("hidden", ""); });
   close?.addEventListener("click", () => { panel?.setAttribute("hidden", ""); open?.removeAttribute("hidden"); });
+  privacyOpen?.addEventListener("click", () => privacy?.removeAttribute("hidden"));
+  privacyClose?.addEventListener("click", () => privacy?.setAttribute("hidden", ""));
+  privacyAccept?.addEventListener("click", () => {
+    if (consentInput) consentInput.checked = true;
+    localStorage.setItem("oliviaConsent:vialterna", "accepted");
+    localStorage.setItem("oliviaConsentAt:vialterna", new Date().toISOString());
+    privacy?.setAttribute("hidden", "");
+  });
   form?.addEventListener("submit", async (event) => {
     event.preventDefault();
     const message = input?.value.trim();
@@ -60,14 +98,28 @@
         body: JSON.stringify({
           clientCode: "vialterna", visitorId, content: message,
           source: "website", language: english ? "en" : "es",
-          metadata: { page: location.pathname, site: "vialterna2.vercel.app" }
+          metadata: {
+            page: location.pathname,
+            pageUrl: location.href,
+            pageTitle: document.title,
+            pageContent: document.body.innerText.replace(/\s+/g, " ").slice(0, 5000),
+            site: "vialterna2.vercel.app",
+            dataConsent: consentInput?.checked === true,
+            consentVersion: "vialterna-privacy-chat-2026-07-01"
+          }
         })
       });
       const response = await fetch(`${api}/olivia/chat`, {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           message, language: english ? "en" : "es", clientCode: "vialterna",
-          metadata: { page: location.pathname }
+          visitorId,
+          metadata: {
+            page: location.pathname,
+            pageUrl: location.href,
+            pageTitle: document.title,
+            pageContent: document.body.innerText.replace(/\s+/g, " ").slice(0, 5000)
+          }
         })
       });
       if (!response.ok) throw new Error("Chat request failed");
@@ -86,5 +138,5 @@
 </script>
 
 <style>
-  .olivia{position:fixed;right:24px;bottom:24px;z-index:9999;font:14px/1.4 Inter,sans-serif}.olivia__teaser{display:flex;align-items:center;gap:10px;padding:10px 15px;border:1px solid #28d7c0;border-radius:999px;background:#071d2b;color:#fff;box-shadow:0 14px 38px #0005}.olivia__teaser b{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:#28d7c0;color:#071d2b}.olivia__panel{width:min(380px,calc(100vw - 28px));overflow:hidden;border:1px solid #28d7c066;border-radius:16px;background:#071d2b;color:#fff;box-shadow:0 20px 60px #0007}.olivia__panel header{display:flex;justify-content:space-between;padding:16px;background:#0b2c3d}.olivia__panel small{display:block;color:#9bc7cf}.olivia__panel button{border:0;border-radius:8px;background:#28d7c0;color:#071d2b;font-weight:700}.olivia__messages{height:260px;overflow:auto;padding:14px;background:#f4f8f9;color:#122}.olivia__messages p{max-width:85%;padding:9px 11px;border-radius:12px;background:#fff}.olivia__messages .user{margin-left:auto;background:#d8faf5}.olivia form{padding:12px}.olivia label{display:flex;gap:7px;font-size:11px;color:#c5d7dc}.olivia form div{display:flex;gap:8px;margin-top:10px}.olivia form input[data-input]{min-width:0;flex:1;padding:11px;border:0;border-radius:8px}@media(max-width:560px){.olivia{right:14px;bottom:14px}}
+  .olivia{position:fixed;right:24px;bottom:24px;z-index:9999;font:14px/1.4 Inter,sans-serif}.olivia__teaser{display:flex;align-items:center;gap:10px;padding:10px 15px;border:1px solid #28d7c0;border-radius:999px;background:#071d2b;color:#fff;box-shadow:0 14px 38px #0005}.olivia__teaser b{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:#28d7c0;color:#071d2b}.olivia__panel{width:min(380px,calc(100vw - 28px));overflow:hidden;border:1px solid #28d7c066;border-radius:16px;background:#071d2b;color:#fff;box-shadow:0 20px 60px #0007}.olivia__panel header{display:flex;justify-content:space-between;padding:16px;background:#0b2c3d}.olivia__panel small{display:block;color:#9bc7cf}.olivia__panel button{border:0;border-radius:8px;background:#28d7c0;color:#071d2b;font-weight:700}.olivia__messages{height:260px;overflow:auto;padding:14px;background:#f4f8f9;color:#122}.olivia__messages p{max-width:85%;padding:9px 11px;border-radius:12px;background:#fff}.olivia__messages .user{margin-left:auto;background:#d8faf5}.olivia form{padding:12px}.olivia label{display:flex;gap:7px;font-size:11px;color:#c5d7dc}.olivia__privacy-link{border:0!important;background:transparent!important;color:#28d7c0!important;text-decoration:underline;padding:0!important;font:inherit!important}.olivia form div{display:flex;gap:8px;margin-top:10px}.olivia form input[data-input]{min-width:0;flex:1;padding:11px;border:0;border-radius:8px}.olivia__privacy{position:fixed;inset:0;z-index:10000;display:grid;place-items:center;background:#0008;padding:18px}.olivia__privacy[hidden]{display:none}.olivia__privacy>div{position:relative;max-width:560px;border:1px solid #28d7c0;border-radius:18px;background:#f4f8f9;color:#122;padding:24px;box-shadow:0 24px 70px #0008}.olivia__privacy h3{margin:0 0 12px}.olivia__privacy p{font-size:14px;line-height:1.55}.olivia__privacy a{display:inline-block;margin-right:12px;color:#0b7180}.olivia__privacy button{border:0;border-radius:10px;background:#071d2b;color:#fff;padding:10px 14px}.olivia__privacy button:first-child{position:absolute;right:12px;top:10px;background:transparent;color:#071d2b;font-size:22px;padding:0}@media(max-width:560px){.olivia{right:14px;bottom:14px}}
 </style>
