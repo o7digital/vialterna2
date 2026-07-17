@@ -153,9 +153,10 @@ h1 { max-width: 1020px; margin-bottom: 34px; font-size: clamp(4.15rem, 7.8vw, 8.
 .capabilities i { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); }
 @keyframes marquee { to { transform: translateX(-50%); } }
 
-.section-head { display: grid; grid-template-columns: .58fr 1.42fr; gap: 60px; margin-bottom: 84px; }
+.section-head { display: block; margin-bottom: 84px; }
 .kicker { padding-top: 12px; color: var(--accent); }
 h2 { margin-bottom: 24px; font-size: clamp(3rem, 6.1vw, 6.55rem); line-height: .96; letter-spacing: -.06em; }
+.section-head h2 { max-width: 1180px; margin: 22px 0 30px; }
 .section-intro { max-width: 830px; margin: 0; color: var(--muted); font-size: 1.13rem; line-height: 1.72; }
 
 .risk { min-height: 90svh; display: grid; align-items: center; background: radial-gradient(circle at 86% 12%, rgba(0,229,255,.11), transparent 26%), linear-gradient(180deg, #053060, var(--bg)); }
