@@ -243,6 +243,7 @@ h2 { margin-bottom: 24px; font-size: clamp(3rem, 6.1vw, 6.55rem); line-height: .
 .cta-section { position: relative; overflow: hidden; padding: 170px 0 120px; background: radial-gradient(circle at 50% 100%, rgba(0,229,255,.17), transparent 38%); text-align: center; }
 .cta-section h2 { max-width: 1050px; margin: 22px auto 34px; }
 .cta-section p { max-width: 700px; margin: 0 auto 36px; color: var(--muted); font-size: 1.07rem; line-height: 1.72; }
+.cta-section .actions { justify-content: center; }
 .direct-contact { display: flex; justify-content: center; gap: 28px; margin-top: 36px; color: var(--muted); font-size: .84rem; }
 
 .detail-hero { position: relative; min-height: 92svh; padding: 180px 0 100px; border-bottom: 1px solid var(--line); background: radial-gradient(circle at 80% 45%, rgba(11,101,199,.22), transparent 30%); }
@@ -426,6 +427,7 @@ footer { position: relative; padding: 60px 0 30px; border-top: 1px solid var(--l
   .insight-card-copy { padding: 20px; }
   .insight-content { font-size: 1rem; }
   .cta-section { padding: 120px 0 90px; }
+  .cta-section .actions { justify-content: center; }
   .direct-contact { align-items: center; flex-direction: column; gap: 10px; }
   .footer-main { grid-template-columns: 1fr; }
   .detail-hero { min-height: auto; padding: 140px 0 80px; }
