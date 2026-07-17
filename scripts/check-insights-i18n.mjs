@@ -16,6 +16,16 @@ function loadPosts(file, exportName) {
 const spanishPosts = loadPosts("src/data/insights.ts", "insightPosts");
 const englishPosts = loadPosts("src/data/insightsEn.ts", "insightPostsEn");
 const englishByOriginalSlug = new Map(englishPosts.map((post) => [post.originalSlug, post]));
+const nextSpanishBySlug = new Map(
+  [...spanishPosts]
+    .sort((a, b) => Date.parse(b.date) - Date.parse(a.date))
+    .map((post, index, posts) => [post.slug, posts[(index + 1) % posts.length]])
+);
+const nextEnglishBySlug = new Map(
+  [...englishPosts]
+    .sort((a, b) => Date.parse(b.date) - Date.parse(a.date))
+    .map((post, index, posts) => [post.slug, posts[(index + 1) % posts.length]])
+);
 const problems = [];
 
 function clickCtaLinks(content) {
@@ -64,14 +74,16 @@ for (const spanishPost of spanishPosts) {
   }
 
   for (const link of clickCtaLinks(spanishPost.content)) {
-    if (link.href !== `/insights/${spanishPost.slug}/`) {
-      problems.push(`Spanish click CTA for ${spanishPost.slug} points to ${link.href}`);
+    const expectedHref = `/insights/${nextSpanishBySlug.get(spanishPost.slug)?.slug}/`;
+    if (link.href !== expectedHref) {
+      problems.push(`Spanish click CTA for ${spanishPost.slug} points to ${link.href}, expected ${expectedHref}`);
     }
   }
 
   for (const link of clickCtaLinks(englishPost.content)) {
-    if (link.href !== `/en/insights/${englishPost.slug}/`) {
-      problems.push(`English click CTA for ${englishPost.slug} points to ${link.href}`);
+    const expectedHref = `/en/insights/${nextEnglishBySlug.get(englishPost.slug)?.slug}/`;
+    if (link.href !== expectedHref) {
+      problems.push(`English click CTA for ${englishPost.slug} points to ${link.href}, expected ${expectedHref}`);
     }
   }
 }
