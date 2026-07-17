@@ -18,6 +18,20 @@ const englishPosts = loadPosts("src/data/insightsEn.ts", "insightPostsEn");
 const englishByOriginalSlug = new Map(englishPosts.map((post) => [post.originalSlug, post]));
 const problems = [];
 
+function clickCtaLinks(content) {
+  const links = [];
+  const anchorPattern = /<a\b([^>]*)href="([^"]*)"([^>]*)>([\s\S]*?)<\/a>/gi;
+  for (const match of content.matchAll(anchorPattern)) {
+    const label = match[4].replace(/<[^>]*>/g, "").replace(/&nbsp;/g, " ").trim().toLowerCase();
+    const normalized = label.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    const isClickCta = /^(da\s+)?clic\s+aqui\.?$/.test(normalized)
+      || /^click\s+here\.?$/.test(normalized)
+      || /^(aqui|here)\.?$/.test(normalized);
+    if (isClickCta) links.push({ href: match[2], label });
+  }
+  return links;
+}
+
 if (spanishPosts.length !== englishPosts.length) {
   problems.push(`Post count mismatch: ES=${spanishPosts.length}, EN=${englishPosts.length}`);
 }
@@ -47,6 +61,18 @@ for (const spanishPost of spanishPosts) {
 
   for (const page of expectedPages) {
     if (!fs.existsSync(page)) problems.push(`Missing generated page ${page}`);
+  }
+
+  for (const link of clickCtaLinks(spanishPost.content)) {
+    if (link.href !== `/insights/${spanishPost.slug}/`) {
+      problems.push(`Spanish click CTA for ${spanishPost.slug} points to ${link.href}`);
+    }
+  }
+
+  for (const link of clickCtaLinks(englishPost.content)) {
+    if (link.href !== `/en/insights/${englishPost.slug}/`) {
+      problems.push(`English click CTA for ${englishPost.slug} points to ${link.href}`);
+    }
   }
 }
 
