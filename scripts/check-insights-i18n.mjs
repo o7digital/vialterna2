@@ -64,14 +64,14 @@ for (const spanishPost of spanishPosts) {
   }
 
   for (const link of clickCtaLinks(spanishPost.content)) {
-    const expectedHref = "/insights/";
+    const expectedHref = "/contacto/";
     if (link.href !== expectedHref) {
       problems.push(`Spanish click CTA for ${spanishPost.slug} points to ${link.href}, expected ${expectedHref}`);
     }
   }
 
   for (const link of clickCtaLinks(englishPost.content)) {
-    const expectedHref = "/en/insights/";
+    const expectedHref = "/en/contacto/";
     if (link.href !== expectedHref) {
       problems.push(`English click CTA for ${englishPost.slug} points to ${link.href}, expected ${expectedHref}`);
     }
