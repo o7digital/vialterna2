@@ -1,0 +1,50 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import { insightPosts } from "../../data/insights";
+
+const title = "Insights de conectividad y redes empresariales | Vialterna";
+const description = "Artículos de Vialterna sobre SD-WAN, Internet celular, IoT, GPS y conectividad empresarial.";
+const posts = [...insightPosts].sort((a, b) => Date.parse(b.date) - Date.parse(a.date));
+
+const formatDate = (date: string) => new Intl.DateTimeFormat("es-MX", {
+  day: "2-digit",
+  month: "long",
+  year: "numeric"
+}).format(new Date(date));
+---
+<BaseLayout title={title} description={description}>
+  <Header />
+  <main>
+    <section class="editorial-hero">
+      <div class="shell">
+        <div class="eyebrow reveal">Insights</div>
+        <h1 class="detail-title reveal">Blog Vialterna</h1>
+        <p class="detail-lead reveal">Textos recuperados del blog WordPress de Vialterna sobre conectividad empresarial, SD-WAN, IoT e Internet celular.</p>
+      </div>
+    </section>
+
+    <section class="section insights-index">
+      <div class="shell insights-grid">
+        {posts.map((post) => (
+          <article class="insight-card reveal">
+            <a href={`/insights/${post.slug}/`} aria-label={post.title}>
+              {post.image && <img src={post.image} alt="" loading="lazy" />}
+              <div class="insight-card-copy">
+                <div class="insight-meta">
+                  <span>{formatDate(post.date)}</span>
+                  {post.categories.slice(0, 2).map((category) => <span>{category}</span>)}
+                </div>
+                <h2>{post.title}</h2>
+                <p>{post.excerpt}</p>
+                <strong>Leer artículo</strong>
+              </div>
+            </a>
+          </article>
+        ))}
+      </div>
+    </section>
+  </main>
+  <Footer />
+</BaseLayout>

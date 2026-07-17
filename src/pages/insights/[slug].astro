@@ -1,0 +1,44 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import { insightPosts } from "../../data/insights";
+
+export function getStaticPaths() {
+  return insightPosts.map((post) => ({
+    params: { slug: post.slug },
+    props: { post }
+  }));
+}
+
+const { post } = Astro.props;
+const description = post.excerpt;
+const formatDate = (date: string) => new Intl.DateTimeFormat("es-MX", {
+  day: "2-digit",
+  month: "long",
+  year: "numeric"
+}).format(new Date(date));
+---
+<BaseLayout title={`${post.title} | Vialterna`} description={description}>
+  <Header />
+  <main>
+    <article>
+      <section class="editorial-hero insight-detail-hero">
+        <div class="shell">
+          <div class="eyebrow reveal">{post.categories.join(" / ") || "Insights"}</div>
+          <h1 class="detail-title reveal">{post.title}</h1>
+          <p class="detail-lead reveal">{formatDate(post.date)} · {post.author}</p>
+        </div>
+      </section>
+
+      <section class="section insight-detail-section">
+        <div class="shell insight-detail">
+          {post.image && <img class="insight-detail-image reveal" src={post.image} alt="" />}
+          <div class="insight-content" set:html={post.content} />
+          <a class="back-to-insights" href="/insights/">Volver a insights</a>
+        </div>
+      </section>
+    </article>
+  </main>
+  <Footer />
+</BaseLayout>

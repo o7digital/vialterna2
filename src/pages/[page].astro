@@ -48,20 +48,6 @@ const pages = {
       ["Qué sucede después", "Respondemos en un día hábil, hacemos una llamada inicial y coordinamos la auditoría o al experto adecuado. Sin secuencias automatizadas."]
     ]
   },
-  insights: {
-    title: "Noticias de conectividad y redes empresariales | Vialterna",
-    eyebrow: "Noticias",
-    heading: "Análisis de conectividad, redes empresariales y soluciones Edge",
-    intro: "Perspectivas técnicas sobre conectividad administrada, Soluciones Edge, redes SD-WAN, IoT, SIMs empresariales y continuidad operativa.",
-    sections: [
-      ["Cómo diseñar conectividad resiliente para sitios distribuidos", "Criterios prácticos para combinar operadores, tecnologías y rutas de respaldo sin depender de un solo enlace."],
-      ["Cuándo migrar de MPLS a una arquitectura SD-WAN multioperador", "Señales operativas, riesgos y beneficios de pasar a una red flexible con failover y visibilidad centralizada."],
-      ["SIMs empresariales: control de consumo y ciclo de vida para flotas IoT", "Buenas prácticas para administrar activaciones, alertas, planes y dispositivos conectados en operación nacional."],
-      ["Respaldo satelital y celular: cómo evitar un punto único de falla", "Cuándo usar LTE, 5G o satélite LEO como rutas secundarias para sitios críticos y ubicaciones remotas."],
-      ["Qué debe medir un NOC para proteger disponibilidad empresarial", "Indicadores clave para anticipar degradaciones, incidentes y fallas antes de que afecten al negocio."],
-      ["El costo oculto de una tienda, sucursal o cajero desconectado", "Cómo traducir downtime en impacto operativo y financiero para priorizar inversiones de conectividad."]
-    ]
-  },
   "aviso-de-privacidad": {
     title: "Aviso de Privacidad Integral | Vialterna",
     eyebrow: "Legal",
@@ -81,7 +67,7 @@ const pages = {
 };
 
 export function getStaticPaths() {
-  return ["empresa", "faq", "contacto", "insights", "aviso-de-privacidad"].map((page) => ({ params: { page } }));
+  return ["empresa", "faq", "contacto", "aviso-de-privacidad"].map((page) => ({ params: { page } }));
 }
 const data = pages[Astro.params.page as keyof typeof pages];
 ---
