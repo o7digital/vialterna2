@@ -3,6 +3,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import privacyHtml from "../content/privacy.html?raw";
+import { getSitePage } from "../lib/dato";
 
 const pages = {
   empresa: {
@@ -70,11 +71,17 @@ export function getStaticPaths() {
   return ["empresa", "faq", "contacto", "aviso-de-privacidad"].map((page) => ({ params: { page } }));
 }
 const data = pages[Astro.params.page as keyof typeof pages];
+const editable = await getSitePage(Astro.params.page ?? "", "es", {
+  eyebrow: data.eyebrow,
+  heading: data.heading,
+  intro: data.intro,
+  sections: data.sections
+});
 ---
-<BaseLayout title={data.title} description={data.intro}>
+<BaseLayout title={data.title} description={editable.intro}>
   <Header />
   <main>
-    <section class:list={["editorial-hero", Astro.params.page === "empresa" && "company-hero"]}><div class="shell"><div class="eyebrow">{data.eyebrow}</div><h1 class="detail-title">{data.heading}</h1><p class="detail-lead">{data.intro}</p>{data.eyebrow === "Contacto" && <a class="button primary" href="https://wa.me/525580626884">Habla con un experto</a>}</div></section>
+    <section class:list={["editorial-hero", Astro.params.page === "empresa" && "company-hero"]}><div class="shell"><div class="eyebrow">{editable.eyebrow}</div><h1 class="detail-title">{editable.heading}</h1><p class="detail-lead">{editable.intro}</p>{editable.eyebrow === "Contacto" && <a class="button primary" href="https://wa.me/525580626884">Habla con un experto</a>}</div></section>
     {Astro.params.page === "aviso-de-privacidad"
       ? <>
           <section class="section legal-documents">
@@ -91,7 +98,7 @@ const data = pages[Astro.params.page as keyof typeof pages];
           </section>
           <section class="section"><article class="shell legal-content" set:html={privacyHtml} /></section>
         </>
-      : <section class="section"><div class="shell editorial-list">{data.sections.map((section, index) => <article><span>{String(index + 1).padStart(2, "0")}</span><h2>{section[0]}</h2><p>{section[1]}</p></article>)}</div></section>
+      : <section class="section"><div class="shell editorial-list">{editable.sections.map((section, index) => <article><span>{String(index + 1).padStart(2, "0")}</span><h2>{section[0]}</h2><p>{section[1]}</p></article>)}</div></section>
     }
   </main>
   <Footer />
