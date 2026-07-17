@@ -156,7 +156,7 @@ h1 { max-width: 1020px; margin-bottom: 34px; font-size: clamp(4.15rem, 7.8vw, 8.
 .section-head { display: grid; grid-template-columns: .58fr 1.42fr; gap: 60px; margin-bottom: 84px; }
 .kicker { padding-top: 12px; color: var(--accent); }
 h2 { margin-bottom: 24px; font-size: clamp(3rem, 6.1vw, 6.55rem); line-height: .96; letter-spacing: -.06em; }
-.section-intro { max-width: 650px; margin: 0 0 0 auto; color: var(--muted); font-size: 1.06rem; line-height: 1.72; }
+.section-intro { max-width: 830px; margin: 0; color: var(--muted); font-size: 1.13rem; line-height: 1.72; }
 
 .risk { min-height: 90svh; display: grid; align-items: center; background: radial-gradient(circle at 86% 12%, rgba(0,229,255,.11), transparent 26%), linear-gradient(180deg, #053060, var(--bg)); }
 .risk-title { max-width: 1180px; margin: 22px 0 30px; font-size: clamp(3.4rem, 7.5vw, 7.7rem); }
@@ -174,7 +174,7 @@ h2 { margin-bottom: 24px; font-size: clamp(3rem, 6.1vw, 6.55rem); line-height: .
 .pillars-section { background: var(--light); color: var(--ink); }
 .pillars-section .kicker { color: #00e5ff; }
 .pillars-section .section-intro { color: rgba(255,255,255,.68); }
-.pillars-lead { max-width: 760px; margin: -38px 0 64px auto; color: var(--muted); font-size: 1rem; line-height: 1.7; }
+.pillars-lead { max-width: 830px; margin: -38px 0 64px; color: var(--muted); font-size: 1.13rem; line-height: 1.72; }
 .pillar { display: grid; grid-template-columns: 130px 1fr 1fr; gap: 36px; align-items: start; padding: 44px 0; border-top: 1px solid rgba(0,229,255,.16); transition: transform .35s; }
 .pillar:last-child { border-bottom: 1px solid rgba(0,229,255,.16); }
 .pillar:hover { transform: translateX(10px); }
