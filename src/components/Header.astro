@@ -1,12 +1,24 @@
 ---
 import { navigation } from "../data/site";
+import { insightPosts } from "../data/insights";
+import { insightPostsEn } from "../data/insightsEn";
 interface Props { lang?: "es" | "en" }
 const { lang = "es" } = Astro.props;
 const isEnglish = lang === "en";
 const currentPath = Astro.url.pathname;
-const languageHref = isEnglish
-  ? currentPath.replace(/^\/en(?=\/|$)/, "") || "/"
-  : `/en${currentPath === "/" ? "/" : currentPath}`;
+const enInsightBySlug = new Map(insightPostsEn.map((post) => [post.slug, post]));
+const enInsightByAnySlug = new Map(insightPostsEn.flatMap((post) => [[post.slug, post], [post.originalSlug, post]]));
+const enInsightByOriginalSlug = new Map(insightPostsEn.map((post) => [post.originalSlug, post]));
+const esInsightSlugs = new Set(insightPosts.map((post) => post.slug));
+const enInsightMatch = currentPath.match(/^\/en\/insights\/([^/]+)\/?$/);
+const esInsightMatch = currentPath.match(/^\/insights\/([^/]+)\/?$/);
+const languageHref = enInsightMatch && enInsightByAnySlug.has(enInsightMatch[1])
+  ? `/insights/${enInsightByAnySlug.get(enInsightMatch[1])?.originalSlug}/`
+  : esInsightMatch && esInsightSlugs.has(esInsightMatch[1]) && enInsightByOriginalSlug.has(esInsightMatch[1])
+    ? `/en/insights/${enInsightByOriginalSlug.get(esInsightMatch[1])?.slug}/`
+    : isEnglish
+      ? currentPath.replace(/^\/en(?=\/|$)/, "") || "/"
+      : `/en${currentPath === "/" ? "/" : currentPath}`;
 const items = isEnglish ? [
   { label: "Solutions", href: "/en/#solutions" },
   { label: "Industries", href: "/en/#industries" },

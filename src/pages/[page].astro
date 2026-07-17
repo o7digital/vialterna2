@@ -2,7 +2,9 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
+import ContactForm from "../components/ContactForm.astro";
 import privacyHtml from "../content/privacy.html?raw";
+import { getSitePage } from "../lib/dato";
 
 const pages = {
   empresa: {
@@ -48,20 +50,6 @@ const pages = {
       ["Qué sucede después", "Respondemos en un día hábil, hacemos una llamada inicial y coordinamos la auditoría o al experto adecuado. Sin secuencias automatizadas."]
     ]
   },
-  insights: {
-    title: "Noticias de conectividad y redes empresariales | Vialterna",
-    eyebrow: "Noticias",
-    heading: "Análisis de conectividad, redes empresariales y soluciones Edge",
-    intro: "Perspectivas técnicas sobre conectividad administrada, Soluciones Edge, redes SD-WAN, IoT, SIMs empresariales y continuidad operativa.",
-    sections: [
-      ["Cómo diseñar conectividad resiliente para sitios distribuidos", "Criterios prácticos para combinar operadores, tecnologías y rutas de respaldo sin depender de un solo enlace."],
-      ["Cuándo migrar de MPLS a una arquitectura SD-WAN multioperador", "Señales operativas, riesgos y beneficios de pasar a una red flexible con failover y visibilidad centralizada."],
-      ["SIMs empresariales: control de consumo y ciclo de vida para flotas IoT", "Buenas prácticas para administrar activaciones, alertas, planes y dispositivos conectados en operación nacional."],
-      ["Respaldo satelital y celular: cómo evitar un punto único de falla", "Cuándo usar LTE, 5G o satélite LEO como rutas secundarias para sitios críticos y ubicaciones remotas."],
-      ["Qué debe medir un NOC para proteger disponibilidad empresarial", "Indicadores clave para anticipar degradaciones, incidentes y fallas antes de que afecten al negocio."],
-      ["El costo oculto de una tienda, sucursal o cajero desconectado", "Cómo traducir downtime en impacto operativo y financiero para priorizar inversiones de conectividad."]
-    ]
-  },
   "aviso-de-privacidad": {
     title: "Aviso de Privacidad Integral | Vialterna",
     eyebrow: "Legal",
@@ -81,14 +69,22 @@ const pages = {
 };
 
 export function getStaticPaths() {
-  return ["empresa", "faq", "contacto", "insights", "aviso-de-privacidad"].map((page) => ({ params: { page } }));
+  return ["empresa", "faq", "contacto", "aviso-de-privacidad"].map((page) => ({ params: { page } }));
 }
 const data = pages[Astro.params.page as keyof typeof pages];
+const isContact = Astro.params.page === "contacto";
+const editable = await getSitePage(Astro.params.page ?? "", "es", {
+  eyebrow: data.eyebrow,
+  heading: data.heading,
+  intro: data.intro,
+  sections: data.sections
+});
 ---
-<BaseLayout title={data.title} description={data.intro}>
+<BaseLayout title={data.title} description={editable.intro}>
   <Header />
   <main>
-    <section class:list={["editorial-hero", Astro.params.page === "empresa" && "company-hero"]}><div class="shell"><div class="eyebrow">{data.eyebrow}</div><h1 class="detail-title">{data.heading}</h1><p class="detail-lead">{data.intro}</p>{data.eyebrow === "Contacto" && <a class="button primary" href="https://wa.me/525580626884">Habla con un experto</a>}</div></section>
+    <section class:list={["editorial-hero", Astro.params.page === "empresa" && "company-hero"]}><div class="shell"><div class="eyebrow">{editable.eyebrow}</div><h1 class="detail-title">{editable.heading}</h1><p class="detail-lead">{editable.intro}</p>{editable.eyebrow === "Contacto" && <a class="button primary" href="https://wa.me/525580626884">Habla con un experto</a>}</div></section>
+    {isContact && <ContactForm lang="es" />}
     {Astro.params.page === "aviso-de-privacidad"
       ? <>
           <section class="section legal-documents">
@@ -105,7 +101,7 @@ const data = pages[Astro.params.page as keyof typeof pages];
           </section>
           <section class="section"><article class="shell legal-content" set:html={privacyHtml} /></section>
         </>
-      : <section class="section"><div class="shell editorial-list">{data.sections.map((section, index) => <article><span>{String(index + 1).padStart(2, "0")}</span><h2>{section[0]}</h2><p>{section[1]}</p></article>)}</div></section>
+      : <section class="section"><div class="shell editorial-list">{editable.sections.map((section, index) => <article><span>{String(index + 1).padStart(2, "0")}</span><h2>{section[0]}</h2><p>{section[1]}</p></article>)}</div></section>
     }
   </main>
   <Footer />

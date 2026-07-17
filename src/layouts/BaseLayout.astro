@@ -1,6 +1,8 @@
 ---
 import "../styles/global.css";
 import OliviaAI from "../components/OliviaAI.astro";
+import { insightPosts } from "../data/insights";
+import { insightPostsEn } from "../data/insightsEn";
 
 interface Props {
   title: string;
@@ -10,9 +12,28 @@ interface Props {
 
 const { title, description, lang = "es-MX" } = Astro.props;
 const pathname = Astro.url.pathname;
-const spanishPath = pathname.startsWith("/en/") ? pathname.replace(/^\/en/, "") || "/" : pathname;
-const englishPath = pathname.startsWith("/en/") ? pathname : `/en${pathname === "/" ? "/" : pathname}`;
-const canonical = `https://vialterna.com${pathname}`;
+const enInsightBySlug = new Map(insightPostsEn.map((post) => [post.slug, post]));
+const enInsightByAnySlug = new Map(insightPostsEn.flatMap((post) => [[post.slug, post], [post.originalSlug, post]]));
+const enInsightByOriginalSlug = new Map(insightPostsEn.map((post) => [post.originalSlug, post]));
+const esInsightSlugs = new Set(insightPosts.map((post) => post.slug));
+const enInsightMatch = pathname.match(/^\/en\/insights\/([^/]+)\/?$/);
+const esInsightMatch = pathname.match(/^\/insights\/([^/]+)\/?$/);
+const spanishPath = enInsightMatch && enInsightByAnySlug.has(enInsightMatch[1])
+  ? `/insights/${enInsightByAnySlug.get(enInsightMatch[1])?.originalSlug}/`
+  : pathname.startsWith("/en/")
+    ? pathname.replace(/^\/en/, "") || "/"
+    : pathname;
+const englishPath = esInsightMatch && esInsightSlugs.has(esInsightMatch[1]) && enInsightByOriginalSlug.has(esInsightMatch[1])
+  ? `/en/insights/${enInsightByOriginalSlug.get(esInsightMatch[1])?.slug}/`
+  : enInsightMatch && enInsightByAnySlug.has(enInsightMatch[1])
+    ? `/en/insights/${enInsightByAnySlug.get(enInsightMatch[1])?.slug}/`
+    : pathname.startsWith("/en/")
+    ? pathname
+    : `/en${pathname === "/" ? "/" : pathname}`;
+const canonicalPath = enInsightMatch && enInsightByAnySlug.has(enInsightMatch[1])
+  ? `/en/insights/${enInsightByAnySlug.get(enInsightMatch[1])?.slug}/`
+  : pathname;
+const canonical = `https://vialterna.com${canonicalPath}`;
 ---
 <!doctype html>
 <html lang={lang} id="top">
