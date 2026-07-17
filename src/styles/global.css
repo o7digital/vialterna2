@@ -269,7 +269,7 @@ h2 { margin-bottom: 24px; font-size: clamp(3rem, 6.1vw, 6.55rem); line-height: .
 .editorial-hero { padding: 190px 0 110px; border-bottom: 1px solid var(--line); background: radial-gradient(circle at 82% 30%, rgba(11,101,199,.18), transparent 30%); }
 .editorial-hero .detail-title { max-width: 1150px; }
 .editorial-hero.company-hero { min-height: min(860px, 88vh); display: flex; align-items: flex-end; background: linear-gradient(90deg, rgba(0,0,0,.92) 0%, rgba(0,0,0,.7) 48%, rgba(0,0,0,.2) 100%), linear-gradient(0deg, rgba(0,0,0,.72), transparent 55%), url("/images/vialterna-meeting-room.webp") center / cover no-repeat; }
-.company-hero .shell { width: 100%; position: relative; z-index: 1; }
+.company-hero .shell { width: min(calc(100% - 40px), var(--max)); position: relative; z-index: 1; }
 .company-hero .detail-title { max-width: 1050px; text-shadow: 0 2px 24px rgba(0,0,0,.55); }
 .company-hero .detail-lead { color: rgba(255,255,255,.82); }
 .company-image-section { padding: 42px 0 0; background: var(--bg); }
