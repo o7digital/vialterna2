@@ -283,6 +283,21 @@ h2 { margin-bottom: 24px; font-size: clamp(3rem, 6.1vw, 6.55rem); line-height: .
 .editorial-list article > span { color: var(--highlight); font-size: .7rem; letter-spacing: .13em; }
 .editorial-list h2 { margin: 0; font-size: clamp(1.5rem, 2.8vw, 3.2rem); }
 .editorial-list p { margin: 0; color: var(--muted); line-height: 1.75; }
+.contact-form-section { padding-top: 80px; background: rgba(255,255,255,.018); }
+.contact-form-panel { padding: clamp(28px, 5vw, 64px); border: 1px solid var(--line); border-radius: 6px; background: rgba(17,16,19,.82); }
+.contact-form-header { max-width: 900px; margin-bottom: 46px; }
+.contact-form-header h2 { margin: 18px 0 20px; font-size: clamp(2.4rem, 4.6vw, 5rem); }
+.contact-form-header p { margin: 0; color: var(--muted); font-size: 1.05rem; line-height: 1.75; }
+.contact-form { display: grid; gap: 24px; }
+.contact-form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+.contact-form label { display: grid; gap: 10px; color: rgba(255,255,255,.76); font-size: .86rem; font-weight: 700; }
+.contact-form label > span { min-width: 0; }
+.contact-form label i { margin-left: 2px; color: var(--highlight); font-style: normal; }
+.contact-form input, .contact-form textarea { width: 100%; min-width: 0; border: 1px solid rgba(0,229,255,.2); border-radius: 4px; outline: 0; background: #f4f5f6; color: #111013; font: inherit; transition: border-color .2s, box-shadow .2s; }
+.contact-form input { min-height: 56px; padding: 0 16px; }
+.contact-form textarea { min-height: 150px; padding: 16px; resize: vertical; }
+.contact-form input:focus, .contact-form textarea:focus { border-color: var(--highlight); box-shadow: 0 0 0 3px rgba(0,229,255,.15); }
+.contact-form .button { width: fit-content; min-width: 150px; border-radius: 4px; cursor: pointer; }
 .legal-content { max-width: 980px; }
 .legal-content h2 { margin: 76px 0 24px; padding-top: 36px; border-top: 1px solid var(--line); font-size: clamp(2rem, 3.7vw, 4rem); line-height: 1.05; }
 .legal-content h2:first-child { margin-top: 0; padding-top: 0; border-top: 0; }
@@ -436,6 +451,9 @@ footer { position: relative; padding: 60px 0 30px; border-top: 1px solid var(--l
   .detail-strip-grid > div, .detail-strip-grid > div:first-child { padding: 0 0 18px; border-right: 0; border-bottom: 1px solid var(--line); }
   .detail-item { grid-template-columns: 36px 1fr; gap: 16px; }
   .editorial-hero { padding: 140px 0 75px; }
+  .contact-form-section { padding-top: 28px; }
+  .contact-form-grid { grid-template-columns: 1fr; }
+  .contact-form .button { width: 100%; }
   .company-image-section { padding-top: 14px; }
   .company-image { height: 62vw; min-height: 250px; }
   .editorial-list article { grid-template-columns: 36px 1fr; gap: 18px; }

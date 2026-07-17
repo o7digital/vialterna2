@@ -1,0 +1,67 @@
+---
+interface Props {
+  lang?: "es" | "en";
+}
+
+const { lang = "es" } = Astro.props;
+const isEnglish = lang === "en";
+const copy = isEnglish
+  ? {
+      kicker: "Contact form",
+      title: "Start with a diagnostic",
+      intro: "We analyze your connectivity infrastructure, carrier contracts, spend, redundancy and performance to identify disconnection risks and optimization opportunities.",
+      name: "Name",
+      company: "Company",
+      email: "Email",
+      phone: "Phone",
+      message: "How can we help?",
+      submit: "Send"
+    }
+  : {
+      kicker: "Formulario de contacto",
+      title: "Empieza con un diagnóstico",
+      intro: "Analizamos tu infraestructura de conectividad, contratos con operadores, gasto, redundancias y desempeño para identificar riesgos de desconexión y oportunidades de optimización.",
+      name: "Nombre",
+      company: "Empresa",
+      email: "Correo",
+      phone: "Teléfono",
+      message: "Cómo podemos ayudarte",
+      submit: "Enviar"
+    };
+---
+<section class="section contact-form-section" aria-labelledby={`contact-form-title-${lang}`}>
+  <div class="shell">
+    <div class="contact-form-panel">
+      <div class="contact-form-header">
+        <div class="kicker">{copy.kicker}</div>
+        <h2 id={`contact-form-title-${lang}`}>{copy.title}</h2>
+        <p>{copy.intro}</p>
+      </div>
+      <form class="contact-form" action="mailto:atencionaclientes@vialterna.com" enctype="text/plain" method="post">
+        <div class="contact-form-grid">
+          <label>
+            <span>{copy.name}<i aria-hidden="true">*</i></span>
+            <input type="text" name={isEnglish ? "name" : "nombre"} autocomplete="name" required />
+          </label>
+          <label>
+            <span>{copy.company}<i aria-hidden="true">*</i></span>
+            <input type="text" name={isEnglish ? "company" : "empresa"} autocomplete="organization" required />
+          </label>
+          <label>
+            <span>{copy.email}<i aria-hidden="true">*</i></span>
+            <input type="email" name={isEnglish ? "email" : "correo"} autocomplete="email" required />
+          </label>
+          <label>
+            <span>{copy.phone}<i aria-hidden="true">*</i></span>
+            <input type="tel" name={isEnglish ? "phone" : "telefono"} autocomplete="tel" required />
+          </label>
+        </div>
+        <label>
+          <span>{copy.message}</span>
+          <textarea name={isEnglish ? "message" : "mensaje"} rows="5"></textarea>
+        </label>
+        <button class="button primary" type="submit">{copy.submit} <span aria-hidden="true">→</span></button>
+      </form>
+    </div>
+  </div>
+</section>
