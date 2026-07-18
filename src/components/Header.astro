@@ -1,31 +1,19 @@
 ---
 import { navigation } from "../data/site";
-import { insightPosts } from "../data/insights";
-import { insightPostsEn } from "../data/insightsEn";
+import { getSeoRoute } from "../lib/seo";
 interface Props { lang?: "es" | "en" }
 const { lang = "es" } = Astro.props;
 const isEnglish = lang === "en";
 const currentPath = Astro.url.pathname;
-const enInsightBySlug = new Map(insightPostsEn.map((post) => [post.slug, post]));
-const enInsightByAnySlug = new Map(insightPostsEn.flatMap((post) => [[post.slug, post], [post.originalSlug, post]]));
-const enInsightByOriginalSlug = new Map(insightPostsEn.map((post) => [post.originalSlug, post]));
-const esInsightSlugs = new Set(insightPosts.map((post) => post.slug));
-const enInsightMatch = currentPath.match(/^\/en\/insights\/([^/]+)\/?$/);
-const esInsightMatch = currentPath.match(/^\/insights\/([^/]+)\/?$/);
-const languageHref = enInsightMatch && enInsightByAnySlug.has(enInsightMatch[1])
-  ? `/insights/${enInsightByAnySlug.get(enInsightMatch[1])?.originalSlug}/`
-  : esInsightMatch && esInsightSlugs.has(esInsightMatch[1]) && enInsightByOriginalSlug.has(esInsightMatch[1])
-    ? `/en/insights/${enInsightByOriginalSlug.get(esInsightMatch[1])?.slug}/`
-    : isEnglish
-      ? currentPath.replace(/^\/en(?=\/|$)/, "") || "/"
-      : `/en${currentPath === "/" ? "/" : currentPath}`;
+const { alternates } = getSeoRoute(currentPath);
+const languageHref = isEnglish ? alternates?.es ?? "/" : alternates?.en ?? "/en/";
 const items = isEnglish ? [
   { label: "Solutions", href: "/en/#solutions" },
   { label: "Industries", href: "/en/#industries" },
-  { label: "Company", href: "/en/empresa/" },
+  { label: "Company", href: "/en/company/" },
   { label: "Insights", href: "/en/insights/" },
   { label: "FAQ", href: "/en/faq/" },
-  { label: "Contact", href: "/en/contacto/" }
+  { label: "Contact", href: "/en/contact/" }
 ] : navigation;
 const dropdowns = {
   [isEnglish ? "Solutions" : "Soluciones"]: isEnglish ? [
@@ -85,6 +73,6 @@ const dropdowns = {
       })}
       <a class="language-link" href={languageHref} lang={isEnglish ? "es" : "en"}>{isEnglish ? "ES" : "EN"}</a>
     </nav>
-    <a class="button primary header-cta" href={isEnglish ? "/en/contacto/" : "/contacto/"}>{isEnglish ? "Talk to an expert" : "Habla con un experto"} <span aria-hidden="true">↗</span></a>
+    <a class="button primary header-cta" href={isEnglish ? "/en/contact/" : "/contacto/"}>{isEnglish ? "Talk to an expert" : "Habla con un experto"} <span aria-hidden="true">↗</span></a>
   </div>
 </header>
