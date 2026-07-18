@@ -69,7 +69,7 @@ const formatDate = (date: string) => new Intl.DateTimeFormat("en", {
 
       <section class="section insight-detail-section">
         <div class="shell insight-detail">
-          {post.image && <img class="insight-detail-image reveal" src={post.image} alt={post.title} />}
+          {post.image && <img class="insight-detail-image reveal" src={post.image} alt={post.title} loading="lazy" decoding="async" />}
           <div class="insight-content" set:html={post.content} />
           <a class="back-to-insights" href="/en/insights/">Back to insights</a>
         </div>
