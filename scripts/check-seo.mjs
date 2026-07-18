@@ -23,6 +23,16 @@ const tagWith = (html, tag, attribute, value) => {
 const attribute = (tag, name) => tag?.match(new RegExp(`${name}=["']([^"']+)["']`, "i"))?.[1];
 const pageFiles = walk(dist).filter((file) => file.endsWith("index.html"));
 const indexableRoutes = new Map();
+const geoTargetedRoutes = new Set([
+  "/", "/empresa/", "/contacto/", "/faq/", "/auditoria-telco/", "/insights/",
+  "/soluciones/edge/", "/soluciones/core/", "/soluciones/telco-as-a-service/", "/soluciones/iot-sim/",
+  "/industrias/servicios-financieros/", "/industrias/retail-franquicias/", "/industrias/energia-industria/",
+  "/industrias/infraestructura-pagos/", "/industrias/logistica-cadena-frio/",
+  "/en/", "/en/company/", "/en/contact/", "/en/faq/", "/en/telco-audit/", "/en/insights/",
+  "/en/solutions/edge/", "/en/solutions/core/", "/en/solutions/telco-as-a-service/", "/en/solutions/iot-sim/",
+  "/en/industries/financial-services/", "/en/industries/retail-franchise/", "/en/industries/energy-industrial/",
+  "/en/industries/payments-infrastructure/", "/en/industries/logistics-cold-chain/", "/en/platform/air-connect/"
+]);
 let redirects = 0;
 let aliases = 0;
 let articles = 0;
@@ -47,6 +57,13 @@ for (const file of pageFiles) {
   if (!tagWith(html, "meta", "property", "og:image")) errors.push(`${route}: missing og:image`);
   if (!tagWith(html, "meta", "name", "twitter:card")) errors.push(`${route}: missing Twitter card`);
   if ((html.match(/<h1\b/gi) ?? []).length !== 1) errors.push(`${route}: expected exactly one h1`);
+  if (geoTargetedRoutes.has(route)) {
+    const geoPattern = route.startsWith("/en/") ? /Mexico(?: City)?/ : /México|CDMX/;
+    if (!geoPattern.test(`${title} ${description}`)) errors.push(`${route}: missing localized SEO metadata`);
+  }
+  if (["/", "/en/"].includes(route) && (!html.includes('"areaServed"') || !html.includes('"alternateName":"CDMX"'))) {
+    errors.push(`${route}: missing Mexico/CDMX service area structured data`);
+  }
 
   const expectedContact = route.startsWith("/en/") ? "/en/contact/" : "/contacto/";
   const primaryLinks = (html.match(/<a\b[^>]*>/gi) ?? [])
