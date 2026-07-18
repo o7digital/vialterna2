@@ -48,6 +48,16 @@ for (const file of pageFiles) {
   if (!tagWith(html, "meta", "name", "twitter:card")) errors.push(`${route}: missing Twitter card`);
   if ((html.match(/<h1\b/gi) ?? []).length !== 1) errors.push(`${route}: expected exactly one h1`);
 
+  const expectedContact = route.startsWith("/en/") ? "/en/contact/" : "/contacto/";
+  const primaryLinks = (html.match(/<a\b[^>]*>/gi) ?? [])
+    .filter((tag) => (attribute(tag, "class") ?? "").split(/\s+/).includes("primary"));
+  for (const tag of primaryLinks) {
+    const href = attribute(tag, "href");
+    if (href !== expectedContact) {
+      errors.push(`${route}: orange CTA points to ${href ?? "missing"}, expected ${expectedContact}`);
+    }
+  }
+
   if (noindex) {
     aliases += 1;
     if (canonical === `https://www.vialterna.com${route}`) errors.push(`${route}: noindex alias has a self canonical`);
