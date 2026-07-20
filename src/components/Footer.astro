@@ -1,7 +1,48 @@
 ---
 interface Props { lang?: "es" | "en" }
-const { lang = "es" } = Astro.props;
-const en = lang === "en";
+const { lang } = Astro.props;
+const en = lang === "en" || (!lang && Astro.url.pathname.startsWith("/en/"));
+const keywordGroups = en ? [
+  "enterprise connectivity Mexico CDMX",
+  "managed connectivity Mexico CDMX",
+  "managed SD-WAN Mexico CDMX",
+  "internet backup Mexico CDMX",
+  "multi-carrier connectivity Mexico CDMX",
+  "automatic failover Mexico CDMX",
+  "satellite backup Mexico CDMX",
+  "cellular internet Mexico CDMX",
+  "IoT SIM Mexico CDMX",
+  "eSIM IoT Mexico CDMX",
+  "network monitoring Mexico CDMX",
+  "Telco audit Mexico CDMX",
+  "telecom cost optimization Mexico CDMX",
+  "business continuity Mexico CDMX",
+  "financial services connectivity Mexico CDMX",
+  "retail connectivity Mexico CDMX",
+  "industrial connectivity Mexico CDMX",
+  "logistics connectivity Mexico CDMX",
+  "cold chain monitoring Mexico CDMX"
+] : [
+  "conectividad empresarial Mexico CDMX",
+  "conectividad administrada Mexico CDMX",
+  "SD-WAN administrado Mexico CDMX",
+  "respaldo de internet Mexico CDMX",
+  "conectividad multioperador Mexico CDMX",
+  "failover automatico Mexico CDMX",
+  "respaldo satelital Mexico CDMX",
+  "internet celular Mexico CDMX",
+  "SIM IoT Mexico CDMX",
+  "eSIM IoT Mexico CDMX",
+  "monitoreo NOC Mexico CDMX",
+  "auditoria Telco Mexico CDMX",
+  "optimizacion gasto Telco Mexico CDMX",
+  "continuidad operativa Mexico CDMX",
+  "conectividad financiera Mexico CDMX",
+  "conectividad para retail Mexico CDMX",
+  "conectividad industrial Mexico CDMX",
+  "conectividad para logistica Mexico CDMX",
+  "monitoreo cadena de frio Mexico CDMX"
+];
 ---
 <footer>
   <div class="shell footer-main">
@@ -54,5 +95,8 @@ const en = lang === "en";
       {en ? "Back to top" : "Volver arriba"}
       <span aria-hidden="true">↑</span>
     </a>
+  </div>
+  <div class="shell footer-keywords" aria-label={en ? "SEO keywords" : "Palabras clave SEO"}>
+    {keywordGroups.join(" · ")}
   </div>
 </footer>

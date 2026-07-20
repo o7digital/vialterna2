@@ -50,6 +50,7 @@ const additionalStructuredData = Array.isArray(structuredData) ? structuredData 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{metadata.title}</title>
     <meta name="description" content={metadata.description} />
+    {metadata.keywords && <meta name="keywords" content={metadata.keywords} />}
     <meta name="robots" content={isAlias ? "noindex,follow" : "index,follow,max-image-preview:large"} />
     <link rel="canonical" href={canonical} />
     {alternates && <>

@@ -19,6 +19,7 @@ export type SitemapEntry = {
 export type SeoMetadata = {
   title: string;
   description: string;
+  keywords?: string;
 };
 
 const normalizePath = (pathname: string) => {
@@ -76,66 +77,92 @@ const canonicalAliases = new Map<string, string>([
   ] as [string, string])
 ]);
 
+const mexicoCdmx = (groups: string[]) => groups.map((group) => `${group} Mexico CDMX`).join(", ");
+
+const defaultKeywords = mexicoCdmx([
+  "conectividad empresarial",
+  "conectividad administrada",
+  "continuidad operativa",
+  "SD-WAN",
+  "internet de respaldo",
+  "IoT empresarial"
+]);
+
 const metadataByPath = new Map<string, SeoMetadata>([
   ["/", {
     title: "Conectividad empresarial en México | Vialterna",
-    description: "Conectividad empresarial administrada, SD-WAN y continuidad operativa para empresas distribuidas en México, con cobertura nacional desde CDMX."
+    description: "Conectividad empresarial administrada, SD-WAN y continuidad operativa para empresas distribuidas en México, con cobertura nacional desde CDMX.",
+    keywords: mexicoCdmx(["conectividad empresarial", "conectividad administrada", "continuidad operativa", "empresas distribuidas", "SD-WAN"])
   }],
   ["/soluciones/edge/", {
     title: "Respaldo de internet empresarial en México | Vialterna",
-    description: "Respaldo de internet empresarial en México y CDMX con 4G, 5G o satélite, conectividad multioperador y failover automático para cada sitio."
+    description: "Respaldo de internet empresarial en México y CDMX con 4G, 5G o satélite, conectividad multioperador y failover automático para cada sitio.",
+    keywords: mexicoCdmx(["respaldo de internet empresarial", "internet backup empresarial", "failover automatico", "conectividad multioperador", "respaldo satelital celular"])
   }],
   ["/soluciones/core/", {
     title: "SD-WAN administrado en México | Vialterna",
-    description: "Redes SD-WAN multioperador en México y CDMX con orquestación, monitoreo NOC 24/7, failover inteligente y gobierno de SLA."
+    description: "Redes SD-WAN multioperador en México y CDMX con orquestación, monitoreo NOC 24/7, failover inteligente y gobierno de SLA.",
+    keywords: mexicoCdmx(["SD-WAN administrado", "managed SD-WAN", "redes SD-WAN multioperador", "monitoreo NOC 24/7", "gobierno de SLA"])
   }],
   ["/soluciones/telco-as-a-service/", {
     title: "Auditoría Telco en México y CDMX | Vialterna",
-    description: "Auditoría de telecomunicaciones en México y CDMX para optimizar costos, contratos, SLA y TCO mediante un servicio Telco as a Service."
+    description: "Auditoría de telecomunicaciones en México y CDMX para optimizar costos, contratos, SLA y TCO mediante un servicio Telco as a Service.",
+    keywords: mexicoCdmx(["auditoria Telco", "auditoria de telecomunicaciones", "Telco as a Service", "optimizacion gasto Telco", "TCO telecomunicaciones"])
   }],
   ["/soluciones/iot-sim/", {
     title: "SIM IoT administradas en México | Vialterna",
-    description: "SIM y eSIM IoT administradas en México para flotas, terminales y sensores, con conectividad multioperador, monitoreo y control centralizado."
+    description: "SIM y eSIM IoT administradas en México para flotas, terminales y sensores, con conectividad multioperador, monitoreo y control centralizado.",
+    keywords: mexicoCdmx(["SIM IoT administradas", "eSIM IoT", "conectividad IoT", "sensores IoT", "SIM multioperador"])
   }],
   ["/industrias/servicios-financieros/", {
     title: "Conectividad financiera en México | Vialterna",
-    description: "Conectividad resiliente para bancos, cajeros, sucursales e infraestructura financiera en México y CDMX, con respaldo y failover automático."
+    description: "Conectividad resiliente para bancos, cajeros, sucursales e infraestructura financiera en México y CDMX, con respaldo y failover automático.",
+    keywords: mexicoCdmx(["conectividad financiera", "conectividad para bancos", "conectividad para cajeros automaticos", "respaldo para sucursales bancarias", "infraestructura financiera"])
   }],
   ["/industrias/retail-franquicias/", {
     title: "Conectividad para retail en México | Vialterna",
-    description: "Conectividad empresarial para tiendas, franquicias y puntos de venta en México y CDMX, con SD-WAN, respaldo y visibilidad centralizada."
+    description: "Conectividad empresarial para tiendas, franquicias y puntos de venta en México y CDMX, con SD-WAN, respaldo y visibilidad centralizada.",
+    keywords: mexicoCdmx(["conectividad para retail", "conectividad para franquicias", "conectividad para tiendas", "conectividad POS", "respaldo para puntos de venta"])
   }],
   ["/industrias/energia-industria/", {
     title: "Conectividad industrial en México | Vialterna",
-    description: "Conectividad industrial e IoT para energía, plantas y sitios remotos en México, con redes celulares, respaldo satelital y monitoreo 24/7."
+    description: "Conectividad industrial e IoT para energía, plantas y sitios remotos en México, con redes celulares, respaldo satelital y monitoreo 24/7.",
+    keywords: mexicoCdmx(["conectividad industrial", "conectividad para energia", "conectividad para sitios remotos", "IoT industrial", "telemetria industrial"])
   }],
   ["/industrias/infraestructura-pagos/", {
     title: "Conectividad para pagos en México | Vialterna",
-    description: "Conectividad administrada para terminales e infraestructura de pagos en México, con SIM IoT, redundancia multioperador y failover automático."
+    description: "Conectividad administrada para terminales e infraestructura de pagos en México, con SIM IoT, redundancia multioperador y failover automático.",
+    keywords: mexicoCdmx(["conectividad para pagos", "conectividad para terminales de pago", "infraestructura de pagos", "SIM para terminales", "procesamiento transaccional"])
   }],
   ["/industrias/logistica-cadena-frio/", {
     title: "Conectividad para logística en México | Vialterna",
-    description: "Conectividad resiliente e IoT para logística, almacenes y cadena de frío en México, con monitoreo de sensores y respaldo de internet."
+    description: "Conectividad resiliente e IoT para logística, almacenes y cadena de frío en México, con monitoreo de sensores y respaldo de internet.",
+    keywords: mexicoCdmx(["conectividad para logistica", "cadena de frio", "monitoreo de sensores", "conectividad para almacenes", "respaldo de internet logistico"])
   }],
   ["/auditoria-telco/", {
     title: "Auditoría de conectividad en México y CDMX | Vialterna",
-    description: "Auditoría Telco en México y CDMX para medir el costo del downtime, comparar el TCO y optimizar contratos, enlaces, redundancia y SLA."
+    description: "Auditoría Telco en México y CDMX para medir el costo del downtime, comparar el TCO y optimizar contratos, enlaces, redundancia y SLA.",
+    keywords: mexicoCdmx(["auditoria de conectividad", "auditoria Telco", "costo del downtime", "optimizacion de contratos telecom", "comparacion TCO"])
   }],
   ["/empresa/", {
     title: "Vialterna | Conectividad empresarial en México",
-    description: "Empresa mexicana de conectividad administrada, SD-WAN, IoT, internet celular y respaldo satelital para operaciones distribuidas en México."
+    description: "Empresa mexicana de conectividad administrada, SD-WAN, IoT, internet celular y respaldo satelital para operaciones distribuidas en México.",
+    keywords: defaultKeywords
   }],
   ["/contacto/", {
     title: "Contacto Vialterna CDMX | Conectividad empresarial",
-    description: "Contacta a Vialterna en CDMX para una auditoría Telco o una solución de conectividad empresarial, SD-WAN, IoT y respaldo de internet en México."
+    description: "Contacta a Vialterna en CDMX para una auditoría Telco o una solución de conectividad empresarial, SD-WAN, IoT y respaldo de internet en México.",
+    keywords: mexicoCdmx(["contacto conectividad empresarial", "diagnostico de conectividad", "auditoria Telco", "soluciones SD-WAN", "respaldo de internet"])
   }],
   ["/faq/", {
     title: "FAQ de conectividad empresarial en México | Vialterna",
-    description: "Respuestas sobre SD-WAN, conectividad empresarial, respaldo 4G, 5G y satelital, SIM IoT, SLA y servicios administrados en México."
+    description: "Respuestas sobre SD-WAN, conectividad empresarial, respaldo 4G, 5G y satelital, SIM IoT, SLA y servicios administrados en México.",
+    keywords: defaultKeywords
   }],
   ["/insights/", {
     title: "Blog de conectividad empresarial en México | Vialterna",
-    description: "Artículos sobre conectividad empresarial en México, SD-WAN, internet celular, redes 4G y 5G, IoT, telemetría y continuidad operativa."
+    description: "Artículos sobre conectividad empresarial en México, SD-WAN, internet celular, redes 4G y 5G, IoT, telemetría y continuidad operativa.",
+    keywords: mexicoCdmx(["blog conectividad empresarial", "articulos SD-WAN", "internet celular empresarial", "redes 4G 5G", "telemetria IoT"])
   }],
   ["/en/", {
     title: "Enterprise connectivity in Mexico | Vialterna",
@@ -206,7 +233,7 @@ const metadataByPath = new Map<string, SeoMetadata>([
 export const absoluteUrl = (path: string) => new URL(path, `${SITE_ORIGIN}/`).href;
 
 export const getSeoMetadata = (pathname: string, fallback: SeoMetadata): SeoMetadata =>
-  metadataByPath.get(normalizePath(pathname)) ?? fallback;
+  metadataByPath.get(normalizePath(pathname)) ?? { ...fallback, keywords: fallback.keywords ?? defaultKeywords };
 
 export const getSeoRoute = (pathname: string) => {
   const requestedPath = normalizePath(pathname);
