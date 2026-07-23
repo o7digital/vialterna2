@@ -3,21 +3,32 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import Header from "./Header.astro";
 import Footer from "./Footer.astro";
 import type { DetailPage as DetailPageData } from "../data/detailPages";
+import { getDatoDetailPage } from "../lib/dato";
 
-interface Props { page: DetailPageData; lang?: "es" | "en" }
-const { page, lang = "es" } = Astro.props;
+interface Props { page: DetailPageData; lang?: "es" | "en"; type?: "solution" | "industry" }
+const { page, lang = "es", type = "solution" } = Astro.props;
 const en = lang === "en";
 const contact = en ? "/en/contact/" : "/contacto/";
+const editable = await getDatoDetailPage(type, lang, page.slug, {
+  eyebrow: page.eyebrow,
+  title: page.title,
+  description: page.description,
+  problemTitle: page.problemTitle,
+  problem: page.problem,
+  sectionTitle: page.sectionTitle,
+  items: page.items,
+  benefits: page.benefits
+});
 ---
-<BaseLayout title={`${page.title} | Vialterna`} description={page.description} lang={en ? "en" : "es-MX"}>
+<BaseLayout title={`${editable.title} | Vialterna`} description={editable.description} lang={en ? "en" : "es-MX"}>
   <Header lang={lang} />
   <main>
     <section class="detail-hero">
       <div class="shell detail-hero-grid">
         <div>
-          <div class="eyebrow reveal">{page.eyebrow}</div>
-          <h1 class="detail-title reveal">{page.title}</h1>
-          <p class="detail-lead reveal">{page.description}</p>
+          <div class="eyebrow reveal">{editable.eyebrow}</div>
+          <h1 class="detail-title reveal">{editable.title}</h1>
+          <p class="detail-lead reveal">{editable.description}</p>
           <div class="actions reveal"><a class="button primary" href={contact}>{en ? "Get your free Telco audit" : "Solicita tu auditoría Telco gratuita"}</a><a class="button" href={contact}>{en ? "Talk to an expert" : "Habla con un experto"}</a></div>
         </div>
         <div class="detail-network" aria-hidden="true"><i></i><i></i><i></i><span>NOC<br />24 / 7</span></div>
@@ -32,12 +43,12 @@ const contact = en ? "/en/contact/" : "/contacto/";
       </div>
     </section>
 
-    {page.problem && (
+    {editable.problem && (
       <section class="section detail-problem">
         <div class="shell detail-copy">
           <div class="kicker reveal">{en ? "Operational risk" : "Riesgo operativo"}</div>
-          <h2 class="reveal">{page.problemTitle}</h2>
-          <p class="reveal">{page.problem}</p>
+          <h2 class="reveal">{editable.problemTitle}</h2>
+          <p class="reveal">{editable.problem}</p>
         </div>
       </section>
     )}
@@ -45,9 +56,9 @@ const contact = en ? "/en/contact/" : "/contacto/";
     <section class="section detail-includes">
       <div class="shell">
         <div class="kicker reveal">{en ? "Managed service" : "Gestión administrada"}</div>
-        <h2 class="detail-section-title reveal">{page.sectionTitle}</h2>
+        <h2 class="detail-section-title reveal">{editable.sectionTitle}</h2>
         <div class="detail-items">
-          {page.items.map((item, index) => (
+          {editable.items.map((item, index) => (
             <article class="detail-item reveal">
               <span>{String(index + 1).padStart(2, "0")}</span>
               <h3>{item.title}</h3>
@@ -65,7 +76,7 @@ const contact = en ? "/en/contact/" : "/contacto/";
           <h2 class="reveal">{en ? "Availability designed around your operation." : "Disponibilidad diseñada alrededor de tu operación."}</h2>
         </div>
         <ul class="reveal">
-          {page.benefits.map((benefit) => <li>{benefit}</li>)}
+          {editable.benefits.map((benefit) => <li>{benefit}</li>)}
         </ul>
       </div>
     </section>

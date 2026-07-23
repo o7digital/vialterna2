@@ -1,12 +1,31 @@
+---
+import type { SitePageContent } from "../lib/dato";
+
+interface Props {
+  content?: SitePageContent;
+}
+
+const { content } = Astro.props;
+const eyebrow = content?.eyebrow ?? "Para empresas mexicanas donde el downtime tiene un costo medible.";
+const heading = content?.heading ?? "Las redes se caen. Tu negocio no.";
+const [headingStart, headingAccent] = heading.includes("|")
+  ? heading.split("|", 2)
+  : [heading, ""];
+const intro = content?.intro ?? "Vialterna es la capa de resiliencia multinetwork para grandes empresas distribuidas en México: independiente de red y tecnología, monitoreada 24/7 y respaldada por SLA. No vendemos un enlace. Entregamos continuidad operativa.";
+const ctaLabel = content?.ctaLabel ?? "Solicita tu auditoría Telco gratuita";
+const ctaHref = content?.ctaHref ?? "/contacto/";
+const secondaryCtaLabel = content?.secondaryCtaLabel ?? "Habla con un experto";
+const secondaryCtaHref = content?.secondaryCtaHref ?? "/contacto/";
+---
 <section class="hero">
   <div class="shell hero-grid">
     <div class="hero-content">
-      <div class="eyebrow reveal">Para empresas mexicanas donde el downtime tiene un costo medible.</div>
-      <h1 class="reveal">Las redes se caen. <span class="accent">Tu negocio no.</span></h1>
-      <p class="hero-copy reveal">Vialterna es la capa de resiliencia multinetwork para grandes empresas distribuidas en México: independiente de red y tecnología, monitoreada 24/7 y respaldada por SLA. No vendemos un enlace. Entregamos continuidad operativa.</p>
+      <div class="eyebrow reveal">{eyebrow}</div>
+      <h1 class="reveal">{headingStart.trim()} {headingAccent && <span class="accent">{headingAccent.trim()}</span>}</h1>
+      <p class="hero-copy reveal">{intro}</p>
       <div class="actions reveal">
-        <a class="button primary" href="/contacto/">Solicita tu auditoría Telco gratuita</a>
-        <a class="button" href="/contacto/">Habla con un experto</a>
+        <a class="button primary" href={ctaHref}>{ctaLabel}</a>
+        <a class="button" href={secondaryCtaHref}>{secondaryCtaLabel}</a>
       </div>
     </div>
     <div class="network-scene" aria-hidden="true">

@@ -5,6 +5,12 @@ interface Props {
 
 const { lang = "es" } = Astro.props;
 const isEnglish = lang === "en";
+const defaultFormspreeEndpoint = "https://formspree.io/f/mzdnjgze";
+const formspreeEndpoint = import.meta.env.PUBLIC_FORMSPREE_ENDPOINT || defaultFormspreeEndpoint;
+const formAction = formspreeEndpoint;
+const isFormConfigured = Boolean(formspreeEndpoint);
+const siteUrl = import.meta.env.SITE || "https://www.vialterna.com";
+const thankYouPath = isEnglish ? "/en/contact/?sent=1" : "/contacto/?sent=1";
 const copy = isEnglish
   ? {
       kicker: "Contact form",
@@ -15,7 +21,8 @@ const copy = isEnglish
       email: "Email",
       phone: "Phone",
       message: "How can we help?",
-      submit: "Send"
+      submit: "Send",
+      notConfigured: "Form endpoint is not configured yet."
     }
   : {
       kicker: "Formulario de contacto",
@@ -26,7 +33,8 @@ const copy = isEnglish
       email: "Correo",
       phone: "Teléfono",
       message: "Cómo podemos ayudarte",
-      submit: "Enviar"
+      submit: "Enviar",
+      notConfigured: "El endpoint del formulario todavía no está configurado."
     };
 ---
 <section class="section contact-form-section" aria-labelledby={`contact-form-title-${lang}`}>
@@ -37,30 +45,35 @@ const copy = isEnglish
         <h2 id={`contact-form-title-${lang}`}>{copy.title}</h2>
         <p>{copy.intro}</p>
       </div>
-      <form class="contact-form" action="mailto:atencionaclientes@vialterna.com" enctype="text/plain" method="post">
+      <form class="contact-form" action={formAction} method="POST">
+        <input type="hidden" name="_subject" value={isEnglish ? "New Vialterna website lead" : "Nuevo lead desde el sitio Vialterna"} />
+        <input type="hidden" name="_next" value={`${siteUrl}${thankYouPath}`} />
+        <input type="hidden" name="source" value="vialterna-website-contact-form" />
+        <input type="hidden" name="language" value={lang} />
         <div class="contact-form-grid">
           <label>
             <span>{copy.name}<i aria-hidden="true">*</i></span>
-            <input type="text" name={isEnglish ? "name" : "nombre"} autocomplete="name" required />
+            <input type="text" name="name" autocomplete="name" required />
           </label>
           <label>
             <span>{copy.company}<i aria-hidden="true">*</i></span>
-            <input type="text" name={isEnglish ? "company" : "empresa"} autocomplete="organization" required />
+            <input type="text" name="company" autocomplete="organization" required />
           </label>
           <label>
             <span>{copy.email}<i aria-hidden="true">*</i></span>
-            <input type="email" name={isEnglish ? "email" : "correo"} autocomplete="email" required />
+            <input type="email" name="email" autocomplete="email" required />
           </label>
           <label>
             <span>{copy.phone}<i aria-hidden="true">*</i></span>
-            <input type="tel" name={isEnglish ? "phone" : "telefono"} autocomplete="tel" required />
+            <input type="tel" name="phone" autocomplete="tel" required />
           </label>
         </div>
         <label>
           <span>{copy.message}</span>
-          <textarea name={isEnglish ? "message" : "mensaje"} rows="5"></textarea>
+          <textarea name="message" rows="5"></textarea>
         </label>
-        <button class="button primary" type="submit">{copy.submit} <span aria-hidden="true">→</span></button>
+        {!isFormConfigured && <p class="form-warning">{copy.notConfigured}</p>}
+        <button class="button primary" type="submit" disabled={!isFormConfigured}>{copy.submit} <span aria-hidden="true">→</span></button>
       </form>
     </div>
   </div>

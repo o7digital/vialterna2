@@ -7,24 +7,88 @@ import OperationsVisual from "../components/OperationsVisual.astro";
 import Solutions from "../components/Solutions.astro";
 import Footer from "../components/Footer.astro";
 import { approaches, pillars, phases, industries } from "../data/site";
+import { getHomePage } from "../lib/dato";
 
-const title = "Conectividad empresarial resiliente en México | Vialterna";
-const description = "Vialterna diseña, despliega y opera conectividad administrada para empresas con operaciones distribuidas en México.";
+const fallbackHome = {
+  seoTitle: "Conectividad empresarial resiliente en México | Vialterna",
+  seoDescription: "Vialterna diseña, despliega y opera conectividad administrada para empresas con operaciones distribuidas en México.",
+  hero: {
+    eyebrow: "Para empresas mexicanas donde el downtime tiene un costo medible.",
+    heading: "Las redes se caen. | Tu negocio no.",
+    intro: "Vialterna es la capa de resiliencia multinetwork para grandes empresas distribuidas en México: independiente de red y tecnología, monitoreada 24/7 y respaldada por SLA. No vendemos un enlace. Entregamos continuidad operativa.",
+    ctaLabel: "Solicita tu auditoría Telco gratuita",
+    ctaHref: "/contacto/",
+    secondaryCtaLabel: "Habla con un experto",
+    secondaryCtaHref: "/contacto/",
+    sections: []
+  },
+  risk: {
+    eyebrow: "El riesgo operativo",
+    title: "La conectividad no es un servicio básico. | Es un riesgo operativo.",
+    intro: "Cuando uno de tus sitios se desconecta, los ingresos se detienen. Las transacciones fallan. Tus equipos regresan a procesos manuales. Si operas sitios distribuidos donde cualquier ubicación desconectada tiene un costo operativo o de ingresos medible, cada minuto fuera de línea es una exposición financiera que puedes cuantificar.",
+    text: "El tiempo de inactividad impacta directamente tu P&L. La mayoría de las empresas nunca lo han cuantificado.",
+    items: approaches
+  },
+  pillars: {
+    eyebrow: "El modelo Vialterna",
+    title: "No vendemos conectividad. Diseñamos uptime.",
+    intro: "Vialterna es el socio de infraestructura independiente de red y tecnología para empresas distribuidas en México. Todo se entrega como servicio administrado, respaldado por SLA.",
+    text: "Tres pilares sustentan el servicio. Juntos, son la forma en que diseñamos disponibilidad en lugar de vender enlaces.",
+    items: pillars
+  },
+  phases: {
+    eyebrow: "Implementación",
+    title: "Una plataforma. Un solo modelo de interacción. Cuatro fases.",
+    items: phases.map(([title, text]) => ({ title, text }))
+  },
+  solutions: {
+    eyebrow: "Soluciones",
+    title: "Cuatro soluciones. Una plataforma.",
+    intro: "Lo que necesites para mantener tus operaciones en línea, diseñado y gestionado bajo una misma lógica de disponibilidad."
+  },
+  architecture: {
+    eyebrow: "Arquitectura",
+    title: "SD-WAN y conectividad de respaldo.",
+    intro: "Redes SD-WAN multioperador para continuidad del negocio, combinadas con respaldo satelital y celular antes de que una falla detenga la operación.",
+    items: [
+      { title: "SD-WAN", text: "Combinamos fibra, LTE, 5G, satélite y enlaces inalámbricos en una arquitectura administrada con failover automático, agregación de enlaces, QoS, túneles seguros y monitoreo NOC centralizado." },
+      { title: "Conectividad de respaldo", text: "Vialterna diseña capas de redundancia con LTE, 5G, satélite y acceso multioperador para mantener activos sitios críticos." }
+    ]
+  },
+  industries: {
+    eyebrow: "Industrias",
+    title: "Construido para operaciones distribuidas donde el tiempo de inactividad tiene precio.",
+    items: industries.map(([title, text, href]) => ({ title, text, href }))
+  },
+  contact: {
+    eyebrow: "Diagnóstico",
+    heading: "Empieza con una auditoría Telco.",
+    intro: "Analizamos contratos, gasto, infraestructura y SLA para construir un caso TCO y una arquitectura específica.",
+    ctaLabel: "Solicita tu auditoría Telco gratuita",
+    ctaHref: "/contacto/",
+    secondaryCtaLabel: "Habla con un experto",
+    secondaryCtaHref: "/contacto/",
+    sections: []
+  }
+};
+
+const home = await getHomePage("es", fallbackHome);
+const [riskTitle, riskAccent] = home.risk.title.includes("|") ? home.risk.title.split("|", 2) : [home.risk.title, ""];
 ---
-<BaseLayout title={title} description={description}>
+<BaseLayout title={home.seoTitle} description={home.seoDescription}>
   <Header />
   <main>
-    <Hero />
+    <Hero content={home.hero} />
 
     <section class="section risk" id="modelo">
       <div class="shell">
-        <div class="kicker reveal">El riesgo operativo</div>
-        <h2 class="risk-title reveal">La conectividad no es un servicio básico. <span class="accent">Es un riesgo operativo.</span></h2>
-        <p class="risk-lead reveal">Cuando uno de tus sitios se desconecta, los ingresos se detienen. Las transacciones fallan. Tus equipos regresan a procesos manuales. Si operas sitios distribuidos donde cualquier ubicación desconectada tiene un costo operativo o de ingresos medible, cada minuto fuera de línea es una exposición financiera que puedes cuantificar.</p>
-        <p class="risk-proof reveal">El tiempo de inactividad impacta directamente tu P&amp;L. La mayoría de las empresas nunca lo han cuantificado.</p>
+        <div class="kicker reveal">{home.risk.eyebrow}</div>
+        <h2 class="risk-title reveal">{riskTitle.trim()} {riskAccent && <span class="accent">{riskAccent.trim()}</span>}</h2>
+        <p class="risk-lead reveal">{home.risk.intro}</p>
+        <p class="risk-proof reveal">{home.risk.text}</p>
         <h3 class="approaches-title reveal">Probablemente operas uno de estos dos modelos. Ambos te dejan expuesto.</h3>
         <div class="approaches">
-          {approaches.map((approach, index) => (
+          {(home.risk.items ?? []).map((approach, index) => (
             <article class="approach reveal">
               <div class="number">{String(index + 1).padStart(2, "0")}</div>
               <h3>{approach.title}</h3>
@@ -37,10 +101,10 @@ const description = "Vialterna diseña, despliega y opera conectividad administr
 
     <section class="section pillars-section">
       <div class="shell">
-        <SectionHeading kicker="El modelo Vialterna" title="No vendemos conectividad. Diseñamos uptime." intro="Vialterna es el socio de infraestructura independiente de red y tecnología para empresas distribuidas en México. Todo se entrega como servicio administrado, respaldado por SLA." />
-        <p class="pillars-lead reveal">Tres pilares sustentan el servicio. Juntos, son la forma en que diseñamos disponibilidad en lugar de vender enlaces.</p>
+        <SectionHeading kicker={home.pillars.eyebrow} title={home.pillars.title} intro={home.pillars.intro} />
+        <p class="pillars-lead reveal">{home.pillars.text}</p>
         <div class="pillars">
-          {pillars.map((pillar, index) => (
+          {(home.pillars.items ?? []).map((pillar, index) => (
             <article class="pillar reveal">
               <div class="pillar-number">{String(index + 1).padStart(2, "0")}</div>
               <h3>{pillar.title}</h3>
@@ -55,49 +119,40 @@ const description = "Vialterna diseña, despliega y opera conectividad administr
 
     <section class="section phases-section">
       <div class="shell">
-        <SectionHeading kicker="Implementación" title="Una plataforma. Un solo modelo de interacción. Cuatro fases." />
+        <SectionHeading kicker={home.phases.eyebrow} title={home.phases.title} intro={home.phases.intro} />
         <div class="phases">
-          {phases.map((phase, index) => (
+          {(home.phases.items ?? []).map((phase, index) => (
             <article class="phase reveal">
               <span>{String(index + 1).padStart(2, "0")}</span>
-              <h3>{phase[0]}</h3>
-              <p>{phase[1]}</p>
+              <h3>{phase.title}</h3>
+              <p>{phase.text}</p>
             </article>
           ))}
         </div>
       </div>
     </section>
 
-    <Solutions />
+    <Solutions content={home.solutions} />
 
     <section class="section network-services">
       <div class="shell">
-        <SectionHeading kicker="Arquitectura" title="SD-WAN y conectividad de respaldo." intro="Redes SD-WAN multioperador para continuidad del negocio, combinadas con respaldo satelital y celular antes de que una falla detenga la operación." />
+        <SectionHeading kicker={home.architecture.eyebrow} title={home.architecture.title} intro={home.architecture.intro} />
         <div class="service-lines">
-          <article class="service-line reveal">
-            <span>01</span>
-            <h3>SD-WAN</h3>
-            <p>Combinamos fibra, LTE, 5G, satélite y enlaces inalámbricos en una arquitectura administrada con failover automático, agregación de enlaces, QoS, túneles seguros y monitoreo NOC centralizado.</p>
-          </article>
-          <article class="service-line reveal">
-            <span>02</span>
-            <h3>Conectividad de respaldo</h3>
-            <p>Vialterna diseña capas de redundancia con LTE, 5G, satélite y acceso multioperador para mantener activos sitios críticos.</p>
-          </article>
+          {(home.architecture.items ?? []).map((item, index) => <article class="service-line reveal"><span>{String(index + 1).padStart(2, "0")}</span><h3>{item.title}</h3><p>{item.text}</p></article>)}
         </div>
       </div>
     </section>
 
     <section class="section industries-section" id="industrias">
       <div class="shell">
-        <SectionHeading kicker="Industrias" title="Construido para operaciones distribuidas donde el tiempo de inactividad tiene precio." />
+        <SectionHeading kicker={home.industries.eyebrow} title={home.industries.title} intro={home.industries.intro} />
         <div class="industries">
-          {industries.map((industry, index) => (
-            <a class="industry reveal" href={industry[2]}>
+          {(home.industries.items ?? []).map((industry, index) => (
+            <a class="industry reveal" href={industry.href}>
               <div class="industry-orbit"></div>
               <span>{String(index + 1).padStart(2, "0")}</span>
-              <h3>{industry[0]}</h3>
-              <p>{industry[1]}</p>
+              <h3>{industry.title}</h3>
+              <p>{industry.text}</p>
             </a>
           ))}
         </div>
@@ -106,10 +161,10 @@ const description = "Vialterna diseña, despliega y opera conectividad administr
 
     <section class="cta-section" id="contacto">
       <div class="shell reveal">
-        <div class="kicker">Diagnóstico</div>
-        <h2>Empieza con una auditoría Telco.</h2>
-        <p>Analizamos contratos, gasto, infraestructura y SLA para construir un caso TCO y una arquitectura específica.</p>
-        <div class="actions"><a class="button primary" href="/contacto/">Solicita tu auditoría Telco gratuita</a><a class="button" href="/contacto/">Habla con un experto</a></div>
+        <div class="kicker">{home.contact.eyebrow}</div>
+        <h2>{home.contact.heading}</h2>
+        <p>{home.contact.intro}</p>
+        <div class="actions"><a class="button primary" href={home.contact.ctaHref}>{home.contact.ctaLabel}</a><a class="button" href={home.contact.secondaryCtaHref}>{home.contact.secondaryCtaLabel}</a></div>
         <p>Respondemos en un día hábil. Gratis. Sin compromiso.</p>
         <div class="direct-contact">
           <a href="mailto:atencionaclientes@vialterna.com">atencionaclientes@vialterna.com</a>
