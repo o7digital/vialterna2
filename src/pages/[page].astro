@@ -85,7 +85,7 @@ const editable = await getSitePage(Astro.params.page ?? "", "es", {
 <BaseLayout title={editable.seoTitle ?? data.title} description={editable.seoDescription ?? editable.intro}>
   <Header />
   <main>
-    <section class:list={["editorial-hero", Astro.params.page === "empresa" && "company-hero"]}><div class="shell"><div class="eyebrow">{editable.eyebrow}</div><h1 class="detail-title">{editable.heading}</h1><p class="detail-lead">{editable.intro}</p>{isContact && <a class="button primary" href="https://wa.me/525580626884">Habla con un experto</a>}</div></section>
+    <section class:list={["editorial-hero", Astro.params.page === "empresa" && "company-hero"]}><div class="shell"><div class="eyebrow">{editable.eyebrow}</div><h1 class="detail-title">{editable.heading}</h1><p class="detail-lead">{editable.intro}</p></div></section>
     {isContact && <ContactForm lang="es" />}
     {Astro.params.page === "aviso-de-privacidad"
       ? <>

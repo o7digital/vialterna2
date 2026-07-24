@@ -7,10 +7,7 @@ const { lang = "es" } = Astro.props;
 const isEnglish = lang === "en";
 const defaultFormspreeEndpoint = "https://formspree.io/f/mzdnjgze";
 const formspreeEndpoint = import.meta.env.PUBLIC_FORMSPREE_ENDPOINT || defaultFormspreeEndpoint;
-const formAction = formspreeEndpoint;
 const isFormConfigured = Boolean(formspreeEndpoint);
-const siteUrl = import.meta.env.SITE || "https://www.vialterna.com";
-const thankYouPath = isEnglish ? "/en/contact/?sent=1" : "/contacto/?sent=1";
 const copy = isEnglish
   ? {
       kicker: "Contact form",
@@ -22,6 +19,9 @@ const copy = isEnglish
       phone: "Phone",
       message: "How can we help?",
       submit: "Send",
+      sending: "Sending...",
+      success: "Thanks. Your request was sent and we will contact you shortly.",
+      error: "We could not send the form. Please email atencionaclientes@vialterna.com.",
       notConfigured: "Form endpoint is not configured yet."
     }
   : {
@@ -34,6 +34,9 @@ const copy = isEnglish
       phone: "Teléfono",
       message: "Cómo podemos ayudarte",
       submit: "Enviar",
+      sending: "Enviando...",
+      success: "Gracias. Recibimos tu solicitud y te contactaremos pronto.",
+      error: "No pudimos enviar el formulario. Escríbenos a atencionaclientes@vialterna.com.",
       notConfigured: "El endpoint del formulario todavía no está configurado."
     };
 ---
@@ -45,9 +48,9 @@ const copy = isEnglish
         <h2 id={`contact-form-title-${lang}`}>{copy.title}</h2>
         <p>{copy.intro}</p>
       </div>
-      <form class="contact-form" action={formAction} method="POST">
+      <form class="contact-form" action="/api/contact" method="POST" data-contact-form data-success={copy.success} data-error={copy.error} data-submit={copy.submit} data-sending={copy.sending}>
         <input type="hidden" name="_subject" value={isEnglish ? "New Vialterna website lead" : "Nuevo lead desde el sitio Vialterna"} />
-        <input type="hidden" name="_next" value={`${siteUrl}${thankYouPath}`} />
+        <input type="hidden" name="formspreeEndpoint" value={formspreeEndpoint} />
         <input type="hidden" name="source" value="vialterna-website-contact-form" />
         <input type="hidden" name="language" value={lang} />
         <div class="contact-form-grid">
@@ -73,8 +76,47 @@ const copy = isEnglish
           <textarea name="message" rows="5"></textarea>
         </label>
         {!isFormConfigured && <p class="form-warning">{copy.notConfigured}</p>}
-        <button class="button primary" type="submit" disabled={!isFormConfigured}>{copy.submit} <span aria-hidden="true">→</span></button>
+        <p class="form-status" data-form-status role="status" aria-live="polite"></p>
+        <button class="button primary" type="submit" disabled={!isFormConfigured}><span data-submit-label>{copy.submit}</span> <span aria-hidden="true">→</span></button>
       </form>
     </div>
   </div>
 </section>
+
+<script>
+  document.querySelectorAll<HTMLFormElement>("[data-contact-form]").forEach((form) => {
+    const button = form.querySelector<HTMLButtonElement>("button[type='submit']");
+    const label = form.querySelector("[data-submit-label]");
+    const status = form.querySelector<HTMLElement>("[data-form-status]");
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      if (!button || !label || !status) return;
+
+      const submitText = form.dataset.submit || label.textContent || "Send";
+      button.disabled = true;
+      label.textContent = form.dataset.sending || submitText;
+      status.textContent = "";
+      status.dataset.state = "";
+
+      try {
+        const response = await fetch(form.action, {
+          method: "POST",
+          headers: { Accept: "application/json" },
+          body: new FormData(form)
+        });
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok || data.ok === false) throw new Error("Contact request failed");
+        form.reset();
+        status.textContent = form.dataset.success || "";
+        status.dataset.state = "success";
+      } catch {
+        status.textContent = form.dataset.error || "";
+        status.dataset.state = "error";
+      } finally {
+        button.disabled = false;
+        label.textContent = submitText;
+      }
+    });
+  });
+</script>
