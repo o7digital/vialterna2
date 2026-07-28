@@ -334,9 +334,9 @@ export async function getDatoDetailPage(
         eyebrow
         title
         text
-        problemTitle
+        problemTitle: problemtitle
         problem
-        sectionTitle
+        sectionTitle: sectiontitle
         items
         benefits
       }
