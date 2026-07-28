@@ -5,14 +5,16 @@ import type { EditableSection } from "../lib/dato";
 
 interface Props {
   content?: EditableSection;
+  lang?: "es" | "en";
 }
 
-const { content } = Astro.props;
+const { content, lang = "es" } = Astro.props;
+const en = lang === "en";
 const cards = content?.items?.length ? content.items : solutions;
 ---
-<section class="section solutions-section" id="soluciones">
+<section class="section solutions-section" id={en ? "solutions" : "soluciones"}>
   <div class="shell">
-    <SectionHeading kicker={content?.eyebrow ?? "Soluciones"} title={content?.title ?? "Cuatro soluciones. Una plataforma."} intro={content?.intro ?? "Lo que necesites para mantener tus operaciones en línea, diseñado y gestionado bajo una misma lógica de disponibilidad."} />
+    <SectionHeading kicker={content?.eyebrow ?? (en ? "Solutions" : "Soluciones")} title={content?.title ?? (en ? "Four solutions. One platform." : "Cuatro soluciones. Una plataforma.")} intro={content?.intro ?? (en ? "Whatever it takes to keep your operations online." : "Lo que necesites para mantener tus operaciones en línea, diseñado y gestionado bajo una misma lógica de disponibilidad.")} />
     <div class="solutions">
       {cards.map((solution, index) => (
         <article class="solution">
@@ -22,7 +24,7 @@ const cards = content?.items?.length ? content.items : solutions;
               <h3>{solution.title}</h3>
               <p>{solution.text}</p>
             </div>
-            {solution.href && <a href={solution.href}>Ver más <span aria-hidden="true">↗</span></a>}
+            {solution.href && <a href={solution.href}>{en ? "Learn more" : "Ver más"} <span aria-hidden="true">↗</span></a>}
           </div>
           <div class:list={["solution-visual", solution.type ?? "rings", "reveal"]} aria-hidden="true">
             {solution.type === "rings" && <><i></i><i></i><i></i></>}

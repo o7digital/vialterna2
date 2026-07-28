@@ -1,23 +1,203 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Header from "../../components/Header.astro";
+import Hero from "../../components/Hero.astro";
+import SectionHeading from "../../components/SectionHeading.astro";
+import OperationsVisual from "../../components/OperationsVisual.astro";
+import Solutions from "../../components/Solutions.astro";
 import Footer from "../../components/Footer.astro";
 import { solutionPagesEn, industryPagesEn } from "../../data/detailPagesEn";
-const phases = [["Enter","Start with the free Telco audit or a specific requirement."],["Design","Build the right network mix and business case from your data."],["Deploy","Activate hardware, networks, and AIr Connect without interruption."],["Manage and expand","Monitor, optimize, and scale as your footprint changes."]];
-const pillars = [["Business continuity, always on by design","SuperWAN combines independent networks and technologies into a multi-network resilience layer."],["Proactive 24/7 management","Our owned NOC monitors every site; AIr Connect gives you consolidated visibility."],["Telco as a Service","We audit and restructure the full telecom stack, then govern it continuously."]];
+import { getHomePage } from "../../lib/dato";
+
+const fallbackHome = {
+  seoTitle: "Business continuity for distributed enterprises in Mexico | Vialterna",
+  seoDescription: "Vialterna delivers multi-network resilience, managed SD-WAN, Telco as a Service, and IoT/SIM solutions across Mexico.",
+  hero: {
+    eyebrow: "For Mexican enterprises where downtime has a measurable cost.",
+    heading: "Networks break. | Your business does not.",
+    intro: "Vialterna is the multi-network resilience layer for large distributed enterprises in Mexico. We combine networks and technologies into one always-on architecture, monitored 24/7 and backed by SLA. We do not sell a link. We deliver uptime.",
+    ctaLabel: "Get your free Telco audit",
+    ctaHref: "/en/contact/",
+    secondaryCtaLabel: "Talk to an expert",
+    secondaryCtaHref: "/en/contact/",
+    sections: []
+  },
+  risk: {
+    eyebrow: "The reframe",
+    title: "Connectivity is not a utility. | It is operational risk.",
+    intro: "When a site goes offline, revenue stops, teams return to manual processes, and SLA disputes begin. The bill is not the cost. The downtime is.",
+    text: "",
+    items: [
+      { title: "SD-WAN on a single network", text: "Traffic is managed, but the underlying network remains a single point of failure and per-site firewalls inflate cost." },
+      { title: "Commodity internet without management", text: "No SLA, monitoring, or failover means downtime is absorbed silently across the estate." }
+    ]
+  },
+  pillars: {
+    eyebrow: "The Vialterna model",
+    title: "We do not sell connectivity. We engineer uptime.",
+    intro: "Network and technology independent by design. Your providers remain in the architecture; we add resilience, management, and accountability above them.",
+    text: "",
+    items: [
+      { title: "Business continuity, always on by design", text: "SuperWAN combines independent networks and technologies into a multi-network resilience layer." },
+      { title: "Proactive 24/7 management", text: "Our owned NOC monitors every site; AIr Connect gives you consolidated visibility." },
+      { title: "Telco as a Service", text: "We audit and restructure the full telecom stack, then govern it continuously." }
+    ]
+  },
+  phases: {
+    eyebrow: "How we engage",
+    title: "One platform. One engagement. Four phases.",
+    items: [
+      { title: "Enter", text: "Start with the free Telco audit or a specific requirement." },
+      { title: "Design", text: "Build the right network mix and business case from your data." },
+      { title: "Deploy", text: "Activate hardware, networks, and AIr Connect without interruption." },
+      { title: "Manage and expand", text: "Monitor, optimize, and scale as your footprint changes." }
+    ]
+  },
+  solutions: {
+    eyebrow: "Four solutions",
+    title: "Four solutions. One platform.",
+    intro: "Whatever it takes to keep your operations online.",
+    items: solutionPagesEn.map((page) => ({
+      eyebrow: page.eyebrow,
+      title: page.title,
+      text: page.description,
+      href: `/en/solutions/${page.slug}/`
+    }))
+  },
+  architecture: {
+    eyebrow: "Architecture",
+    title: "Managed SD-WAN and backup connectivity.",
+    intro: "Multi-carrier SD-WAN for business continuity, combined with satellite and cellular backup before a failure stops the operation.",
+    items: [
+      { title: "SD-WAN", text: "We combine fiber, LTE, 5G, satellite, and wireless links in a managed architecture with automatic failover, link aggregation, QoS, secure tunnels, and centralized NOC monitoring." },
+      { title: "Backup connectivity", text: "Vialterna designs redundancy layers with LTE, 5G, satellite, and multi-carrier access to keep critical sites online." }
+    ]
+  },
+  industries: {
+    eyebrow: "Who it is for",
+    title: "Built for distributed operations where downtime has a price tag.",
+    items: industryPagesEn.map((page) => ({
+      title: page.title,
+      text: page.description,
+      href: `/en/industries/${page.slug}/`
+    }))
+  },
+  contact: {
+    eyebrow: "Start with a diagnostic",
+    heading: "Find the risk and cost hidden in your telecom stack.",
+    intro: "Receive a written report, quantified TCO comparison, and a specific architecture recommendation.",
+    ctaLabel: "Get your free Telco audit",
+    ctaHref: "/en/contact/",
+    secondaryCtaLabel: "Talk to an expert",
+    secondaryCtaHref: "/en/contact/",
+    sections: []
+  }
+};
+
+const home = await getHomePage("en", fallbackHome);
+const [riskTitle, riskAccent] = home.risk.title.includes("|") ? home.risk.title.split("|", 2) : [home.risk.title, ""];
 ---
-<BaseLayout title="Business continuity for distributed enterprises in Mexico | Vialterna" description="Vialterna delivers multi-network resilience, managed SD-WAN, Telco as a Service, and IoT/SIM solutions across Mexico." lang="en">
+<BaseLayout title={home.seoTitle} description={home.seoDescription} lang="en">
   <Header lang="en" />
   <main>
-    <section class="hero"><div class="shell hero-grid"><div class="hero-content"><div class="eyebrow reveal">For Mexican enterprises where downtime has a measurable cost.</div><h1 class="reveal">Networks break. <span class="accent">Your business does not.</span></h1><p class="hero-copy reveal">Vialterna is the multi-network resilience layer for large distributed enterprises in Mexico. We combine networks and technologies into one always-on architecture, monitored 24/7 and backed by SLA. We do not sell a link. We deliver uptime.</p><div class="actions"><a class="button primary" href="/en/contact/">Get your free Telco audit</a><a class="button" href="/en/contact/">Talk to an expert</a></div><p>We respond within one business day. Free. No commitment.</p></div><div class="network-scene" aria-hidden="true"><div class="orbit orbit-outer"><i></i><i></i><i></i><i></i></div><div class="orbit orbit-middle"></div><div class="orbit orbit-inner"></div><div class="network-center"><strong>NOC</strong><span>24 / 7</span></div></div></div></section>
-    <section class="detail-strip"><div class="shell detail-strip-grid"><div><strong>+2,500</strong><span>sites and devices monitored</span></div><div><strong>99.97%+</strong><span>availability by contract</span></div><div><strong>15+ years</strong><span>critical infrastructure in Mexico</span></div></div></section>
-    <section class="section risk" id="model"><div class="shell"><div class="kicker">The reframe</div><h2 class="risk-title">Connectivity is not a utility. <span class="accent">It is operational risk.</span></h2><p class="risk-lead">When a site goes offline, revenue stops, teams return to manual processes, and SLA disputes begin. The bill is not the cost. The downtime is.</p><h3 class="approaches-title">You likely run one of two setups. Both leave you exposed.</h3><div class="approaches"><article class="approach"><div class="number">01</div><h3>SD-WAN on a single network</h3><p>Traffic is managed, but the underlying network remains a single point of failure and per-site firewalls inflate cost.</p></article><article class="approach"><div class="number">02</div><h3>Commodity internet without management</h3><p>No SLA, monitoring, or failover means downtime is absorbed silently across the estate.</p></article></div></div></section>
-    <section class="section pillars-section"><div class="shell"><div class="kicker">The Vialterna model</div><h2>We do not sell connectivity. We engineer uptime.</h2><p class="section-intro">Network and technology independent by design. Your providers remain in the architecture; we add resilience, management, and accountability above them.</p><div class="pillars">{pillars.map((p,i)=><article class="pillar"><div class="pillar-number">0{i+1}</div><h3>{p[0]}</h3><p>{p[1]}</p></article>)}</div></div></section>
-    <section class="section phases-section"><div class="shell"><div class="kicker">How we engage</div><h2>One platform. One engagement. Four phases.</h2><div class="phases">{phases.map((p,i)=><article class="phase"><span>0{i+1}</span><h3>{p[0]}</h3><p>{p[1]}</p></article>)}</div></div></section>
-    <section class="section solutions-section" id="solutions"><div class="shell"><div class="section-head"><div class="kicker">Four solutions</div><div><h2>Four solutions. One platform.</h2><p class="section-intro">Whatever it takes to keep your operations online.</p></div></div><div class="editorial-list">{solutionPagesEn.map((s,i)=><article><span>0{i+1}</span><h2><a href={`/en/solutions/${s.slug}/`}>{s.title}</a></h2><p>{s.description}</p></article>)}</div></div></section>
-    <section class="section industries-section" id="industries"><div class="shell"><div class="section-head"><div class="kicker">Who it is for</div><div><h2>Built for distributed operations where downtime has a price tag.</h2></div></div><div class="industries">{industryPagesEn.map((s,i)=><a class="industry" href={`/en/industries/${s.slug}/`}><div class="industry-orbit"></div><span>0{i+1}</span><h3>{s.title}</h3><p>{s.description}</p></a>)}</div></div></section>
-    <section class="section detail-benefits"><div class="shell detail-benefits-grid"><div><div class="kicker">Proof</div><h2>Our clients do not leave. They grow with us.</h2></div><ul><li>+2,500 managed sites and devices</li><li>99.97%+ Edge availability</li><li>15+ years in Mexico</li><li>Nationwide ER Network coverage</li></ul></div></section>
-    <section class="cta-section"><div class="shell"><div class="kicker">Start with a diagnostic</div><h2>Find the risk and cost hidden in your telecom stack.</h2><p>Receive a written report, quantified TCO comparison, and a specific architecture recommendation.</p><div class="actions"><a class="button primary" href="/en/contact/">Get your free Telco audit</a><a class="button" href="/en/contact/">Talk to an expert</a></div><p>We respond within one business day. Free. No commitment.</p></div></section>
+    <Hero content={home.hero} />
+
+    <section class="detail-strip">
+      <div class="shell detail-strip-grid">
+        <div><strong>+2,500</strong><span>sites and devices monitored</span></div>
+        <div><strong>99.97%+</strong><span>availability by contract</span></div>
+        <div><strong>15+ years</strong><span>critical infrastructure in Mexico</span></div>
+      </div>
+    </section>
+
+    <section class="section risk" id="model">
+      <div class="shell">
+        <div class="kicker reveal">{home.risk.eyebrow}</div>
+        <h2 class="risk-title reveal">{riskTitle.trim()} {riskAccent && <span class="accent">{riskAccent.trim()}</span>}</h2>
+        <p class="risk-lead reveal">{home.risk.intro}</p>
+        {home.risk.text && <p class="risk-proof reveal">{home.risk.text}</p>}
+        <h3 class="approaches-title reveal">You likely run one of two setups. Both leave you exposed.</h3>
+        <div class="approaches">
+          {(home.risk.items ?? []).map((approach, index) => (
+            <article class="approach reveal">
+              <div class="number">{String(index + 1).padStart(2, "0")}</div>
+              <h3>{approach.title}</h3>
+              <p>{approach.text}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="section pillars-section">
+      <div class="shell">
+        <SectionHeading kicker={home.pillars.eyebrow} title={home.pillars.title} intro={home.pillars.intro} />
+        {home.pillars.text && <p class="pillars-lead reveal">{home.pillars.text}</p>}
+        <div class="pillars">
+          {(home.pillars.items ?? []).map((pillar, index) => (
+            <article class="pillar reveal">
+              <div class="pillar-number">{String(index + 1).padStart(2, "0")}</div>
+              <h3>{pillar.title}</h3>
+              <p>{pillar.text}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <OperationsVisual />
+
+    <section class="section phases-section">
+      <div class="shell">
+        <SectionHeading kicker={home.phases.eyebrow} title={home.phases.title} intro={home.phases.intro} />
+        <div class="phases">
+          {(home.phases.items ?? []).map((phase, index) => (
+            <article class="phase reveal">
+              <span>{String(index + 1).padStart(2, "0")}</span>
+              <h3>{phase.title}</h3>
+              <p>{phase.text}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <Solutions content={home.solutions} lang="en" />
+
+    <section class="section network-services">
+      <div class="shell">
+        <SectionHeading kicker={home.architecture.eyebrow} title={home.architecture.title} intro={home.architecture.intro} />
+        <div class="service-lines">
+          {(home.architecture.items ?? []).map((item, index) => <article class="service-line reveal"><span>{String(index + 1).padStart(2, "0")}</span><h3>{item.title}</h3><p>{item.text}</p></article>)}
+        </div>
+      </div>
+    </section>
+
+    <section class="section industries-section" id="industries">
+      <div class="shell">
+        <SectionHeading kicker={home.industries.eyebrow} title={home.industries.title} intro={home.industries.intro} />
+        <div class="industries">
+          {(home.industries.items ?? []).map((industry, index) => (
+            <a class="industry reveal" href={industry.href}>
+              <div class="industry-orbit"></div>
+              <span>{String(index + 1).padStart(2, "0")}</span>
+              <h3>{industry.title}</h3>
+              <p>{industry.text}</p>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="cta-section">
+      <div class="shell reveal">
+        <div class="kicker">{home.contact.eyebrow}</div>
+        <h2>{home.contact.heading}</h2>
+        <p>{home.contact.intro}</p>
+        <div class="actions"><a class="button primary" href={home.contact.ctaHref}>{home.contact.ctaLabel}</a><a class="button" href={home.contact.secondaryCtaHref}>{home.contact.secondaryCtaLabel}</a></div>
+        <p>We respond within one business day. Free. No commitment.</p>
+      </div>
+    </section>
   </main>
   <Footer lang="en" />
 </BaseLayout>
