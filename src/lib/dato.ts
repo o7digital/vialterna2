@@ -80,6 +80,25 @@ const endpoint = "https://graphql.datocms.com/";
 const token = import.meta.env.DATOCMS_API_TOKEN;
 const environment = import.meta.env.DATOCMS_ENVIRONMENT;
 
+const englishHrefMap: Record<string, string> = {
+  "/soluciones/edge/": "/en/solutions/edge/",
+  "/soluciones/core/": "/en/solutions/core/",
+  "/soluciones/telco-as-a-service/": "/en/solutions/telco-as-a-service/",
+  "/soluciones/iot-sim/": "/en/solutions/iot-sim/",
+  "/industrias/servicios-financieros/": "/en/industries/financial-services/",
+  "/industrias/retail-franquicias/": "/en/industries/retail-franchise/",
+  "/industrias/energia-industria/": "/en/industries/energy-industrial/",
+  "/industrias/infraestructura-pagos/": "/en/industries/payments-infrastructure/",
+  "/industrias/logistica-cadena-frio/": "/en/industries/logistics-cold-chain/"
+};
+
+function normalizeHrefForLocale(href: string | undefined, locale: "es" | "en"): string | undefined {
+  if (!href) return href;
+  const cleanHref = href.replace(/^href:\s*/i, "").trim();
+  if (locale === "en") return englishHrefMap[cleanHref] ?? cleanHref;
+  return cleanHref;
+}
+
 async function datoRequest<T>(query: string, variables: Record<string, unknown> = {}): Promise<T | null> {
   if (!token) return null;
 
@@ -262,6 +281,7 @@ export async function getHomeSolutions(locale: "es" | "en", fallback: EditableCa
 
   const cards = normalizeCards(data?.allHomeSolutions, fallback).map((card) => ({
     ...card,
+    href: normalizeHrefForLocale(card.href, locale),
     type: card.type ?? (
       card.href?.includes("core") ? "signal" :
       card.href?.includes("telco-as-a-service") ? "backup" :
@@ -285,7 +305,10 @@ export async function getHomeIndustries(locale: "es" | "en", fallback: EditableC
     { locale }
   );
 
-  return normalizeCards(data?.allHomeIndustries, fallback);
+  return normalizeCards(data?.allHomeIndustries, fallback).map((card) => ({
+    ...card,
+    href: normalizeHrefForLocale(card.href, locale)
+  }));
 }
 
 export async function getDatoDetailPage(
