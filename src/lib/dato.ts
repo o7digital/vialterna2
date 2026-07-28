@@ -92,6 +92,12 @@ const englishHrefMap: Record<string, string> = {
   "/industrias/logistica-cadena-frio/": "/en/industries/logistics-cold-chain/"
 };
 
+const datoIndustrySlugMap: Record<string, string> = {
+  "retail-franchise": "retail-franchises",
+  "energy-industrial": "energy-industry",
+  "payments-infrastructure": "infraestructura-pagos"
+};
+
 function normalizeHrefForLocale(href: string | undefined, locale: "es" | "en"): string | undefined {
   if (!href) return href;
   const cleanHref = href.replace(/^href:\s*/i, "").trim();
@@ -326,7 +332,8 @@ export async function getDatoDetailPage(
     benefits: string[];
   }
 ) {
-  const model = type === "solution" ? "allSolutionPages" : "allIndustryPages";
+  const model = type === "solution" ? "allSolutionPages" : "allSolutionPageCopy1s";
+  const datoSlug = type === "industry" && locale === "en" ? (datoIndustrySlugMap[slug] ?? slug) : slug;
   const data = await datoRequest<{ records: DatoDetailPage[] }>(
     `query DetailPage($slug: String, $locale: SiteLocale) {
       records: ${model}(locale: $locale, filter: { slug: { eq: $slug } }, first: 1) {
@@ -341,7 +348,7 @@ export async function getDatoDetailPage(
         benefits
       }
     }`,
-    { slug, locale }
+    { slug: datoSlug, locale }
   );
 
   const page = data?.records?.[0];
