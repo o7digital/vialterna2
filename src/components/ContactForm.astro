@@ -5,39 +5,18 @@ interface Props {
 
 const { lang = "es" } = Astro.props;
 const isEnglish = lang === "en";
-const defaultFormspreeEndpoint = "https://formspree.io/f/mzdnjgze";
-const formspreeEndpoint = import.meta.env.PUBLIC_FORMSPREE_ENDPOINT || defaultFormspreeEndpoint;
-const isFormConfigured = Boolean(formspreeEndpoint);
 const copy = isEnglish
   ? {
       kicker: "Contact form",
       title: "Start with a diagnostic",
       intro: "We analyze your connectivity infrastructure, carrier contracts, spend, redundancy and performance to identify disconnection risks and optimization opportunities.",
-      name: "Name",
-      company: "Company",
-      email: "Email",
-      phone: "Phone",
-      message: "How can we help?",
-      submit: "Send",
-      sending: "Sending...",
-      success: "Thanks. Your request was sent and we will contact you shortly.",
-      error: "We could not send the form. Please email atencionaclientes@vialterna.com.",
-      notConfigured: "Form endpoint is not configured yet."
+      fallback: "The form requires JavaScript. You can also contact us at atencionaclientes@vialterna.com."
     }
   : {
       kicker: "Formulario de contacto",
       title: "Empieza con un diagnóstico",
       intro: "Analizamos tu infraestructura de conectividad, contratos con operadores, gasto, redundancias y desempeño para identificar riesgos de desconexión y oportunidades de optimización.",
-      name: "Nombre",
-      company: "Empresa",
-      email: "Correo",
-      phone: "Teléfono",
-      message: "Cómo podemos ayudarte",
-      submit: "Enviar",
-      sending: "Enviando...",
-      success: "Gracias. Recibimos tu solicitud y te contactaremos pronto.",
-      error: "No pudimos enviar el formulario. Escríbenos a atencionaclientes@vialterna.com.",
-      notConfigured: "El endpoint del formulario todavía no está configurado."
+      fallback: "El formulario requiere JavaScript. También puedes escribir a atencionaclientes@vialterna.com."
     };
 ---
 <section class="section contact-form-section" aria-labelledby={`contact-form-title-${lang}`}>
@@ -48,75 +27,20 @@ const copy = isEnglish
         <h2 id={`contact-form-title-${lang}`}>{copy.title}</h2>
         <p>{copy.intro}</p>
       </div>
-      <form class="contact-form" action="/api/contact" method="POST" data-contact-form data-success={copy.success} data-error={copy.error} data-submit={copy.submit} data-sending={copy.sending}>
-        <input type="hidden" name="_subject" value={isEnglish ? "New Vialterna website lead" : "Nuevo lead desde el sitio Vialterna"} />
-        <input type="hidden" name="formspreeEndpoint" value={formspreeEndpoint} />
-        <input type="hidden" name="source" value="vialterna-website-contact-form" />
-        <input type="hidden" name="language" value={lang} />
-        <div class="contact-form-grid">
-          <label>
-            <span>{copy.name}<i aria-hidden="true">*</i></span>
-            <input type="text" name="name" autocomplete="name" required />
-          </label>
-          <label>
-            <span>{copy.company}<i aria-hidden="true">*</i></span>
-            <input type="text" name="company" autocomplete="organization" required />
-          </label>
-          <label>
-            <span>{copy.email}<i aria-hidden="true">*</i></span>
-            <input type="email" name="email" autocomplete="email" required />
-          </label>
-          <label>
-            <span>{copy.phone}<i aria-hidden="true">*</i></span>
-            <input type="tel" name="phone" autocomplete="tel" required />
-          </label>
-        </div>
-        <label>
-          <span>{copy.message}</span>
-          <textarea name="message" rows="5"></textarea>
-        </label>
-        {!isFormConfigured && <p class="form-warning">{copy.notConfigured}</p>}
-        <p class="form-status" data-form-status role="status" aria-live="polite"></p>
-        <button class="button primary" type="submit" disabled={!isFormConfigured}><span data-submit-label>{copy.submit}</span> <span aria-hidden="true">→</span></button>
-      </form>
+
+      <div class="hubspot-form-shell">
+        <div
+          class="hs-form-frame"
+          data-region="na1"
+          data-form-id="d8ae4cdc-017f-4193-b687-873d987d52a9"
+          data-portal-id="51161603"
+        ></div>
+        <noscript>
+          <p class="hubspot-form-fallback">{copy.fallback}</p>
+        </noscript>
+      </div>
     </div>
   </div>
 </section>
 
-<script>
-  document.querySelectorAll<HTMLFormElement>("[data-contact-form]").forEach((form) => {
-    const button = form.querySelector<HTMLButtonElement>("button[type='submit']");
-    const label = form.querySelector("[data-submit-label]");
-    const status = form.querySelector<HTMLElement>("[data-form-status]");
-
-    form.addEventListener("submit", async (event) => {
-      event.preventDefault();
-      if (!button || !label || !status) return;
-
-      const submitText = form.dataset.submit || label.textContent || "Send";
-      button.disabled = true;
-      label.textContent = form.dataset.sending || submitText;
-      status.textContent = "";
-      status.dataset.state = "";
-
-      try {
-        const response = await fetch(form.action, {
-          method: "POST",
-          headers: { Accept: "application/json" },
-          body: new FormData(form)
-        });
-        const data = await response.json().catch(() => ({}));
-        if (!response.ok || data.ok === false) throw new Error("Contact request failed");
-        form.reset();
-        status.textContent = form.dataset.success || "";
-        status.dataset.state = "success";
-      } catch {
-        status.textContent = form.dataset.error || "";
-        status.dataset.state = "error";
-      } finally {
-        button.disabled = false;
-        label.textContent = submitText;
-      }
-    });
-  });
-</script>
+<script is:inline src="https://js.hsforms.net/forms/embed/51161603.js" defer></script>
