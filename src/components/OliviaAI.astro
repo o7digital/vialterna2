@@ -114,6 +114,15 @@
     const lead = leadDetails();
     return Boolean(lead.name && lead.company && lead.email && lead.phone && lead.details);
   };
+  const hideLeadForm = () => {
+    leadFormVisible = false;
+    leadFields?.setAttribute("hidden", "");
+    if (input) {
+      input.required = true;
+      input.placeholder = copy.placeholder;
+      input.value = "";
+    }
+  };
   const showLeadForm = (message: string) => {
     leadFormVisible = true;
     leadFields?.removeAttribute("hidden");
@@ -143,6 +152,7 @@
     const response = await fetch("/api/contact", { method: "POST", body: formData });
     if (!response.ok) throw new Error("Lead submission failed");
     hubspotLeadSubmitted = true;
+    hideLeadForm();
   };
   open?.addEventListener("click", () => { panel?.removeAttribute("hidden"); open.setAttribute("hidden", ""); });
   close?.addEventListener("click", () => { panel?.setAttribute("hidden", ""); open?.removeAttribute("hidden"); });
@@ -217,12 +227,6 @@
       if (!response.ok) throw new Error("Chat request failed");
       const data = await response.json();
       pending.textContent = data.reply || "Un asesor Vialterna continuará contigo.";
-      leadFormVisible = false;
-      leadFields?.setAttribute("hidden", "");
-      if (input) {
-        input.required = true;
-        input.placeholder = copy.placeholder;
-      }
       await fetch(`${api}/widget/conversations`, {
         method: "PATCH", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
