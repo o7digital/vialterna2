@@ -118,7 +118,11 @@
     leadFormVisible = true;
     leadFields?.removeAttribute("hidden");
     if (detailsInput && !detailsInput.value.trim()) detailsInput.value = message;
-    if (input) input.placeholder = copy.details;
+    if (input) {
+      input.required = false;
+      input.value = "";
+      input.placeholder = copy.details;
+    }
     const prompt = document.createElement("p");
     prompt.className = "bot";
     prompt.textContent = copy.leadPrompt;
@@ -152,7 +156,9 @@
   });
   form?.addEventListener("submit", async (event) => {
     event.preventDefault();
-    const message = input?.value.trim();
+    const typedMessage = input?.value.trim() || "";
+    const leadMessage = detailsInput?.value.trim() || "";
+    const message = leadFormVisible ? leadMessage : typedMessage;
     if (!message || !messages || !input) return;
     if (!hubspotLeadSubmitted && !leadFormVisible) {
       messages.insertAdjacentHTML("beforeend", `<p class="user">${message.replaceAll("<", "&lt;")}</p>`);
@@ -211,6 +217,12 @@
       if (!response.ok) throw new Error("Chat request failed");
       const data = await response.json();
       pending.textContent = data.reply || "Un asesor Vialterna continuará contigo.";
+      leadFormVisible = false;
+      leadFields?.setAttribute("hidden", "");
+      if (input) {
+        input.required = true;
+        input.placeholder = copy.placeholder;
+      }
       await fetch(`${api}/widget/conversations`, {
         method: "PATCH", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
