@@ -17,11 +17,12 @@ export function getStaticPaths() { return ["company","contact","empresa","faq","
 const data = pages[Astro.params.page as keyof typeof pages];
 const isContact = ["contact", "contacto"].includes(Astro.params.page ?? "");
 const [eyebrow, heading, intro, localSections] = data as [string, string, string, string[][]];
+const sections = localSections.map(([title, text]) => ({ title, text }));
 const editable = await getSitePage(Astro.params.page ?? "", "en", {
   eyebrow,
   heading,
   intro,
-  sections: localSections
+  sections
 });
 ---
 <BaseLayout title={`${editable.heading} | Vialterna`} description={editable.intro} lang="en">
@@ -43,7 +44,7 @@ const editable = await getSitePage(Astro.params.page ?? "", "en", {
         </div>
       </section>
     )}
-    <section class="section"><div class="shell editorial-list">{editable.sections.map((section, index) => <article><span>{String(index+1).padStart(2,"0")}</span><h2>{section[0]}</h2><p>{section[1]}</p></article>)}</div></section>
+    <section class="section"><div class="shell editorial-list">{editable.sections.map((section, index) => <article><span>{String(index+1).padStart(2,"0")}</span><h2>{section.title}</h2><p>{section.text}</p></article>)}</div></section>
     {Astro.params.page === "aviso-de-privacidad" && <section class="section"><article class="shell legal-content" set:html={privacyHtml} /></section>}
   </main>
   <Footer lang="en" />

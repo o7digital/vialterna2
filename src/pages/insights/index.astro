@@ -3,7 +3,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import Header from "../../components/Header.astro";
 import Footer from "../../components/Footer.astro";
 import { insightPosts } from "../../data/insights";
-import { getSitePage } from "../../lib/dato";
+import { getBlogPosts, getSitePage } from "../../lib/dato";
 
 const fallbackPage = {
   seoTitle: "Insights de conectividad y redes empresariales | Vialterna",
@@ -14,7 +14,7 @@ const fallbackPage = {
   sections: []
 };
 const page = await getSitePage("noticias", "es", fallbackPage);
-const posts = [...insightPosts].sort((a, b) => Date.parse(b.date) - Date.parse(a.date));
+const posts = await getBlogPosts("es", insightPosts);
 
 const formatDate = (date: string) => new Intl.DateTimeFormat("es-MX", {
   day: "2-digit",

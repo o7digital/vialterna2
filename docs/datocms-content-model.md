@@ -1,6 +1,6 @@
 # DatoCMS content model
 
-The site reads editable content from one `SitePage` model and keeps local fallbacks when DatoCMS is not configured.
+The site reads editable page content from `SitePage`, blog articles from `Blog`, and keeps local fallbacks when DatoCMS is not configured.
 
 ## Environment
 
@@ -24,6 +24,29 @@ Fields:
 - `secondaryCtaLabel` single-line string.
 - `secondaryCtaHref` single-line string.
 - `sections` JSON field.
+
+## Model: Blog
+
+Create one record per article. The public pages `/insights/`, `/insights/[slug]/`, `/en/insights/`, and `/en/insights/[slug]/` read this collection from DatoCMS.
+
+Fields:
+
+- `title` single-line string, localized.
+- `slug` slug field, localized.
+- `excerpt` multi-line text, localized.
+- `content` multi-line text or HTML field, localized.
+- `image` asset field.
+- `date` date-time field.
+- `author` single-line string.
+- `categories` JSON field or comma-separated string, localized.
+- `sourceUrl` single-line string, optional.
+
+If `DATOCMS_API_TOKEN` is missing, the `Blog` model is missing, or DatoCMS returns no valid articles, the site uses the local fallback articles from `src/data/insights.ts` and `src/data/insightsEn.ts`.
+
+DatoCMS API identifier expected by the site:
+
+- Model API key: `blog`
+- Collection query: `allBlogs`
 
 ## Required records
 

@@ -3,19 +3,26 @@ import BaseLayout from "../../../layouts/BaseLayout.astro";
 import Header from "../../../components/Header.astro";
 import Footer from "../../../components/Footer.astro";
 import { insightPostsEn } from "../../../data/insightsEn";
+import { getBlogPosts } from "../../../lib/dato";
 import { absoluteUrl } from "../../../lib/seo";
 
-export function getStaticPaths() {
-  return insightPostsEn.flatMap((post) => [
-    {
+export async function getStaticPaths() {
+  const posts = await getBlogPosts("en", insightPostsEn);
+  return posts.flatMap((post) => {
+    const paths = [{
       params: { slug: post.slug },
       props: { post }
-    },
-    {
-      params: { slug: post.originalSlug },
-      props: { post }
+    }];
+
+    if ("originalSlug" in post && typeof post.originalSlug === "string") {
+      paths.push({
+        params: { slug: post.originalSlug },
+        props: { post }
+      });
     }
-  ]);
+
+    return paths;
+  });
 }
 
 const { post } = Astro.props;
@@ -26,7 +33,7 @@ const structuredData = {
   "@type": "BlogPosting",
   headline: post.title,
   description,
-  image: absoluteUrl(post.image),
+  image: post.image ? absoluteUrl(post.image) : undefined,
   datePublished: post.date,
   author: { "@type": "Person", name: post.author },
   publisher: {
@@ -49,7 +56,7 @@ const formatDate = (date: string) => new Intl.DateTimeFormat("en", {
   title={`${post.title} | Vialterna`}
   description={description}
   lang="en"
-  image={post.image}
+  image={post.image || undefined}
   type="article"
   publishedTime={post.date}
   author={post.author}
@@ -69,7 +76,7 @@ const formatDate = (date: string) => new Intl.DateTimeFormat("en", {
 
       <section class="section insight-detail-section">
         <div class="shell insight-detail">
-          {post.image && <img class="insight-detail-image reveal" src={post.image} alt={post.title} loading="lazy" decoding="async" />}
+          {post.image && <img class="insight-detail-image reveal" src={post.image} alt={post.imageAlt ?? post.title} loading="lazy" decoding="async" />}
           <div class="insight-content" set:html={post.content} />
           <a class="back-to-insights" href="/en/insights/">Back to insights</a>
         </div>

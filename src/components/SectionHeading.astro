@@ -1,10 +1,10 @@
 ---
 interface Props {
-  kicker: string;
+  kicker?: string;
   title: string;
   intro?: string;
 }
-const { kicker, title, intro } = Astro.props;
+const { kicker = "", title, intro } = Astro.props;
 ---
 <div class="section-head">
   <div class="kicker reveal">{kicker}</div>

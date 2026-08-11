@@ -6,6 +6,36 @@ export type Insight = {
   publishedAt?: string;
 };
 
+export type BlogPostContent = {
+  id: number | string;
+  slug: string;
+  title: string;
+  date: string;
+  author: string;
+  categories: string[];
+  excerpt: string;
+  content: string;
+  image: string;
+  sourceUrl?: string;
+  imageAlt?: string;
+};
+
+type DatoBlogPost = {
+  id?: string;
+  slug?: string;
+  title?: string;
+  date?: string;
+  author?: string;
+  categories?: unknown;
+  excerpt?: string;
+  content?: string;
+  image?: {
+    url?: string;
+    alt?: string;
+  } | null;
+  sourceUrl?: string;
+};
+
 export type SitePageContent = {
   seoTitle?: string;
   seoDescription?: string;
@@ -135,35 +165,42 @@ function asRecord(value: unknown): Record<string, unknown> | null {
 function normalizeCards(value: unknown, fallback: EditableCard[] = []): EditableCard[] {
   if (!Array.isArray(value)) return fallback;
 
-  const cards = value
-    .map((item) => {
-      if (Array.isArray(item)) {
-        return {
+  const cards: EditableCard[] = [];
+
+  for (const item of value) {
+    const card = Array.isArray(item)
+      ? {
           title: String(item[0] ?? ""),
           text: String(item[1] ?? ""),
           href: typeof item[2] === "string" ? item[2] : undefined
-        };
-      }
+        }
+      : (() => {
+          const record = asRecord(item);
+          if (!record) return null;
 
-      const record = asRecord(item);
-      if (!record) return null;
+          return {
+            key: getText(record, ["key", "id", "slug", "sectionId"]),
+            eyebrow: getText(record, ["eyebrow", "kicker"]),
+            title: getText(record, ["title", "heading", "question"]) ?? "",
+            text: getText(record, ["text", "intro", "answer", "description", "body"]),
+            href: getText(record, ["href", "url", "link"]),
+            label: getText(record, ["label", "visualLabel"]),
+            type: getText(record, ["type", "visualType"])
+          };
+        })();
 
-      return {
-        key: getText(record, ["key", "id", "slug", "sectionId"]),
-        eyebrow: getText(record, ["eyebrow", "kicker"]),
-        title: getText(record, ["title", "heading", "question"]) ?? "",
-        text: getText(record, ["text", "intro", "answer", "description", "body"]),
-        href: getText(record, ["href", "url", "link"]),
-        label: getText(record, ["label", "visualLabel"]),
-        type: getText(record, ["type", "visualType"])
-      };
-    })
-    .filter((item): item is EditableCard => Boolean(item?.title || item?.text));
+    if (card?.title || card?.text) cards.push(card);
+  }
 
   return cards.length ? cards : fallback;
 }
 
 function normalizeStringList(value: unknown, fallback: string[] = []): string[] {
+  if (typeof value === "string") {
+    const items = value.split(",").map((item) => item.trim()).filter(Boolean);
+    return items.length ? items : fallback;
+  }
+
   if (!Array.isArray(value)) return fallback;
 
   const items = value
@@ -177,31 +214,93 @@ function normalizeStringList(value: unknown, fallback: string[] = []): string[] 
   return items.length ? items : fallback;
 }
 
+function normalizeBlogPost(post: DatoBlogPost, fallback?: BlogPostContent): BlogPostContent | null {
+  const title = post.title?.trim();
+  const slug = post.slug?.trim();
+  const excerpt = post.excerpt?.trim();
+  const content = post.content?.trim();
+
+  if (!title || !slug || !excerpt || !content) return null;
+
+  return {
+    id: post.id ?? fallback?.id ?? slug,
+    slug,
+    title,
+    date: post.date || fallback?.date || new Date().toISOString(),
+    author: post.author || fallback?.author || "Vialterna",
+    categories: normalizeStringList(post.categories, fallback?.categories ?? ["Insights"]),
+    excerpt,
+    content,
+    image: post.image?.url || fallback?.image || "",
+    imageAlt: post.image?.alt || fallback?.imageAlt || title,
+    sourceUrl: post.sourceUrl || fallback?.sourceUrl
+  };
+}
+
+export async function getBlogPosts(
+  locale: "es" | "en",
+  fallback: BlogPostContent[]
+): Promise<BlogPostContent[]> {
+  const fallbackBySlug = new Map(fallback.map((post) => [post.slug, post]));
+  const data = await datoRequest<{ allBlogs: DatoBlogPost[] }>(
+    `query BlogPosts($locale: SiteLocale) {
+      allBlogs(locale: $locale, orderBy: date_DESC) {
+        id
+        slug
+        title
+        date
+        author
+        categories
+        excerpt
+        content
+        image {
+          url
+          alt
+        }
+        sourceUrl
+      }
+    }`,
+    { locale }
+  );
+
+  const posts = data?.allBlogs
+    ?.map((post) => normalizeBlogPost(post, post.slug ? fallbackBySlug.get(post.slug) : undefined))
+    .filter((post): post is BlogPostContent => Boolean(post));
+
+  return posts?.length
+    ? posts.sort((a, b) => Date.parse(b.date) - Date.parse(a.date))
+    : fallback;
+}
+
 function normalizeSections(sections: DatoSitePage["sections"], fallback: EditableSection[]): EditableSection[] {
   if (!Array.isArray(sections) || !sections.length) return fallback;
 
-  const normalized = sections
-    .map((section) => {
-      if (Array.isArray(section)) {
-        return {
+  const normalized: EditableSection[] = [];
+
+  for (const section of sections) {
+    const normalizedSection: EditableSection | null = Array.isArray(section)
+      ? {
           title: String(section[0] ?? ""),
           text: String(section[1] ?? "")
-        };
-      }
+        }
+      : (() => {
+          const record = asRecord(section);
+          if (!record) return null;
 
-      const record = asRecord(section);
-      if (!record) return null;
+          return {
+            key: getText(record, ["key", "id", "slug", "sectionId"]),
+            eyebrow: getText(record, ["eyebrow", "kicker"]),
+            title: getText(record, ["title", "heading", "question"]) ?? "",
+            intro: getText(record, ["intro", "description"]),
+            text: getText(record, ["text", "body", "answer"]),
+            items: normalizeCards(record.items ?? record.cards ?? record.links, [])
+          };
+        })();
 
-      return {
-        key: getText(record, ["key", "id", "slug", "sectionId"]),
-        eyebrow: getText(record, ["eyebrow", "kicker"]),
-        title: getText(record, ["title", "heading", "question"]) ?? "",
-        intro: getText(record, ["intro", "description"]),
-        text: getText(record, ["text", "body", "answer"]),
-        items: normalizeCards(record.items ?? record.cards ?? record.links, [])
-      };
-    })
-    .filter((section): section is EditableSection => Boolean(section?.title || section?.text || section?.items?.length));
+    if (normalizedSection?.title || normalizedSection?.text || normalizedSection?.items?.length) {
+      normalized.push(normalizedSection);
+    }
+  }
 
   return normalized.length ? normalized : fallback;
 }
