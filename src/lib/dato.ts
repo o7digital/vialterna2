@@ -267,9 +267,16 @@ export async function getBlogPosts(
     ?.map((post) => normalizeBlogPost(post, post.slug ? fallbackBySlug.get(post.slug) : undefined))
     .filter((post): post is BlogPostContent => Boolean(post));
 
-  return posts?.length
-    ? posts.sort((a, b) => Date.parse(b.date) - Date.parse(a.date))
-    : fallback;
+  if (!posts?.length) return fallback;
+
+  // Keep the existing imported archive in the site and layer DatoCMS content
+  // on top of it. Editors can therefore publish only new posts in DatoCMS;
+  // using an existing slug intentionally replaces that archived post.
+  const mergedBySlug = new Map(fallbackBySlug);
+  for (const post of posts) mergedBySlug.set(post.slug, post);
+
+  return [...mergedBySlug.values()]
+    .sort((a, b) => Date.parse(b.date) - Date.parse(a.date));
 }
 
 function normalizeSections(sections: DatoSitePage["sections"], fallback: EditableSection[]): EditableSection[] {
