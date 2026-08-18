@@ -223,8 +223,8 @@
     const leadMessage = detailsInput?.value.trim() || "";
     const message = leadFormVisible ? leadMessage : typedMessage;
     if (!message || !messages || !input) return;
-    const asksForHuman = /\b(hablar|contactar|contacten|contactarme|llamen|llamada|cotizaci[oó]n|presupuesto|asesor|experto|call me|contact me|talk to|speak to|quote|sales rep)\b/i.test(message);
-    if (!hubspotLeadSubmitted && !leadFormVisible && asksForHuman) {
+    const requestsInformationOrService = /\b(informaci[oó]n|informes?|info|servicios?|soluciones?|planes?|precios?|tarifas?|cotizaci[oó]n|presupuesto|propuesta|demo|asesor(?:[ií]a)?|experto|contactar|contacten|contactarme|llamen|llamada|hablar|information|details?|services?|solutions?|plans?|pricing|prices?|rates?|quote|proposal|demo|advisor|expert|call me|contact me|talk to|speak to|sales rep)\b/i.test(message);
+    if (!hubspotLeadSubmitted && !leadFormVisible && requestsInformationOrService) {
       messages.insertAdjacentHTML("beforeend", `<p class="user">${message.replaceAll("<", "&lt;")}</p>`);
       input.value = "";
       showLeadForm(message);
