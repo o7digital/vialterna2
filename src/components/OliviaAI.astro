@@ -60,6 +60,7 @@
   localStorage.setItem("vialterna-visitor-id", visitorId);
   let hubspotLeadSubmitted = false;
   let leadFormVisible = false;
+  const chatHistory: Array<{ role: "user" | "assistant"; content: string }> = [];
   const english = document.documentElement.lang.toLowerCase().startsWith("en");
   const copy = english ? {
     subtitle: "Vialterna Assistant",
@@ -219,6 +220,10 @@
     }
     element.textContent = text;
   };
+  const pageContext = () => {
+    const source = document.querySelector("main") || document.body;
+    return (source?.innerText || "").replace(/\s+/g, " ").slice(0, 5000);
+  };
   const openPanel = () => {
     if (!panel || !open) return;
     panel.removeAttribute("hidden");
@@ -257,12 +262,6 @@
     const leadMessage = detailsInput?.value.trim() || "";
     const message = leadFormVisible ? leadMessage : typedMessage;
     if (!message || !messages || !input) return;
-    if (!leadFormVisible && /\b(servicios?|services?|solutions?|soluciones?|edge|superwan|core|telco|iot|sim)\b/i.test(message)) {
-      messages.insertAdjacentHTML("beforeend", `<p class="user">${message.replaceAll("<", "&lt;")}</p>`);
-      input.value = "";
-      appendServicesPopup();
-      return;
-    }
     const asksForHuman = /\b(hablar|contactar|contacten|contactarme|llamen|llamada|cotizaci[oó]n|presupuesto|asesor|experto|call me|contact me|talk to|speak to|quote|sales rep)\b/i.test(message);
     if (!hubspotLeadSubmitted && !leadFormVisible && asksForHuman) {
       messages.insertAdjacentHTML("beforeend", `<p class="user">${message.replaceAll("<", "&lt;")}</p>`);
@@ -289,6 +288,8 @@
       return;
     }
     const lead = leadDetails();
+    const history = chatHistory.slice(-10);
+    chatHistory.push({ role: "user", content: message });
     messages.insertAdjacentHTML("beforeend", `<p class="user">${message.replaceAll("<", "&lt;")}</p>`);
     input.value = "";
     const sendButton = root?.querySelector<HTMLButtonElement>("[data-send]");
@@ -312,7 +313,7 @@
             page: location.pathname,
             pageUrl: location.href,
             pageTitle: document.title,
-            pageContent: document.body.innerText.replace(/\s+/g, " ").slice(0, 5000),
+            pageContent: pageContext(),
             site: "vialterna2.vercel.app",
             lead,
             dataConsent: consentInput?.checked === true,
@@ -325,11 +326,12 @@
         body: JSON.stringify({
           message: lead.details || message, language: english ? "en" : "es", clientCode: "vialterna",
           visitorId,
+          history,
           metadata: {
             page: location.pathname,
             pageUrl: location.href,
             pageTitle: document.title,
-            pageContent: document.body.innerText.replace(/\s+/g, " ").slice(0, 5000),
+            pageContent: pageContext(),
             lead
           }
         })
@@ -338,6 +340,7 @@
       if (!response.ok) throw new Error("Chat request failed");
       const data = await response.json();
       const reply = data.reply || "Un asesor Vialterna continuará contigo.";
+      chatHistory.push({ role: "assistant", content: reply });
       await revealReply(pending, reply);
       void fetch(`${api}/widget/conversations`, {
         method: "PATCH", headers: { "Content-Type": "application/json" },
