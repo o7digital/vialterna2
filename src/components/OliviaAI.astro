@@ -10,7 +10,6 @@
     </header>
     <div class="olivia__messages" data-messages>
       <p class="bot" data-welcome>Hola, soy Olivia. ¿Cómo puedo ayudarte con la conectividad de tu empresa?</p>
-      <button type="button" class="olivia__quick-action" data-services-open>Ver servicios</button>
     </div>
     <form data-form>
       <label><input type="checkbox" data-consent /> <span><span data-consent-label>Acepto compartir mis datos para recibir atención de Vialterna.</span> <button type="button" class="olivia__privacy-link" data-privacy-open>Aviso de Privacidad</button></span></label>
@@ -74,9 +73,6 @@
     privacyUrl: "/en/aviso-de-privacidad/",
     name: "Name", company: "Company", email: "Email", phone: "Phone",
     details: "Request info details",
-    servicesAction: "View services",
-    servicesTitle: "Vialterna services",
-    servicesIntro: "These are the main Vialterna solutions:",
     leadPrompt: "Please leave your details and request information so a Vialterna expert can follow up.",
     consentRequired: "Please accept the Privacy Notice so an expert can contact you.",
     missingLead: "Please complete name, company, email, phone and request info details.",
@@ -95,9 +91,6 @@
     privacyUrl: "/aviso-de-privacidad/",
     name: "Nombre", company: "Empresa", email: "Email", phone: "Teléfono",
     details: "Detalles de la solicitud",
-    servicesAction: "Ver servicios",
-    servicesTitle: "Servicios Vialterna",
-    servicesIntro: "Estas son las principales soluciones de Vialterna:",
     leadPrompt: "Déjanos tus datos y los detalles de la solicitud para que un experto Vialterna pueda dar seguimiento.",
     consentRequired: "Acepta el Aviso de Privacidad para que un experto pueda contactarte.",
     missingLead: "Completa nombre, empresa, email, teléfono y detalles de la solicitud.",
@@ -120,7 +113,6 @@
   const privacyUrl = root?.querySelector<HTMLAnchorElement>("[data-privacy-url]");
   if (privacyUrl) privacyUrl.href = copy.privacyUrl;
   setText("[data-teaser]", copy.teaser);
-  setText("[data-services-open]", copy.servicesAction);
   setText("[data-send]", copy.send);
   if (input) input.placeholder = copy.placeholder;
   if (nameInput) nameInput.placeholder = copy.name;
@@ -138,36 +130,6 @@
   const hasCompleteLead = () => {
     const lead = leadDetails();
     return Boolean(lead.name && lead.company && lead.email && lead.phone && lead.details);
-  };
-  const serviceLinks = () => english ? [
-    { title: "Edge / SuperWAN", text: "Resilient site connectivity with automatic failover and 24/7 monitoring.", href: "/en/solutions/edge/" },
-    { title: "Core", text: "Central SD-WAN governance, SLA visibility and multi-carrier orchestration.", href: "/en/solutions/core/" },
-    { title: "Telco as a Service", text: "Telecom audit, cost optimization and continuous supplier governance.", href: "/en/solutions/telco-as-a-service/" },
-    { title: "IoT and SIM", text: "Managed SIM/eSIM, IoT connectivity and sensor lifecycle control.", href: "/en/solutions/iot-sim/" }
-  ] : [
-    { title: "Edge / SuperWAN", text: "Conectividad resiliente por sitio con failover automático y monitoreo 24/7.", href: "/soluciones/edge/" },
-    { title: "Core", text: "Gobierno SD-WAN central, visibilidad SLA y orquestación multioperador.", href: "/soluciones/core/" },
-    { title: "Telco as a Service", text: "Auditoría Telco, optimización de costos y gobierno continuo de proveedores.", href: "/soluciones/telco-as-a-service/" },
-    { title: "IoT y SIM", text: "SIM/eSIM administradas, conectividad IoT y control de sensores.", href: "/soluciones/iot-sim/" }
-  ];
-  const appendServicesPopup = () => {
-    if (!messages) return;
-    const card = document.createElement("div");
-    card.className = "bot olivia__services-card";
-    card.innerHTML = `
-      <strong>${copy.servicesTitle}</strong>
-      <span>${copy.servicesIntro}</span>
-      <ul>
-        ${serviceLinks().map((service) => `
-          <li>
-            <a href="${service.href}">${service.title}</a>
-            <small>${service.text}</small>
-          </li>
-        `).join("")}
-      </ul>
-    `;
-    messages.append(card);
-    messages.scrollTop = messages.scrollHeight;
   };
   const hideLeadForm = () => {
     leadFormVisible = false;
@@ -247,7 +209,6 @@
   };
   open?.addEventListener("click", openPanel);
   close?.addEventListener("click", closePanel);
-  root?.querySelector("[data-services-open]")?.addEventListener("click", appendServicesPopup);
   privacyOpen?.addEventListener("click", () => privacy?.removeAttribute("hidden"));
   privacyClose?.addEventListener("click", () => privacy?.setAttribute("hidden", ""));
   privacyAccept?.addEventListener("click", () => {
