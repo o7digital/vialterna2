@@ -1,6 +1,13 @@
 <div class="olivia" data-olivia>
   <section class="olivia__panel" hidden>
-    <header><div><strong>o7 Olivia AI</strong><small data-subtitle>Asistente Vialterna · En línea</small></div><button data-close aria-label="Cerrar">×</button></header>
+    <header>
+      <div>
+        <strong>Olivia</strong>
+        <small data-subtitle>Asistente Vialterna · En línea</small>
+      </div>
+      <span class="olivia__status"><i></i><b data-status>En línea</b></span>
+      <button data-close aria-label="Cerrar">×</button>
+    </header>
     <div class="olivia__messages" data-messages>
       <p class="bot" data-welcome>Hola, soy o7 Olivia AI. ¿Cómo puedo ayudarte con la conectividad de tu empresa?</p>
       <button type="button" class="olivia__quick-action" data-services-open>Ver servicios</button>
@@ -55,8 +62,9 @@
   let leadFormVisible = false;
   const english = document.documentElement.lang.toLowerCase().startsWith("en");
   const copy = english ? {
-    subtitle: "Vialterna Assistant · Online",
-    welcome: "Hello, I’m o7 Olivia AI. How can I help with your company’s connectivity?",
+    subtitle: "Vialterna Assistant",
+    status: "Online",
+    welcome: "Hello, I’m Olivia. How can I help with your company’s connectivity?",
     consent: "I agree to share my data to receive assistance from Vialterna.",
     privacy: "Privacy Notice",
     privacyTitle: "Privacy Notice - Olivia AI",
@@ -73,8 +81,9 @@
     placeholder: "Write your question…", send: "Send", teaser: "Need help?",
     fallback: "I’m unable to answer right now. Email us at atencionaclientes@vialterna.com."
   } : {
-    subtitle: "Asistente Vialterna · En línea",
-    welcome: "Hola, soy o7 Olivia AI. ¿Cómo puedo ayudarte con la conectividad de tu empresa?",
+    subtitle: "Asistente Vialterna",
+    status: "En línea",
+    welcome: "Hola, soy Olivia. ¿Cómo puedo ayudarte con la conectividad de tu empresa?",
     consent: "Acepto compartir mis datos para recibir atención de Vialterna.",
     privacy: "Aviso de Privacidad",
     privacyTitle: "Aviso de Privacidad - Olivia AI",
@@ -96,6 +105,7 @@
     if (element) element.textContent = value;
   };
   setText("[data-subtitle]", copy.subtitle);
+  setText("[data-status]", copy.status);
   setText("[data-welcome]", copy.welcome);
   setText("[data-consent-label]", copy.consent);
   setText("[data-privacy-open]", copy.privacy);
@@ -287,5 +297,5 @@
 </script>
 
 <style>
-  .olivia{position:fixed;right:24px;bottom:24px;z-index:9999;font:14px/1.4 Inter,sans-serif}.olivia__teaser{display:flex;align-items:center;gap:10px;padding:10px 15px;border:1px solid #28d7c0;border-radius:999px;background:#071d2b;color:#fff;box-shadow:0 14px 38px #0005}.olivia__teaser b{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:#28d7c0;color:#071d2b}.olivia__panel{width:min(380px,calc(100vw - 28px));overflow:hidden;border:1px solid #28d7c066;border-radius:16px;background:#071d2b;color:#fff;box-shadow:0 20px 60px #0007}.olivia__panel header{display:flex;justify-content:space-between;padding:16px;background:#0b2c3d}.olivia__panel small{display:block;color:#9bc7cf}.olivia__panel button{border:0;border-radius:8px;background:#28d7c0;color:#071d2b;font-weight:700}.olivia__messages{height:260px;overflow:auto;padding:14px;background:#f4f8f9;color:#122}.olivia__messages p,.olivia__messages .bot{max-width:85%;padding:9px 11px;border-radius:12px;background:#fff}.olivia__messages .user{margin-left:auto;background:#d8faf5}.olivia__quick-action{display:block;margin:8px 0 0;padding:8px 10px!important;border:1px solid #28d7c066!important;background:#071d2b!important;color:#fff!important}.olivia__services-card{max-width:94%!important}.olivia__services-card strong,.olivia__services-card span{display:block}.olivia__services-card ul{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:8px}.olivia__services-card li{padding:9px;border:1px solid #d9e7ea;border-radius:10px;background:#f8fbfc}.olivia__services-card a{display:block;color:#0b6578;font-weight:800;text-decoration:none}.olivia__services-card small{display:block;margin-top:3px;color:#50606a}.olivia form{padding:12px}.olivia label{display:flex;gap:7px;font-size:11px;color:#c5d7dc}.olivia__privacy-link{border:0!important;background:transparent!important;color:#28d7c0!important;text-decoration:underline;padding:0!important;font:inherit!important}.olivia form div{display:flex;gap:8px;margin-top:10px}.olivia__lead-fields{display:grid!important;grid-template-columns:1fr 1fr;gap:8px}.olivia__lead-fields[hidden]{display:none!important}.olivia__lead-fields input,.olivia__lead-fields textarea,.olivia form input[data-input]{min-width:0;padding:11px;border:0;border-radius:8px}.olivia__lead-fields textarea{grid-column:1/-1;min-height:82px;resize:vertical}.olivia form input[data-input]{flex:1}.olivia__privacy{position:fixed;inset:0;z-index:10000;display:grid;place-items:center;background:#0008;padding:18px}.olivia__privacy[hidden]{display:none}.olivia__privacy>div{position:relative;max-width:560px;border:1px solid #28d7c0;border-radius:18px;background:#f4f8f9;color:#122;padding:24px;box-shadow:0 24px 70px #0008}.olivia__privacy h3{margin:0 0 12px}.olivia__privacy p{font-size:14px;line-height:1.55}.olivia__privacy a{display:inline-block;margin-right:12px;color:#0b7180}.olivia__privacy button{border:0;border-radius:10px;background:#071d2b;color:#fff;padding:10px 14px}.olivia__privacy button:first-child{position:absolute;right:12px;top:10px;background:transparent;color:#071d2b;font-size:22px;padding:0}@media(max-width:560px){.olivia{right:14px;bottom:14px}.olivia__lead-fields{grid-template-columns:1fr}}
+  .olivia{position:fixed;right:26px;bottom:26px;z-index:9999;font:15px/1.45 Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#f7f4ea}.olivia__teaser{display:flex;align-items:center;gap:12px;padding:12px 18px;border:1px solid #d8bd72;border-radius:999px;background:#17130d;color:#fff;box-shadow:0 18px 50px #0008;font-weight:800}.olivia__teaser b{display:grid;place-items:center;width:36px;height:36px;border-radius:50%;background:#d8bd72;color:#17130d}.olivia__panel{width:min(430px,calc(100vw - 28px));overflow:hidden;border:1px solid #8a7142;border-radius:18px;background:#14120e;color:#fff;box-shadow:0 24px 70px #0009}.olivia__panel header{display:grid;grid-template-columns:1fr auto auto;align-items:start;gap:12px;padding:20px 22px;background:#1b170f;border-bottom:1px solid #58482d}.olivia__panel strong{display:block;font-family:Georgia,serif;font-size:30px;line-height:1;color:#dcc073}.olivia__panel small{display:block;margin-top:6px;color:#d6d0c2;font-size:15px}.olivia__status{display:flex;align-items:center;gap:7px;margin-top:2px;padding:8px 12px;border:1px solid #4b4637;border-radius:999px;background:#272216;color:#d7d1c1;white-space:nowrap}.olivia__status i{width:10px;height:10px;border-radius:50%;background:#25c46b;box-shadow:0 0 0 4px #25c46b22}.olivia__status b{font-size:13px}.olivia__panel button{border:0;border-radius:999px;background:#d8bd72;color:#17130d;font-weight:800}.olivia__panel header button{width:44px;height:44px;font-size:24px}.olivia__messages{height:330px;overflow:auto;padding:18px;background:#101010;color:#f4f0e7;background-image:linear-gradient(#ffffff08 1px,transparent 1px);background-size:100% 42px}.olivia__messages p,.olivia__messages .bot{max-width:88%;margin:0 0 13px;padding:14px 16px;border-radius:18px;background:#242424;color:#f7f3ea;box-shadow:0 10px 24px #0002}.olivia__messages .user{margin-left:auto;background:#d8bd72;color:#17130d}.olivia__quick-action{display:inline-flex;margin:2px 0 10px;padding:12px 16px!important;border:1px solid #d8bd72!important;background:#17130d!important;color:#fff!important;border-radius:10px!important}.olivia__services-card{max-width:96%!important}.olivia__services-card strong,.olivia__services-card span{display:block}.olivia__services-card ul{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:9px}.olivia__services-card li{padding:11px;border:1px solid #3b3426;border-radius:10px;background:#191919}.olivia__services-card a{display:block;color:#dcc073;font-weight:900;text-decoration:none}.olivia__services-card small{display:block;margin-top:4px;color:#d0d0d0}.olivia form{padding:16px;background:#14120e}.olivia label{display:flex;gap:9px;font-size:13px;color:#ddd6c8}.olivia label input{accent-color:#d8bd72}.olivia__privacy-link{border:0!important;background:transparent!important;color:#d8bd72!important;text-decoration:underline;padding:0!important;font:inherit!important}.olivia form div{display:flex;gap:10px;margin-top:12px}.olivia__lead-fields{display:grid!important;grid-template-columns:1fr 1fr;gap:10px}.olivia__lead-fields[hidden]{display:none!important}.olivia__lead-fields input,.olivia__lead-fields textarea,.olivia form input[data-input]{min-width:0;padding:13px 14px;border:1px solid #3a3427;border-radius:12px;background:#fff;color:#161616;font:inherit}.olivia__lead-fields textarea{grid-column:1/-1;min-height:92px;resize:vertical}.olivia form input[data-input]{flex:1}.olivia form button[data-send]{min-width:82px;border-radius:12px}.olivia__privacy{position:fixed;inset:0;z-index:10000;display:grid;place-items:center;background:#0009;padding:18px}.olivia__privacy[hidden]{display:none}.olivia__privacy>div{position:relative;max-width:560px;border:1px solid #d8bd72;border-radius:18px;background:#111;color:#f7f3ea;padding:24px;box-shadow:0 24px 70px #0008}.olivia__privacy h3{margin:0 0 12px;color:#dcc073}.olivia__privacy p{font-size:14px;line-height:1.55}.olivia__privacy a{display:inline-block;margin-right:12px;color:#d8bd72}.olivia__privacy button{border:0;border-radius:10px;background:#d8bd72;color:#17130d;padding:10px 14px;font-weight:800}.olivia__privacy button:first-child{position:absolute;right:12px;top:10px;background:transparent;color:#fff;font-size:22px;padding:0}@media(max-width:560px){.olivia{right:12px;bottom:12px}.olivia__panel{width:calc(100vw - 24px);max-height:calc(100vh - 24px)}.olivia__panel header{grid-template-columns:1fr auto}.olivia__status{display:none}.olivia__messages{height:min(330px,42vh)}.olivia__lead-fields{grid-template-columns:1fr}.olivia form div{align-items:stretch}.olivia form button[data-send]{min-width:70px}.olivia__teaser{padding:10px 14px}}
 </style>
