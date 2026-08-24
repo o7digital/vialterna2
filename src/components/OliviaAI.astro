@@ -59,6 +59,7 @@
   localStorage.setItem("vialterna-visitor-id", visitorId);
   let hubspotLeadSubmitted = false;
   let leadFormVisible = false;
+  let awaitingClarificationChoice = false;
   const chatHistory: Array<{ role: "user" | "assistant"; content: string }> = [];
   const english = document.documentElement.lang.toLowerCase().startsWith("en");
   const copy = english ? {
@@ -77,6 +78,8 @@
     consentRequired: "Please accept the Privacy Notice so an expert can contact you.",
     missingLead: "Please complete name, company, email, phone and request info details.",
     typing: "Olivia is typing",
+    clarification: "What would you like to know?\n\n1. Vialterna services\n2. Contact an advisor\n3. Ask another question",
+    otherQuestion: "Please write your question. I’ll answer it before asking for contact details.",
     placeholder: "Write your question…", send: "Send", teaser: "Need help?",
     fallback: "I’m unable to answer right now. Email us at atencionaclientes@vialterna.com."
   } : {
@@ -95,6 +98,8 @@
     consentRequired: "Acepta el Aviso de Privacidad para que un experto pueda contactarte.",
     missingLead: "Completa nombre, empresa, email, teléfono y detalles de la solicitud.",
     typing: "Olivia está escribiendo",
+    clarification: "¿Qué le gustaría saber?\n\n1. Servicios de Vialterna\n2. Contactar a un asesor\n3. Hacer otra pregunta",
+    otherQuestion: "Escriba su pregunta. La responderé antes de pedirle datos de contacto.",
     placeholder: "Escribe tu pregunta…", send: "Enviar", teaser: "¿Necesitas ayuda?",
     fallback: "No pude responder ahora. Escríbenos a atencionaclientes@vialterna.com."
   };
@@ -186,6 +191,13 @@
     const source = document.querySelector("main") || document.body;
     return (source?.innerText || "").replace(/\s+/g, " ").slice(0, 5000);
   };
+  const appendMessage = (content: string, role: "bot" | "user") => {
+    const element = document.createElement("p");
+    element.className = role;
+    element.textContent = content;
+    messages?.append(element);
+    messages?.scrollTo({ top: messages.scrollHeight });
+  };
   const openPanel = () => {
     if (!panel || !open) return;
     panel.removeAttribute("hidden");
@@ -223,10 +235,36 @@
     const leadMessage = detailsInput?.value.trim() || "";
     const message = leadFormVisible ? leadMessage : typedMessage;
     if (!message || !messages || !input) return;
-    const requestsInformationOrService = /\b(informaci[oó]n|informes?|info|servicios?|soluciones?|planes?|precios?|tarifas?|cotizaci[oó]n|presupuesto|propuesta|demo|asesor(?:[ií]a)?|experto|contactar|contacten|contactarme|llamen|llamada|hablar|information|details?|services?|solutions?|plans?|pricing|prices?|rates?|quote|proposal|demo|advisor|expert|call me|contact me|talk to|speak to|sales rep)\b/i.test(message);
-    if (!hubspotLeadSubmitted && !leadFormVisible && requestsInformationOrService) {
-      messages.insertAdjacentHTML("beforeend", `<p class="user">${message.replaceAll("<", "&lt;")}</p>`);
+    const normalized = message.toLocaleLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+    const isGeneralInformationRequest = /^(?:(?:hola|hello|hi|buenas)[,.! ]*)?(?:(?:deseo|quiero|necesito|busco|me gustaria|quisiera|i want|i need|i would like)(?: un poco de| algo de| some)? )?(?:info|informacion|information|informes?)[.!? ]*$/.test(normalized);
+    const requestsHumanFollowUp = /\b(cotizaci[oó]n|presupuesto|propuesta|demo|asesor(?:[ií]a)?|experto|contactar|contacten|contactarme|llamen|llamada|hablar con|quote|proposal|demo|advisor|expert|call me|contact me|talk to|speak to|sales rep)\b/i.test(message);
+    if (!leadFormVisible && isGeneralInformationRequest) {
+      appendMessage(message, "user");
       input.value = "";
+      appendMessage(copy.clarification, "bot");
+      chatHistory.push({ role: "user", content: message }, { role: "assistant", content: copy.clarification });
+      awaitingClarificationChoice = true;
+      return;
+    }
+    if (!leadFormVisible && awaitingClarificationChoice && normalized === "2") {
+      appendMessage(message, "user");
+      input.value = "";
+      awaitingClarificationChoice = false;
+      showLeadForm(message);
+      return;
+    }
+    if (!leadFormVisible && awaitingClarificationChoice && normalized === "3") {
+      appendMessage(message, "user");
+      input.value = "";
+      appendMessage(copy.otherQuestion, "bot");
+      chatHistory.push({ role: "user", content: message }, { role: "assistant", content: copy.otherQuestion });
+      awaitingClarificationChoice = false;
+      return;
+    }
+    if (!hubspotLeadSubmitted && !leadFormVisible && requestsHumanFollowUp) {
+      appendMessage(message, "user");
+      input.value = "";
+      awaitingClarificationChoice = false;
       showLeadForm(message);
       return;
     }
@@ -248,6 +286,10 @@
       messages.scrollTop = messages.scrollHeight;
       return;
     }
+    const apiMessage = awaitingClarificationChoice && normalized === "1"
+      ? (english ? "What services does Vialterna offer?" : "¿Qué servicios ofrece Vialterna?")
+      : message;
+    awaitingClarificationChoice = false;
     const lead = leadDetails();
     const history = chatHistory.slice(-10);
     chatHistory.push({ role: "user", content: message });
@@ -265,7 +307,7 @@
       const saveVisitorMessage = fetch(`${api}/widget/conversations`, {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          clientCode: "vialterna", visitorId, content: lead.details || message,
+          clientCode: "vialterna", visitorId, content: lead.details || apiMessage,
           visitorName: lead.name,
           email: lead.email,
           phone: lead.phone,
@@ -285,7 +327,7 @@
       const chatRequest = fetch(`${api}/olivia/chat`, {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          message: lead.details || message, language: english ? "en" : "es", clientCode: "vialterna",
+          message: lead.details || apiMessage, language: english ? "en" : "es", clientCode: "vialterna",
           visitorId,
           history,
           metadata: {
