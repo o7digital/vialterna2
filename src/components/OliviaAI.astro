@@ -1,8 +1,12 @@
 <div class="olivia" data-olivia>
   <section class="olivia__panel" hidden>
-    <header><div><strong>o7 Olivia AI</strong><small data-subtitle>Asistente Vialterna · En línea</small></div><button data-close aria-label="Cerrar">×</button></header>
+    <header>
+      <div><strong>Olivia</strong><small data-subtitle>Asistente Vialterna</small></div>
+      <span class="olivia__status"><i aria-hidden="true"></i><span data-status>En línea</span></span>
+      <button class="olivia__close" data-close aria-label="Cerrar">×</button>
+    </header>
     <div class="olivia__messages" data-messages aria-live="polite">
-      <p class="bot" data-welcome>Hola, soy o7 Olivia AI. ¿Qué te gustaría saber?</p>
+      <p class="bot" data-welcome>Hola, soy Olivia. Cuéntame qué está pasando y te ayudaré a precisar la necesidad. Si hace falta, te pondré en contacto con un especialista con el contexto listo.</p>
       <div class="olivia__actions" data-actions></div>
     </div>
     <form data-form>
@@ -10,7 +14,8 @@
       <div><input data-input required placeholder="Escribe tu pregunta…" /><button data-send>Enviar</button></div>
     </form>
   </section>
-  <button class="olivia__teaser" data-open><b>O</b><span data-teaser>¿Necesitas ayuda?</span></button>
+  <button class="olivia__teaser" data-open><b>O</b><span data-teaser>Hablar con Olivia</span></button>
+  <button class="olivia__toggle" data-toggle aria-label="Abrir chat">Olivia</button>
   <div class="olivia__privacy" data-privacy hidden role="dialog" aria-modal="true">
     <div>
       <button type="button" data-privacy-close aria-label="Cerrar">×</button>
@@ -26,6 +31,7 @@
   const root = document.querySelector("[data-olivia]");
   const panel = root?.querySelector(".olivia__panel");
   const open = root?.querySelector("[data-open]");
+  const toggle = root?.querySelector<HTMLButtonElement>("[data-toggle]");
   const close = root?.querySelector("[data-close]");
   const form = root?.querySelector("[data-form]");
   const input = root?.querySelector<HTMLInputElement>("[data-input]");
@@ -40,6 +46,7 @@
   localStorage.setItem("vialterna-visitor-id", visitorId);
   const chatTranscript: string[] = [];
   let syncedLeadEmail = "";
+  const vialternaPhone = "525580626884";
 
   // Every request to the Olivia backend must carry a signed widget identity bound to this site's origin.
   let identityPromise: Promise<string> | null = null;
@@ -98,42 +105,36 @@
   };
   const english = document.documentElement.lang.toLowerCase().startsWith("en");
   const copy = english ? {
-    subtitle: "Vialterna Assistant · Online",
-    welcome: "Hello, I’m o7 Olivia AI. What would you like to know?",
+    subtitle: "Vialterna Assistant", status: "Online", open: "Open chat", close: "Close chat",
+    welcome: "Hello, I’m Olivia. Tell me what is happening and I’ll help clarify the need. If necessary, I’ll connect you with a specialist with the context ready.",
     consent: "I agree to share my data to receive assistance from Vialterna.",
     privacy: "Privacy Notice",
     privacyTitle: "Privacy Notice - Olivia AI",
     privacyBody: "By using this chat, you authorize Vialterna to process the personal data you provide, including contact details, messages, language, page visited and connectivity needs, to answer your request, follow up commercially and contact you by electronic means. Vialterna processes personal data under Mexico’s Federal Law on Protection of Personal Data Held by Private Parties. You may exercise ARCO rights, revoke consent or limit data use by writing to protecciondedatos@vialterna.com.",
     privacyAccept: "I have read and accept",
     privacyUrl: "/en/aviso-de-privacidad/",
-    placeholder: "Write your question…", send: "Send", teaser: "Need help?",
+    placeholder: "Describe your need…", send: "Send", teaser: "Talk to Olivia",
     fallback: "I’m unable to answer right now. Email us at atencionaclientes@vialterna.com.",
-    menu: ["View services", "Contact an agent", "Ask another question"],
-    menuPrompt: "Of course. What would you like to know?",
-    services: "Vialterna offers four main solutions: Edge resilient connectivity, Core managed SD-WAN, Telco as a Service, and managed IoT/SIM. Which one interests you?",
-    serviceChoices: ["Edge", "Core / SD-WAN", "Telco as a Service", "IoT / SIM"],
-    agent: "I can connect you with a Vialterna specialist. You can use the contact page or email atencionaclientes@vialterna.com.",
-    agentLink: "Open contact page",
-    other: "Go ahead — write your question in your own words and I’ll answer it before asking for contact details.",
+    whatsapp: "Continue on WhatsApp",
+    email: "Send by email",
+    handoff: "Choose how you would like to continue with a Vialterna specialist. I’ll include the context from this conversation.",
+    handoffSubject: "Vialterna inquiry via Olivia",
     consentNeeded: "To send your question to Olivia, please accept the privacy notice first. I’ll only request contact details if you choose to speak with an agent."
   } : {
-    subtitle: "Asistente Vialterna · En línea",
-    welcome: "Hola, soy o7 Olivia AI. ¿Qué te gustaría saber?",
+    subtitle: "Asistente Vialterna", status: "En línea", open: "Abrir chat", close: "Cerrar chat",
+    welcome: "Hola, soy Olivia. Cuéntame qué está pasando y te ayudaré a precisar la necesidad. Si hace falta, te pondré en contacto con un especialista con el contexto listo.",
     consent: "Acepto compartir mis datos para recibir atención de Vialterna.",
     privacy: "Aviso de Privacidad",
     privacyTitle: "Aviso de Privacidad - Olivia AI",
     privacyBody: "Al usar este chat autorizas a Vialterna a tratar los datos personales que compartas, incluyendo datos de contacto, mensajes, idioma, página visitada y necesidades de conectividad, con la finalidad de atender tu solicitud, dar seguimiento comercial y contactarte por medios electrónicos. Vialterna trata los datos conforme a la Ley Federal de Protección de Datos Personales en Posesión de los Particulares. Puedes ejercer tus derechos ARCO, revocar tu consentimiento o limitar el uso de tus datos escribiendo a protecciondedatos@vialterna.com.",
     privacyAccept: "He leído y acepto",
     privacyUrl: "/aviso-de-privacidad/",
-    placeholder: "Escribe tu pregunta…", send: "Enviar", teaser: "¿Necesitas ayuda?",
+    placeholder: "Describe tu necesidad…", send: "Enviar", teaser: "Hablar con Olivia",
     fallback: "No pude responder ahora. Escríbenos a atencionaclientes@vialterna.com.",
-    menu: ["Ver servicios", "Contactar a un agente", "Hacer otra pregunta"],
-    menuPrompt: "Claro. ¿Qué te gustaría saber?",
-    services: "Vialterna tiene cuatro soluciones principales: conectividad resiliente Edge, Core SD-WAN administrado, Telco as a Service y soluciones IoT/SIM. ¿Cuál te interesa?",
-    serviceChoices: ["Edge", "Core / SD-WAN", "Telco as a Service", "IoT / SIM"],
-    agent: "Puedo ponerte en contacto con un especialista de Vialterna. Puedes usar la página de contacto o escribir a atencionaclientes@vialterna.com.",
-    agentLink: "Abrir página de contacto",
-    other: "Adelante: escribe tu pregunta con tus propias palabras. Primero intentaré responderte y solo pediré tus datos si eliges hablar con un agente.",
+    whatsapp: "Continuar por WhatsApp",
+    email: "Enviar por correo",
+    handoff: "Elige cómo quieres continuar con un especialista de Vialterna. Incluiré el contexto de esta conversación.",
+    handoffSubject: "Consulta Vialterna desde Olivia",
     consentNeeded: "Para enviar tu pregunta a Olivia, acepta primero el aviso de privacidad. Solo te pediré datos de contacto si eliges hablar con un agente."
   };
   const setText = (selector: string, value: string) => {
@@ -141,6 +142,7 @@
     if (element) element.textContent = value;
   };
   setText("[data-subtitle]", copy.subtitle);
+  setText("[data-status]", copy.status);
   setText("[data-welcome]", copy.welcome);
   setText("[data-consent-label]", copy.consent);
   setText("[data-privacy-open]", copy.privacy);
@@ -162,58 +164,36 @@
     messages.append(message);
     messages.scrollTop = messages.scrollHeight;
   };
-  const showChoices = (choices: string[], kind: "menu" | "service" = "menu") => {
+  const showHandoffActions = () => {
     if (!actions) return;
     actions.replaceChildren();
-    choices.forEach((label, index) => {
-      const button = document.createElement("button");
-      button.type = "button";
-      button.dataset.choice = `${kind}:${index}`;
-      button.textContent = `${index + 1}. ${label}`;
-      actions.append(button);
-    });
+    addMessage(copy.handoff);
+    const summary = chatTranscript.slice(-10).join("\n");
+    const body = `${copy.handoffSubject}\n\n${summary}`;
+    const whatsapp = document.createElement("a");
+    whatsapp.href = `https://wa.me/${vialternaPhone}?text=${encodeURIComponent(body)}`;
+    whatsapp.target = "_blank";
+    whatsapp.rel = "noopener noreferrer";
+    whatsapp.textContent = copy.whatsapp;
+    const email = document.createElement("a");
+    email.href = `mailto:atencionaclientes@vialterna.com?subject=${encodeURIComponent(copy.handoffSubject)}&body=${encodeURIComponent(body)}`;
+    email.textContent = copy.email;
+    actions.append(whatsapp, email);
     messages?.append(actions);
     messages && (messages.scrollTop = messages.scrollHeight);
   };
-  const showMenu = (withPrompt = false) => {
-    if (withPrompt) addMessage(copy.menuPrompt);
-    showChoices(copy.menu);
-  };
-  const chooseMenu = (index: number) => {
-    if (index === 0) {
-      addMessage(copy.services);
-      showChoices(copy.serviceChoices, "service");
-    } else if (index === 1) {
-      addMessage(copy.agent);
-      if (actions) {
-        actions.innerHTML = `<a href="${english ? "/en/contact/" : "/contacto/"}">${copy.agentLink}</a>`;
-        messages?.append(actions);
-      }
-    } else {
-      addMessage(copy.other);
-      actions?.replaceChildren();
-      input?.focus();
+  const setOpen = (isOpen: boolean) => {
+    panel?.toggleAttribute("hidden", !isOpen);
+    open?.toggleAttribute("hidden", isOpen);
+    if (toggle) {
+      toggle.textContent = isOpen ? "×" : "Olivia";
+      toggle.setAttribute("aria-label", isOpen ? copy.close : copy.open);
     }
+    if (isOpen) input?.focus();
   };
-  actions?.addEventListener("click", (event) => {
-    const button = (event.target as HTMLElement).closest<HTMLButtonElement>("button[data-choice]");
-    if (!button) return;
-    const [kind, rawIndex] = (button.dataset.choice || "").split(":");
-    const index = Number(rawIndex);
-    addMessage((kind === "service" ? copy.serviceChoices : copy.menu)[index], "user");
-    if (kind === "menu") chooseMenu(index);
-    else {
-      actions.replaceChildren();
-      if (input) {
-        input.value = copy.serviceChoices[index];
-        input.focus();
-      }
-      addMessage(english ? "What would you like to know about this solution?" : "¿Qué te gustaría saber sobre esta solución?");
-    }
-  });
-  showMenu();
-  open?.addEventListener("click", () => { panel?.removeAttribute("hidden"); open.setAttribute("hidden", ""); input?.focus(); });
-  close?.addEventListener("click", () => { panel?.setAttribute("hidden", ""); open?.removeAttribute("hidden"); });
+  open?.addEventListener("click", () => setOpen(true));
+  close?.addEventListener("click", () => setOpen(false));
+  toggle?.addEventListener("click", () => setOpen(panel?.hasAttribute("hidden") === true));
   privacyOpen?.addEventListener("click", () => privacy?.removeAttribute("hidden"));
   privacyClose?.addEventListener("click", () => privacy?.setAttribute("hidden", ""));
   privacyAccept?.addEventListener("click", () => {
@@ -228,14 +208,6 @@
     if (!message || !messages || !input) return;
     addMessage(message, "user");
     input.value = "";
-    const normalized = message.toLocaleLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
-    if (/^(hola|hello|hi|ayuda|help|info|informacion|quiero (mas )?informacion|necesito informacion)[.!?\s]*$/.test(normalized)) {
-      showMenu(true);
-      return;
-    }
-    if (/^(1|servicios?|services?)$/.test(normalized)) { chooseMenu(0); return; }
-    if (/^(2|contact(ar|o)?|agente|agent|asesor)$/.test(normalized)) { chooseMenu(1); return; }
-    if (/^(3|otra? pregunta|other question)$/.test(normalized)) { chooseMenu(2); return; }
     if (consentInput?.checked !== true) {
       addMessage(copy.consentNeeded);
       return;
@@ -277,6 +249,9 @@
       pending.textContent = data.reply || "Un asesor Vialterna continuará contigo.";
       chatTranscript.push(`Olivia: ${pending.textContent}`);
       syncLeadToHubSpot(data).catch((error) => console.error(error));
+      if (data.handoffRecommended === true || data.intent === "handoff" || data.nextAction === "offer_human_operator") {
+        showHandoffActions();
+      }
       await oliviaFetch(`${api}/widget/conversations`, {
         method: "PATCH", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -291,4 +266,41 @@
 
 <style>
   .olivia{position:fixed;right:24px;bottom:24px;z-index:9999;font:14px/1.4 Inter,sans-serif}.olivia__teaser{display:flex;align-items:center;gap:10px;padding:10px 15px;border:1px solid #28d7c0;border-radius:999px;background:#071d2b;color:#fff;box-shadow:0 14px 38px #0005}.olivia__teaser b{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:#28d7c0;color:#071d2b}.olivia__panel{width:min(380px,calc(100vw - 28px));overflow:hidden;border:1px solid #28d7c066;border-radius:16px;background:#071d2b;color:#fff;box-shadow:0 20px 60px #0007}.olivia__panel header{display:flex;justify-content:space-between;padding:16px;background:#0b2c3d}.olivia__panel small{display:block;color:#9bc7cf}.olivia__panel button{border:0;border-radius:8px;background:#28d7c0;color:#071d2b;font-weight:700}.olivia__messages{height:290px;overflow:auto;padding:14px;background:#f4f8f9;color:#122}.olivia__messages p{max-width:85%;padding:9px 11px;border-radius:12px;background:#fff}.olivia__messages .user{margin-left:auto;background:#d8faf5}.olivia__actions{display:grid;gap:7px;margin:10px 0}.olivia__actions button,.olivia__actions a{display:block;width:100%;box-sizing:border-box;padding:9px 11px;border:1px solid #0b7180;border-radius:9px;background:#fff;color:#075565;text-align:left;text-decoration:none;cursor:pointer}.olivia__actions button:hover,.olivia__actions a:hover{background:#d8faf5}.olivia form{padding:12px}.olivia label{display:flex;gap:7px;font-size:11px;color:#c5d7dc}.olivia__privacy-link{border:0!important;background:transparent!important;color:#28d7c0!important;text-decoration:underline;padding:0!important;font:inherit!important}.olivia form div{display:flex;gap:8px;margin-top:10px}.olivia form input[data-input]{min-width:0;flex:1;padding:11px;border:0;border-radius:8px}.olivia__privacy{position:fixed;inset:0;z-index:10000;display:grid;place-items:center;background:#0008;padding:18px}.olivia__privacy[hidden]{display:none}.olivia__privacy>div{position:relative;max-width:560px;border:1px solid #28d7c0;border-radius:18px;background:#f4f8f9;color:#122;padding:24px;box-shadow:0 24px 70px #0008}.olivia__privacy h3{margin:0 0 12px}.olivia__privacy p{font-size:14px;line-height:1.55}.olivia__privacy a{display:inline-block;margin-right:12px;color:#0b7180}.olivia__privacy button{border:0;border-radius:10px;background:#071d2b;color:#fff;padding:10px 14px}.olivia__privacy button:first-child{position:absolute;right:12px;top:10px;background:transparent;color:#071d2b;font-size:22px;padding:0}@media(max-width:560px){.olivia{right:14px;bottom:14px}}
+<style>
+  .olivia{--accent:#28d7c0;--ink:#071d2b;position:fixed;right:24px;bottom:18px;z-index:9999;width:min(380px,calc(100vw - 28px));font:14px/1.4 "Helvetica Neue",sans-serif;color:#fff}
+  .olivia [hidden]{display:none!important}
+  .olivia__panel{display:flex;flex-direction:column;max-height:min(620px,calc(100vh - 110px));overflow:hidden;border:1px solid #28d7c080;border-radius:16px;background:#101719;box-shadow:0 42px 72px -24px #000b,0 8px 18px -14px #28d7c066,inset 0 1px #ffffff1f;animation:olivia-float 5.5s ease-in-out infinite}
+  @keyframes olivia-float{0%,100%{transform:translateY(-5px)}50%{transform:translateY(-10px)}}
+  .olivia__panel header{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:10px;padding:16px;background:linear-gradient(135deg,#071d2bfa,#0b3b42f5);border-bottom:1px solid #28d7c059}
+  .olivia__panel strong{display:block;color:var(--accent);font-size:18px;line-height:1.2;text-transform:uppercase}
+  .olivia__panel small{display:block;color:#ffffffb8;font-size:12px}
+  .olivia__status{display:inline-flex;align-items:center;gap:7px;padding:7px 10px;border:1px solid #ffffff24;border-radius:999px;background:#ffffff12;color:#ffffffb8;font-size:12px;white-space:nowrap}
+  .olivia__status i{width:9px;height:9px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 4px #22c55e24,0 0 14px #22c55ecc}
+  .olivia button{border:0;cursor:pointer;font:inherit}
+  .olivia__close{width:30px;height:30px;border-radius:50%;background:var(--accent);color:var(--ink);font-weight:900}
+  .olivia__messages{height:290px;overflow:auto;padding:16px;background:#171d1f;color:#fff}
+  .olivia__messages p{width:fit-content;max-width:88%;margin:0 0 10px;padding:10px 12px;border-radius:18px 18px 18px 6px;background:#293234;color:#fff;box-shadow:0 8px 18px #0003}
+  .olivia__messages .user{margin-left:auto;border-radius:18px 18px 6px 18px;background:var(--accent);color:var(--ink)}
+  .olivia__actions{display:grid;gap:8px;margin:10px 0}
+  .olivia__actions a{display:block;padding:11px 13px;border:1px solid #28d7c080;border-radius:14px;background:#0e292e;color:var(--accent);font-weight:700;text-decoration:none}
+  .olivia__actions a:hover{background:#153b40}
+  .olivia form{padding:12px;background:#0d1416;border-top:1px solid #ffffff1a}
+  .olivia label{display:flex;align-items:flex-start;gap:8px;color:#ffffffbf;font-size:11px;line-height:1.35}
+  .olivia label input{accent-color:var(--accent)}
+  .olivia__privacy-link{padding:0!important;background:transparent!important;color:var(--accent)!important;text-decoration:underline}
+  .olivia form>div{display:grid;grid-template-columns:1fr 48px;gap:8px;margin-top:10px}
+  .olivia form input[data-input]{width:100%;min-width:0;box-sizing:border-box;padding:12px;border:1px solid #28d7c059;border-radius:14px;background:#fff;color:#111;font:inherit;outline:none}
+  .olivia form button[data-send]{border-radius:50%;background:var(--accent);color:var(--ink);font-size:0;font-weight:900}
+  .olivia form button[data-send]::after{content:"→";font-size:20px}
+  .olivia__teaser{display:flex;align-items:center;gap:10px;margin:10px 0 0 auto;padding:10px 14px;border:1px solid #28d7c08c;border-radius:999px;background:#101719;color:#fff;box-shadow:0 24px 42px -18px #0009,inset 0 1px #ffffff1a}
+  .olivia__teaser b{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--accent);color:var(--ink);font-weight:900}
+  .olivia__toggle{display:block;min-width:62px;height:62px;margin:10px 0 0 auto;border-radius:50%;background:var(--accent);color:var(--ink);font-weight:900;box-shadow:0 22px 38px -16px #000a,inset 0 1px #ffffff33}
+  .olivia__privacy{position:fixed;inset:0;z-index:10000;display:grid;place-items:center;padding:18px;background:#000b}
+  .olivia__privacy>div{position:relative;max-width:560px;padding:24px;border:1px solid #28d7c099;background:#101719;color:#fff;box-shadow:0 24px 70px #0009}
+  .olivia__privacy h3{margin:0 32px 12px 0;color:var(--accent)}
+  .olivia__privacy p{color:#ffffffcc;line-height:1.55}
+  .olivia__privacy a,.olivia__privacy [data-privacy-accept]{display:inline-block;margin:8px 10px 0 0;padding:10px 14px;border:0;background:var(--accent);color:var(--ink);font-weight:800;text-decoration:none}
+  .olivia__privacy [data-privacy-close]{position:absolute;top:12px;right:12px;width:30px;height:30px;border-radius:50%;background:var(--accent);font-weight:900}
+  @media(max-width:600px){.olivia{right:14px;bottom:14px}.olivia__panel{max-height:calc(100vh - 96px)}.olivia__messages{height:260px}.olivia__status{padding:6px 8px}.olivia__panel header{padding:13px}}
+  @media(prefers-reduced-motion:reduce){.olivia__panel{animation:none}}
 </style>
