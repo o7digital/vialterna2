@@ -57,6 +57,37 @@
   const api = "https://olivia-ai.o7digital.com/api";
   const visitorId = localStorage.getItem("vialterna-visitor-id") || crypto.randomUUID();
   localStorage.setItem("vialterna-visitor-id", visitorId);
+  let identityPromise: Promise<string> | null = null;
+  const getWidgetIdentity = (refresh = false): Promise<string> => {
+    if (refresh) identityPromise = null;
+    if (!identityPromise) {
+      identityPromise = fetch(`${api}/widget/identity`, { cache: "no-store" })
+        .then(async (response) => {
+          const data = await response.json().catch(() => ({}));
+          if (!response.ok || data.clientCode !== "vialterna" || !data.identity) {
+            throw new Error(`Widget identity failed: ${response.status}`);
+          }
+          return data.identity as string;
+        })
+        .catch((error) => {
+          identityPromise = null;
+          throw error;
+        });
+    }
+    return identityPromise;
+  };
+  const oliviaFetch = async (url: string, options: RequestInit, retry = true): Promise<Response> => {
+    const identity = await getWidgetIdentity();
+    const response = await fetch(url, {
+      ...options,
+      headers: { ...(options.headers || {}), "X-Olivia-Widget-Identity": identity }
+    });
+    if (response.status === 401 && retry) {
+      await getWidgetIdentity(true);
+      return oliviaFetch(url, options, false);
+    }
+    return response;
+  };
   let hubspotLeadSubmitted = false;
   let leadFormVisible = false;
   let awaitingClarificationChoice = false;
@@ -200,6 +231,7 @@
   };
   const openPanel = () => {
     if (!panel || !open) return;
+    getWidgetIdentity().catch(() => undefined);
     panel.removeAttribute("hidden");
     panel.setAttribute("aria-hidden", "false");
     requestAnimationFrame(() => {
@@ -304,7 +336,7 @@
     messages.scrollTop = messages.scrollHeight;
     try {
       if (leadFormVisible) await submitHubSpotLead(lead.details || message);
-      const saveVisitorMessage = fetch(`${api}/widget/conversations`, {
+      const saveVisitorMessage = oliviaFetch(`${api}/widget/conversations`, {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           clientCode: "vialterna", visitorId, content: lead.details || apiMessage,
@@ -324,7 +356,7 @@
           }
         })
       });
-      const chatRequest = fetch(`${api}/olivia/chat`, {
+      const chatRequest = oliviaFetch(`${api}/olivia/chat`, {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           message: lead.details || apiMessage, language: english ? "en" : "es", clientCode: "vialterna",
@@ -345,7 +377,7 @@
       const reply = data.reply || "Un asesor Vialterna continuará contigo.";
       chatHistory.push({ role: "assistant", content: reply });
       await revealReply(pending, reply);
-      void fetch(`${api}/widget/conversations`, {
+      void oliviaFetch(`${api}/widget/conversations`, {
         method: "PATCH", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           clientCode: "vialterna", visitorId, content: reply,
