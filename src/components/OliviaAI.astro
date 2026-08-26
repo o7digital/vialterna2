@@ -202,6 +202,11 @@
     formData.set("phone", lead.phone);
     formData.set("message", lead.details || message);
     formData.set("language", english ? "en" : "es");
+    formData.set("requestType", "olivia-human-handoff");
+    formData.set("notificationTo", "atencionaclientes@vialterna.com");
+    formData.set("notificationCc", "olivier.steineur@gmail.com, dayala@vialterna.com");
+    formData.set("conversation", chatHistory.slice(-12).map((item) => `${item.role}: ${item.content}`).join("\n\n"));
+    formData.set("subject", `Olivia Vialterna — solicitud de atención humana — ${lead.company || lead.name}`);
     const response = await fetch("/api/contact", { method: "POST", body: formData });
     if (!response.ok) throw new Error("Lead submission failed");
     hubspotLeadSubmitted = true;
@@ -406,6 +411,14 @@
       const reply = data.reply || "Un asesor Vialterna continuará contigo.";
       chatHistory.push({ role: "assistant", content: reply });
       await revealReply(pending, reply);
+      const requiresHumanHandoff = data.handoffRecommended === true
+        || data.intent === "handoff"
+        || data.phase === "human_handoff"
+        || data.nextAction === "offer_human_operator"
+        || data.action === "show_lead_form";
+      if (requiresHumanHandoff && !hubspotLeadSubmitted && !leadFormVisible) {
+        showLeadForm(message);
+      }
       void oliviaFetch(`${api}/widget/conversations`, {
         method: "PATCH", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
