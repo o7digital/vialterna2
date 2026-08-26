@@ -5,6 +5,7 @@ import Footer from "../../../components/Footer.astro";
 import { insightPostsEn } from "../../../data/insightsEn";
 import { getBlogPosts } from "../../../lib/dato";
 import { absoluteUrl } from "../../../lib/seo";
+import { renderInsightContent } from "../../../lib/renderInsightContent";
 
 export async function getStaticPaths() {
   const posts = await getBlogPosts("en", insightPostsEn);
@@ -26,6 +27,7 @@ export async function getStaticPaths() {
 }
 
 const { post } = Astro.props;
+const content = renderInsightContent(post.content);
 const description = post.excerpt;
 const canonical = absoluteUrl(`/en/insights/${post.slug}/`);
 const structuredData = {
@@ -77,7 +79,7 @@ const formatDate = (date: string) => new Intl.DateTimeFormat("en", {
       <section class="section insight-detail-section">
         <div class="shell insight-detail">
           {post.image && <img class="insight-detail-image reveal" src={post.image} alt={post.imageAlt ?? post.title} loading="lazy" decoding="async" />}
-          <div class="insight-content" set:html={post.content} />
+          <div class="insight-content" set:html={content} />
           <a class="back-to-insights" href="/en/insights/">Back to insights</a>
         </div>
       </section>
