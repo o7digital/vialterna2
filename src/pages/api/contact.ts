@@ -19,6 +19,7 @@ const submitToFormspree = async (endpoint: string, formData: FormData) => {
   for (const [key, value] of formData.entries()) {
     if (key !== "formspreeEndpoint") payload.append(key, value);
   }
+  payload.set("_subject", text(formData.get("subject")) || "Olivia Vialterna — solicitud de atención humana");
 
   return fetch(endpoint, {
     method: "POST",
