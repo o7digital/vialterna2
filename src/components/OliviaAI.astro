@@ -442,17 +442,13 @@
       await revealReply(pending, reply);
       if (data.nextAction === "qualify_business_need") handoffQualificationPending = true;
       const normalized = message.toLocaleLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-      const isGreetingOnly = /^(?:(?:hola|hello|hi|hey|buen dia|buenos dias|buenas tardes|buenas noches|good morning|good afternoon|good evening|que tal|como estas|how are you)[,.!¿?¡ ]*)+$/.test(normalized.trim());
-      const requestsPrice = /\b(precio|precios|costo|costos|cotizacion|cotizar|presupuesto|price|prices|cost|costs|quote|quotation|budget)\b/i.test(normalized);
-      const requestsCommercialFollowUp = requestsPrice || /\b(asesor|experto|llamada|contactarme|advisor|expert|call me|contact me)\b/i.test(normalized);
-      const visitorTurnCount = chatHistory.filter((item) => item.role === "user").length;
+      const requestsCommercialFollowUp = /\b(hablar con (?:un |una )?(?:persona|asesor|experto)|quiero (?:un |una )?(?:llamada|asesor|experto)|me contacte(?:n)?|llamenme|contactenme|contactarme|talk to (?:a )?(?:person|advisor|expert)|speak to (?:a )?(?:person|advisor|expert)|call me|contact me)\b/i.test(normalized);
       const requiresHumanHandoff = data.handoffRecommended === true
         || data.intent === "handoff"
         || data.phase === "human_handoff"
         || data.nextAction === "offer_human_operator"
         || data.action === "show_lead_form";
-      const completedShortConversation = !isGreetingOnly && visitorTurnCount >= 2;
-      if ((completedShortConversation || requestsCommercialFollowUp || requiresHumanHandoff) && !hubspotLeadSubmitted && !leadFormVisible) {
+      if ((requestsCommercialFollowUp || requiresHumanHandoff) && !hubspotLeadSubmitted && !leadFormVisible) {
         handoffQualificationPending = true;
         const formDelay = 5000 + Math.floor(Math.random() * 7001);
         await new Promise((resolve) => window.setTimeout(resolve, formDelay));
