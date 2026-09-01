@@ -11,6 +11,10 @@
     <div class="olivia__messages" data-messages>
       <p class="bot" data-welcome>Hola, soy Olivia. ¿Cómo puedo ayudarte con la conectividad de tu empresa?</p>
     </div>
+    <nav class="olivia__scroll-controls" aria-label="Navegar en la conversación">
+      <button type="button" data-scroll-up aria-label="Mensajes anteriores">↑</button>
+      <button type="button" data-scroll-down aria-label="Mensajes siguientes">↓</button>
+    </nav>
     <form data-form>
       <label><input type="checkbox" data-consent /> <span><span data-consent-label>Acepto compartir mis datos para recibir atención de Vialterna.</span> <button type="button" class="olivia__privacy-link" data-privacy-open>Aviso de Privacidad</button></span></label>
       <div class="olivia__lead-fields" data-lead-fields hidden>
@@ -56,6 +60,8 @@
   const privacyOpen = root?.querySelector("[data-privacy-open]");
   const privacyClose = root?.querySelector("[data-privacy-close]");
   const privacyAccept = root?.querySelector("[data-privacy-accept]");
+  const scrollUp = root?.querySelector("[data-scroll-up]");
+  const scrollDown = root?.querySelector("[data-scroll-down]");
   const api = "https://olivia-ai.o7digital.com/api";
   const visitorId = localStorage.getItem("vialterna-visitor-id") || crypto.randomUUID();
   localStorage.setItem("vialterna-visitor-id", visitorId);
@@ -112,6 +118,7 @@
     interestPrompt: "Thank you. What Vialterna solution, service or technical topic are you interested in?",
     leadPrompt: "This request requires a Vialterna specialist. I will pass it to a human advisor. Please complete the form with your first name, last name, email, phone, WhatsApp and comments about your request.",
     leadThanks: "Thank you. Your request has been sent to a Vialterna human advisor, who will follow up using the contact details you provided.",
+    submitLead: "Send request",
     consentRequired: "Please accept the Privacy Notice so an expert can contact you.",
     missingLead: "Please complete first name, last name, email, phone, WhatsApp and comments.",
     qualificationPrompt: "Before requesting your contact details, please tell me about your company, the number and type of sites, the current problem or desired solution, and the urgency.",
@@ -136,6 +143,7 @@
     interestPrompt: "Gracias. ¿En qué solución, servicio o tema técnico de Vialterna estás interesado?",
     leadPrompt: "Esta solicitud requiere un especialista de Vialterna. La transmitiré a un asesor humano. Completa el formulario con nombre, apellido, email, teléfono, WhatsApp y comentarios sobre tu solicitud.",
     leadThanks: "Gracias. Tu solicitud fue enviada a un asesor humano de Vialterna, quien dará seguimiento con los datos de contacto proporcionados.",
+    submitLead: "Enviar solicitud",
     consentRequired: "Acepta el Aviso de Privacidad para que un experto pueda contactarte.",
     missingLead: "Completa nombre, apellido, email, teléfono, WhatsApp y comentarios.",
     qualificationPrompt: "Antes de pedirte tus datos, cuéntame sobre tu empresa, el número y tipo de sitios, el problema actual o la solución que buscas y la urgencia.",
@@ -185,15 +193,20 @@
   };
   const hideLeadForm = () => {
     leadFormVisible = false;
+    form?.classList.remove("is-lead-form");
+    panel?.classList.remove("has-lead-form");
     leadFields?.setAttribute("hidden", "");
     if (input) {
       input.required = true;
       input.placeholder = copy.placeholder;
       input.value = "";
     }
+    setText("[data-send]", copy.send);
   };
   const showLeadForm = (message: string) => {
     leadFormVisible = true;
+    form?.classList.add("is-lead-form");
+    panel?.classList.add("has-lead-form");
     leadFields?.removeAttribute("hidden");
     if (detailsInput && !detailsInput.value.trim()) detailsInput.value = message;
     if (input) {
@@ -201,6 +214,7 @@
       input.value = "";
       input.placeholder = copy.details;
     }
+    setText("[data-send]", copy.submitLead);
     const prompt = document.createElement("p");
     prompt.className = "bot";
     prompt.textContent = copy.leadPrompt;
@@ -310,6 +324,8 @@
   close?.addEventListener("click", closePanel);
   privacyOpen?.addEventListener("click", () => privacy?.removeAttribute("hidden"));
   privacyClose?.addEventListener("click", () => privacy?.setAttribute("hidden", ""));
+  scrollUp?.addEventListener("click", () => messages?.scrollBy({ top: -180, behavior: "smooth" }));
+  scrollDown?.addEventListener("click", () => messages?.scrollBy({ top: 180, behavior: "smooth" }));
   consentInput?.addEventListener("click", (event) => {
     const recordedConsent = localStorage.getItem("oliviaConsent:vialterna") === "accepted";
     if (!recordedConsent) {
@@ -512,4 +528,12 @@
   .olivia__reply li{margin:0 0 7px;padding-left:2px}
   .olivia__reply strong{display:inline;color:inherit;font:inherit;font-weight:800;text-transform:none}
   .olivia__reply .olivia__question{margin-top:11px;padding-top:10px;border-top:1px solid #ceb27a52;color:#f4d99f;font-weight:700}
+  .olivia__scroll-controls{display:flex;justify-content:flex-end;gap:7px;padding:6px 12px;background:#171717;border-top:1px solid #ffffff12}
+  .olivia__scroll-controls button{display:grid;place-items:center;width:32px;height:32px;padding:0;border:1px solid #ceb27a70!important;background:#24211d!important;color:#f1d99f!important;font-size:18px;line-height:1}
+  .olivia__panel.has-lead-form .olivia__messages{height:145px}
+  .olivia form.is-lead-form{max-height:390px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:#ceb27a #171717}
+  .olivia form.is-lead-form input[data-input]{display:none}
+  .olivia form.is-lead-form>div:last-child{position:sticky;bottom:-12px;z-index:2;display:block;margin:10px -12px -12px;padding:10px 12px 12px;background:#101010}
+  .olivia form.is-lead-form button[data-send]{display:block;width:100%;min-height:44px;padding:11px 16px;border-radius:14px}
+  @media(max-width:560px){.olivia__panel.has-lead-form .olivia__messages{height:120px}.olivia form.is-lead-form{max-height:52vh}.olivia__scroll-controls{padding:5px 10px}.olivia__scroll-controls button{width:30px;height:30px}}
 </style>
