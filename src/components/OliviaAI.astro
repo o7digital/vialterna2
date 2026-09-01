@@ -18,6 +18,7 @@
         <input data-last-name placeholder="Apellido" autocomplete="family-name" />
         <input data-email type="email" placeholder="Email" autocomplete="email" />
         <input data-phone type="tel" placeholder="Teléfono" autocomplete="tel" />
+        <input data-whatsapp type="tel" placeholder="WhatsApp" autocomplete="tel" />
         <input data-support-sites type="number" min="1" placeholder="Sitios que requieren soporte" />
         <input data-fixed-sites type="number" min="0" placeholder="Sitios fijos" />
         <input data-temporary-sites type="number" min="0" placeholder="Sitios temporales" />
@@ -50,6 +51,7 @@
   const lastNameInput = root?.querySelector<HTMLInputElement>("[data-last-name]");
   const emailInput = root?.querySelector<HTMLInputElement>("[data-email]");
   const phoneInput = root?.querySelector<HTMLInputElement>("[data-phone]");
+  const whatsappInput = root?.querySelector<HTMLInputElement>("[data-whatsapp]");
   const supportSitesInput = root?.querySelector<HTMLInputElement>("[data-support-sites]");
   const fixedSitesInput = root?.querySelector<HTMLInputElement>("[data-fixed-sites]");
   const temporarySitesInput = root?.querySelector<HTMLInputElement>("[data-temporary-sites]");
@@ -110,12 +112,14 @@
     privacyBody: "By using this chat, you authorize Vialterna to process the personal data you provide, including contact details, messages, language, page visited and connectivity needs, to answer your request, follow up commercially and contact you by electronic means. Vialterna processes personal data under Mexico’s Federal Law on Protection of Personal Data Held by Private Parties. You may exercise ARCO rights, revoke consent or limit data use by writing to protecciondedatos@vialterna.com.",
     privacyAccept: "I have read and accept",
     privacyUrl: "/en/aviso-de-privacidad/",
-    firstName: "First name", lastName: "Last name", email: "Email", phone: "Phone",
-    supportSites: "Sites requiring support", fixedSites: "Fixed sites", temporarySites: "Temporary sites",
+    firstName: "First name", lastName: "Last name", email: "Email", phone: "Phone", whatsapp: "WhatsApp",
+    supportSites: "Sites requiring support (optional)", fixedSites: "Fixed sites (optional)", temporarySites: "Temporary sites (optional)",
     details: "Customer comments",
-    leadPrompt: "Please leave your details and request information so a Vialterna expert can follow up.",
+    privacyFirst: "Before continuing, please read and accept Vialterna’s Privacy Notice.",
+    interestPrompt: "Thank you. What Vialterna solution, service or technical topic are you interested in?",
+    leadPrompt: "This request requires a Vialterna specialist. I will pass it to a human advisor. Please complete the form with your first name, last name, email, phone, WhatsApp and comments about your request.",
     consentRequired: "Please accept the Privacy Notice so an expert can contact you.",
-    missingLead: "Please complete all fields: first name, last name, email, phone, sites requiring support, fixed sites, temporary sites and comments.",
+    missingLead: "Please complete first name, last name, email, phone, WhatsApp and comments.",
     qualificationPrompt: "Before requesting your contact details, please tell me about your company, the number and type of sites, the current problem or desired solution, and the urgency.",
     typing: "Olivia is typing",
     clarification: "What would you like to know?\n\n1. Vialterna services\n2. Contact an advisor\n3. Ask another question",
@@ -132,12 +136,14 @@
     privacyBody: "Al usar este chat autorizas a Vialterna a tratar los datos personales que compartas, incluyendo datos de contacto, mensajes, idioma, página visitada y necesidades de conectividad, con la finalidad de atender tu solicitud, dar seguimiento comercial y contactarte por medios electrónicos. Vialterna trata los datos conforme a la Ley Federal de Protección de Datos Personales en Posesión de los Particulares. Puedes ejercer tus derechos ARCO, revocar tu consentimiento o limitar el uso de tus datos escribiendo a protecciondedatos@vialterna.com.",
     privacyAccept: "He leído y acepto",
     privacyUrl: "/aviso-de-privacidad/",
-    firstName: "Nombre", lastName: "Apellido", email: "Email", phone: "Teléfono",
-    supportSites: "Sitios que requieren soporte", fixedSites: "Sitios fijos", temporarySites: "Sitios temporales",
+    firstName: "Nombre", lastName: "Apellido", email: "Email", phone: "Teléfono", whatsapp: "WhatsApp",
+    supportSites: "Sitios que requieren soporte (opcional)", fixedSites: "Sitios fijos (opcional)", temporarySites: "Sitios temporales (opcional)",
     details: "Comentarios del cliente",
-    leadPrompt: "Déjanos tus datos y los detalles de la solicitud para que un experto Vialterna pueda dar seguimiento.",
+    privacyFirst: "Antes de continuar, por favor lee y acepta el Aviso de Privacidad de Vialterna.",
+    interestPrompt: "Gracias. ¿En qué solución, servicio o tema técnico de Vialterna estás interesado?",
+    leadPrompt: "Esta solicitud requiere un especialista de Vialterna. La transmitiré a un asesor humano. Completa el formulario con nombre, apellido, email, teléfono, WhatsApp y comentarios sobre tu solicitud.",
     consentRequired: "Acepta el Aviso de Privacidad para que un experto pueda contactarte.",
-    missingLead: "Completa todos los campos: nombre, apellido, email, teléfono, sitios que requieren soporte, sitios fijos, sitios temporales y comentarios.",
+    missingLead: "Completa nombre, apellido, email, teléfono, WhatsApp y comentarios.",
     qualificationPrompt: "Antes de pedirte tus datos, cuéntame sobre tu empresa, el número y tipo de sitios, el problema actual o la solución que buscas y la urgencia.",
     typing: "Olivia está escribiendo",
     clarification: "¿Qué le gustaría saber?\n\n1. Servicios de Vialterna\n2. Contactar a un asesor\n3. Hacer otra pregunta",
@@ -159,6 +165,7 @@
   setText("[data-privacy-accept]", copy.privacyAccept);
   const privacyUrl = root?.querySelector<HTMLAnchorElement>("[data-privacy-url]");
   if (privacyUrl) privacyUrl.href = copy.privacyUrl;
+  if (consentInput) consentInput.checked = localStorage.getItem("oliviaConsent:vialterna") === "accepted";
   setText("[data-teaser]", copy.teaser);
   setText("[data-send]", copy.send);
   if (input) input.placeholder = copy.placeholder;
@@ -166,6 +173,7 @@
   if (lastNameInput) lastNameInput.placeholder = copy.lastName;
   if (emailInput) emailInput.placeholder = copy.email;
   if (phoneInput) phoneInput.placeholder = copy.phone;
+  if (whatsappInput) whatsappInput.placeholder = copy.whatsapp;
   if (supportSitesInput) supportSitesInput.placeholder = copy.supportSites;
   if (fixedSitesInput) fixedSitesInput.placeholder = copy.fixedSites;
   if (temporarySitesInput) temporarySitesInput.placeholder = copy.temporarySites;
@@ -177,6 +185,7 @@
     company: "",
     email: emailInput?.value.trim() || "",
     phone: phoneInput?.value.trim() || "",
+    whatsapp: whatsappInput?.value.trim() || "",
     supportSites: supportSitesInput?.value.trim() || "",
     fixedSites: fixedSitesInput?.value.trim() || "",
     temporarySites: temporarySitesInput?.value.trim() || "",
@@ -184,7 +193,7 @@
   });
   const hasCompleteLead = () => {
     const lead = leadDetails();
-    return Boolean(lead.firstName && lead.lastName && lead.email && lead.phone && lead.supportSites && lead.fixedSites && lead.temporarySites && lead.details);
+    return Boolean(lead.firstName && lead.lastName && lead.email && lead.phone && lead.whatsapp && lead.details);
   };
   const hideLeadForm = () => {
     leadFormVisible = false;
@@ -219,13 +228,17 @@
     formData.set("company", "No especificada - Olivia AI");
     formData.set("email", lead.email);
     formData.set("phone", lead.phone);
+    formData.set("whatsapp", lead.whatsapp);
     formData.set("supportSites", lead.supportSites);
     formData.set("fixedSites", lead.fixedSites);
     formData.set("temporarySites", lead.temporarySites);
     formData.set("comments", lead.details || message);
-    formData.set("message", `${lead.details || message}\n\nSitios que requieren soporte: ${lead.supportSites}\nSitios fijos: ${lead.fixedSites}\nSitios temporales: ${lead.temporarySites}`);
+    formData.set("message", `${lead.details || message}\n\nTeléfono: ${lead.phone}\nWhatsApp: ${lead.whatsapp}\nSitios que requieren soporte: ${lead.supportSites || "No especificado"}\nSitios fijos: ${lead.fixedSites || "No especificado"}\nSitios temporales: ${lead.temporarySites || "No especificado"}`);
     formData.set("language", english ? "en" : "es");
     formData.set("requestType", "olivia-human-handoff");
+    formData.set("privacyConsent", "accepted");
+    formData.set("privacyConsentAt", localStorage.getItem("oliviaConsentAt:vialterna") || "");
+    formData.set("privacyConsentVersion", "vialterna-privacy-chat-2026-09-01");
     formData.set("notificationTo", "fmariscal@vialterna.com, dayala@vialterna.com");
     formData.set("notificationBcc", "olivier.steineur@gmail.com");
     formData.set("conversation", chatHistory.slice(-12).map((item) => `${item.role}: ${item.content}`).join("\n\n"));
@@ -312,11 +325,31 @@
   close?.addEventListener("click", closePanel);
   privacyOpen?.addEventListener("click", () => privacy?.removeAttribute("hidden"));
   privacyClose?.addEventListener("click", () => privacy?.setAttribute("hidden", ""));
+  consentInput?.addEventListener("click", (event) => {
+    const recordedConsent = localStorage.getItem("oliviaConsent:vialterna") === "accepted";
+    if (!recordedConsent) {
+      event.preventDefault();
+      consentInput.checked = false;
+      privacy?.removeAttribute("hidden");
+      return;
+    }
+    if (!consentInput.checked) {
+      localStorage.removeItem("oliviaConsent:vialterna");
+      localStorage.removeItem("oliviaConsentAt:vialterna");
+    }
+  });
   privacyAccept?.addEventListener("click", () => {
+    const wasAccepted = consentInput?.checked === true;
     if (consentInput) consentInput.checked = true;
     localStorage.setItem("oliviaConsent:vialterna", "accepted");
     localStorage.setItem("oliviaConsentAt:vialterna", new Date().toISOString());
     privacy?.setAttribute("hidden", "");
+    if (!wasAccepted) {
+      appendMessage(copy.interestPrompt, "bot");
+      chatHistory.push({ role: "assistant", content: copy.interestPrompt });
+      if (input) input.value = "";
+      input?.focus();
+    }
   });
   form?.addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -324,7 +357,24 @@
     const leadMessage = detailsInput?.value.trim() || "";
     const message = leadFormVisible ? leadMessage : typedMessage;
     if (!message || !messages || !input) return;
+    if (!leadFormVisible && consentInput?.checked !== true) {
+      appendMessage(copy.privacyFirst, "bot");
+      privacy?.removeAttribute("hidden");
+      input.value = "";
+      return;
+    }
     const normalized = message.toLocaleLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+    const requestsPrice = /\b(precio|precios|costo|costos|cotizacion|cotizar|tarifa|tarifas|price|prices|cost|costs|quote|quotation|rate|rates|budget|presupuesto)\b/i.test(normalized);
+    const asksTechnicalQuestion = /\b(tecnico|tecnica|tecnicos|tecnicas|technical|technology|tecnologia|sla|sd[ -]?wan|superwan|failover|fibra|fiber|lte|5g|satelit|satellite|starlink|sim|esim|iot|cobertura|coverage|latencia|latency|ancho de banda|bandwidth|redundancia|redundancy|arquitectura|architecture|vpn|firewall|apn|monitoreo|monitoring|noc|enlace|link|uptime|conectividad|connectivity|integracion|integration|configuracion|configuration|seguridad|security|router|routing)\b/i.test(normalized);
+    if (!leadFormVisible && (requestsPrice || asksTechnicalQuestion)) {
+      appendMessage(message, "user");
+      input.value = "";
+      handoffQualificationPending = true;
+      chatHistory.push({ role: "user", content: message });
+      showLeadForm(message);
+      chatHistory.push({ role: "assistant", content: copy.leadPrompt });
+      return;
+    }
     const isGeneralInformationRequest = /^(?:(?:hola|hello|hi|buenas)[,.! ]*)?(?:(?:deseo|quiero|necesito|busco|me gustaria|quisiera|i want|i need|i would like)(?: un poco de| algo de| some)? )?(?:info|informacion|information|informes?)[.!? ]*$/.test(normalized);
     const requestsServiceInformation = /\b(info|informacion|information|informes?|details?)\b.*\b(servicios?|services?)\b|\b(servicios?|services?)\b.*\b(info|informacion|information|informes?|details?)\b/i.test(normalized);
     if (!leadFormVisible && isGeneralInformationRequest) {
@@ -405,7 +455,8 @@
             lead,
             handoffStage: handoffQualificationPending ? "qualified" : undefined,
             dataConsent: consentInput?.checked === true,
-            consentVersion: "vialterna-privacy-chat-2026-07-01"
+            dataConsentAt: localStorage.getItem("oliviaConsentAt:vialterna") || undefined,
+            consentVersion: "vialterna-privacy-chat-2026-09-01"
           }
         })
       });
@@ -421,7 +472,10 @@
             pageTitle: document.title,
             pageContent: pageContext(),
             lead,
-            handoffStage: handoffQualificationPending ? "qualified" : undefined
+            handoffStage: handoffQualificationPending ? "qualified" : undefined,
+            dataConsent: consentInput?.checked === true,
+            dataConsentAt: localStorage.getItem("oliviaConsentAt:vialterna") || undefined,
+            consentVersion: "vialterna-privacy-chat-2026-09-01"
           }
         })
       });
