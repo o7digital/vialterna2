@@ -23,6 +23,7 @@
         <input data-email type="email" placeholder="Email" autocomplete="email" />
         <input data-company placeholder="Empresa" autocomplete="organization" />
         <input data-phone type="tel" placeholder="Teléfono" autocomplete="tel" />
+        <textarea data-need placeholder="Necesidad" rows="3"></textarea>
       </div>
       <div><input data-input required placeholder="Escribe tu pregunta…" /><button data-send>Enviar</button></div>
     </form>
@@ -52,6 +53,7 @@
   const emailInput = root?.querySelector<HTMLInputElement>("[data-email]");
   const companyInput = root?.querySelector<HTMLInputElement>("[data-company]");
   const phoneInput = root?.querySelector<HTMLInputElement>("[data-phone]");
+  const needInput = root?.querySelector<HTMLTextAreaElement>("[data-need]");
   const messages = root?.querySelector("[data-messages]");
   const consentInput = root?.querySelector<HTMLInputElement>("[data-consent]");
   const privacy = root?.querySelector("[data-privacy]");
@@ -111,7 +113,7 @@
     privacyBody: "By using this chat, you authorize Vialterna to process the personal data you provide, including contact details, messages, language, page visited and connectivity needs, to answer your request, follow up commercially and contact you by electronic means. Vialterna processes personal data under Mexico’s Federal Law on Protection of Personal Data Held by Private Parties. You may exercise ARCO rights, revoke consent or limit data use by writing to protecciondedatos@vialterna.com.",
     privacyAccept: "I have read and accept",
     privacyUrl: "/en/aviso-de-privacidad/",
-    firstName: "First name", lastName: "Last name", email: "Email", company: "Company", phone: "Phone",
+    firstName: "First name", lastName: "Last name", email: "Email", company: "Company", phone: "Phone", need: "Request",
     privacyFirst: "Before continuing, please read and accept Vialterna’s Privacy Notice.",
     interestPrompt: "Thank you. Please complete the form and a Vialterna advisor will contact you.",
     leadPrompt: "Of course, with pleasure. Could you please share your contact details so a Vialterna advisor can assist you?",
@@ -119,7 +121,7 @@
     leadThanks: "Thank you. Your request has been sent to a Vialterna human advisor, who will follow up using the contact details you provided.",
     submitLead: "Send request",
     consentRequired: "Please accept the Privacy Notice so an expert can contact you.",
-    missingLead: "Please complete first name, last name, email, company and phone number.",
+    missingLead: "Please complete first name, last name, company, email, phone number and request.",
     qualificationPrompt: "Before requesting your contact details, please tell me about your company, the number and type of sites, the current problem or desired solution, and the urgency.",
     typing: "Olivia is typing",
     clarification: "What would you like to know?\n\n1. Vialterna services\n2. Contact an advisor\n3. Ask another question",
@@ -136,7 +138,7 @@
     privacyBody: "Al usar este chat autorizas a Vialterna a tratar los datos personales que compartas, incluyendo datos de contacto, mensajes, idioma, página visitada y necesidades de conectividad, con la finalidad de atender tu solicitud, dar seguimiento comercial y contactarte por medios electrónicos. Vialterna trata los datos conforme a la Ley Federal de Protección de Datos Personales en Posesión de los Particulares. Puedes ejercer tus derechos ARCO, revocar tu consentimiento o limitar el uso de tus datos escribiendo a protecciondedatos@vialterna.com.",
     privacyAccept: "He leído y acepto",
     privacyUrl: "/aviso-de-privacidad/",
-    firstName: "Nombre", lastName: "Apellido", email: "Email", company: "Empresa", phone: "Teléfono",
+    firstName: "Nombre", lastName: "Apellido", email: "Email", company: "Empresa", phone: "Teléfono", need: "Necesidad",
     privacyFirst: "Antes de continuar, por favor lee y acepta el Aviso de Privacidad de Vialterna.",
     interestPrompt: "Gracias. Completa el formulario y un asesor de Vialterna se pondrá en contacto contigo.",
     leadPrompt: "Claro, con gusto. ¿Me podrías compartir tus datos para que un asesor de Vialterna pueda atenderte?",
@@ -144,7 +146,7 @@
     leadThanks: "Gracias. Tu solicitud fue enviada a un asesor humano de Vialterna, quien dará seguimiento con los datos de contacto proporcionados.",
     submitLead: "Enviar solicitud",
     consentRequired: "Acepta el Aviso de Privacidad para que un experto pueda contactarte.",
-    missingLead: "Completa nombre, apellido, email, empresa y teléfono.",
+    missingLead: "Completa nombre, apellido, empresa, email, teléfono y necesidad.",
     qualificationPrompt: "Antes de pedirte tus datos, cuéntame sobre tu empresa, el número y tipo de sitios, el problema actual o la solución que buscas y la urgencia.",
     typing: "Olivia está escribiendo",
     clarification: "¿Qué le gustaría saber?\n\n1. Servicios de Vialterna\n2. Contactar a un asesor\n3. Hacer otra pregunta",
@@ -175,6 +177,7 @@
   if (emailInput) emailInput.placeholder = copy.email;
   if (companyInput) companyInput.placeholder = copy.company;
   if (phoneInput) phoneInput.placeholder = copy.phone;
+  if (needInput) needInput.placeholder = copy.need;
   const leadDetails = () => ({
     firstName: firstNameInput?.value.trim() || "",
     lastName: lastNameInput?.value.trim() || "",
@@ -182,10 +185,11 @@
     company: companyInput?.value.trim() || "",
     email: emailInput?.value.trim() || "",
     phone: phoneInput?.value.trim() || "",
+    need: needInput?.value.trim() || "",
   });
   const hasCompleteLead = () => {
     const lead = leadDetails();
-    return Boolean(lead.firstName && lead.lastName && lead.email && lead.company && lead.phone);
+    return Boolean(lead.firstName && lead.lastName && lead.email && lead.company && lead.phone && lead.need);
   };
   const hideLeadForm = () => {
     leadFormVisible = false;
@@ -227,7 +231,8 @@
     formData.set("company", lead.company);
     formData.set("email", lead.email);
     formData.set("phone", lead.phone);
-    formData.set("message", message);
+    formData.set("need", lead.need);
+    formData.set("message", `${message}\n\nNecesidad: ${lead.need}`);
     formData.set("language", english ? "en" : "es");
     formData.set("requestType", "olivia-human-handoff");
     formData.set("privacyConsent", "accepted");
