@@ -114,7 +114,7 @@
     firstName: "First name", lastName: "Last name", email: "Email", company: "Company", phone: "Phone",
     privacyFirst: "Before continuing, please read and accept Vialterna’s Privacy Notice.",
     interestPrompt: "Thank you. Please complete the form and a Vialterna advisor will contact you.",
-    leadPrompt: "A Vialterna advisor will personally assist you. Please complete the form with your first name, last name, email, company and phone number.",
+    leadPrompt: "Of course, with pleasure. Could you please share your contact details so a Vialterna advisor can assist you?",
     leadThanks: "Thank you. Your request has been sent to a Vialterna human advisor, who will follow up using the contact details you provided.",
     submitLead: "Send request",
     consentRequired: "Please accept the Privacy Notice so an expert can contact you.",
@@ -138,7 +138,7 @@
     firstName: "Nombre", lastName: "Apellido", email: "Email", company: "Empresa", phone: "Teléfono",
     privacyFirst: "Antes de continuar, por favor lee y acepta el Aviso de Privacidad de Vialterna.",
     interestPrompt: "Gracias. Completa el formulario y un asesor de Vialterna se pondrá en contacto contigo.",
-    leadPrompt: "Un asesor de Vialterna atenderá personalmente tu solicitud. Completa el formulario con nombre, apellido, email, empresa y teléfono.",
+    leadPrompt: "Claro, con gusto. ¿Me podrías compartir tus datos para que un asesor de Vialterna pueda atenderte?",
     leadThanks: "Gracias. Tu solicitud fue enviada a un asesor humano de Vialterna, quien dará seguimiento con los datos de contacto proporcionados.",
     submitLead: "Enviar solicitud",
     consentRequired: "Acepta el Aviso de Privacidad para que un experto pueda contactarte.",
@@ -331,14 +331,11 @@
     }
   });
   privacyAccept?.addEventListener("click", () => {
-    const wasAccepted = consentInput?.checked === true;
     if (consentInput) consentInput.checked = true;
     localStorage.setItem("oliviaConsent:vialterna", "accepted");
     localStorage.setItem("oliviaConsentAt:vialterna", new Date().toISOString());
     privacy?.setAttribute("hidden", "");
-    if (!wasAccepted) {
-      showLeadForm(pendingContactMessage || (english ? "General information request" : "Solicitud general de información"));
-    }
+    input?.focus();
   });
   form?.addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -346,12 +343,7 @@
     const message = leadFormVisible ? pendingContactMessage : typedMessage;
     if (!message || !messages || !input) return;
     if (!leadFormVisible && consentInput?.checked !== true) {
-      pendingContactMessage = message;
-      appendMessage(message, "user");
-      chatHistory.push({ role: "user", content: message });
-      appendMessage(copy.privacyFirst, "bot");
       privacy?.removeAttribute("hidden");
-      input.value = "";
       return;
     }
     const normalized = message.toLocaleLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
