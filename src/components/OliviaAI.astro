@@ -440,7 +440,8 @@
       if (data.nextAction === "qualify_business_need") handoffQualificationPending = true;
       const normalized = message.toLocaleLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
       const isGreetingOnly = /^(?:(?:hola|hello|hi|hey|buen dia|buenos dias|buenas tardes|buenas noches|good morning|good afternoon|good evening|que tal|como estas|how are you)[,.!¿?¡ ]*)+$/.test(normalized.trim());
-      const requestsCommercialFollowUp = /\b(precio|precios|costo|costos|cotizacion|cotizar|presupuesto|asesor|experto|llamada|contactarme|price|prices|cost|costs|quote|quotation|budget|advisor|expert|call me|contact me)\b/i.test(normalized);
+      const requestsPrice = /\b(precio|precios|costo|costos|cotizacion|cotizar|presupuesto|price|prices|cost|costs|quote|quotation|budget)\b/i.test(normalized);
+      const requestsCommercialFollowUp = requestsPrice || /\b(asesor|experto|llamada|contactarme|advisor|expert|call me|contact me)\b/i.test(normalized);
       const visitorTurnCount = chatHistory.filter((item) => item.role === "user").length;
       const requiresHumanHandoff = data.handoffRecommended === true
         || data.intent === "handoff"
@@ -450,8 +451,10 @@
       const completedShortConversation = !isGreetingOnly && visitorTurnCount >= 2;
       if ((completedShortConversation || requestsCommercialFollowUp || requiresHumanHandoff) && !hubspotLeadSubmitted && !leadFormVisible) {
         handoffQualificationPending = true;
-        appendMessage(copy.formTransition, "bot");
-        chatHistory.push({ role: "assistant", content: copy.formTransition });
+        if (!requestsPrice) {
+          appendMessage(copy.formTransition, "bot");
+          chatHistory.push({ role: "assistant", content: copy.formTransition });
+        }
         const formDelay = 5000 + Math.floor(Math.random() * 7001);
         await new Promise((resolve) => window.setTimeout(resolve, formDelay));
         showLeadForm(message, false);
