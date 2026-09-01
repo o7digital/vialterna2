@@ -113,7 +113,6 @@
     privacyUrl: "/en/aviso-de-privacidad/",
     firstName: "First name", lastName: "Last name", email: "Email", company: "Company", phone: "Phone",
     privacyFirst: "Before continuing, please read and accept Vialterna’s Privacy Notice.",
-    greetingReply: "Hello! How can we help you?",
     interestPrompt: "Thank you. Please complete the form and a Vialterna advisor will contact you.",
     leadPrompt: "Of course, with pleasure. Could you please share your contact details so a Vialterna advisor can assist you?",
     leadThanks: "Thank you. Your request has been sent to a Vialterna human advisor, who will follow up using the contact details you provided.",
@@ -138,7 +137,6 @@
     privacyUrl: "/aviso-de-privacidad/",
     firstName: "Nombre", lastName: "Apellido", email: "Email", company: "Empresa", phone: "Teléfono",
     privacyFirst: "Antes de continuar, por favor lee y acepta el Aviso de Privacidad de Vialterna.",
-    greetingReply: "Hola, buenas tardes. ¿En qué podemos ayudarte?",
     interestPrompt: "Gracias. Completa el formulario y un asesor de Vialterna se pondrá en contacto contigo.",
     leadPrompt: "Claro, con gusto. ¿Me podrías compartir tus datos para que un asesor de Vialterna pueda atenderte?",
     leadThanks: "Gracias. Tu solicitud fue enviada a un asesor humano de Vialterna, quien dará seguimiento con los datos de contacto proporcionados.",
@@ -348,62 +346,6 @@
       privacy?.removeAttribute("hidden");
       return;
     }
-    const normalized = message.toLocaleLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
-    const isGreetingOnly = /^(?:(?:hola|hello|hi|hey|buen dia|buenos dias|buenas tardes|buenas noches|good morning|good afternoon|good evening|que tal|como estas|how are you)[,.!¿?¡ ]*)+$/.test(normalized);
-    if (!leadFormVisible && isGreetingOnly) {
-      appendMessage(message, "user");
-      input.value = "";
-      appendMessage(copy.greetingReply, "bot");
-      chatHistory.push({ role: "user", content: message }, { role: "assistant", content: copy.greetingReply });
-      return;
-    }
-    if (!leadFormVisible) {
-      appendMessage(message, "user");
-      input.value = "";
-      chatHistory.push({ role: "user", content: message });
-      handoffQualificationPending = true;
-      showLeadForm(message);
-      chatHistory.push({ role: "assistant", content: copy.leadPrompt });
-      return;
-    }
-    const requestsPrice = /\b(precio|precios|costo|costos|cotizacion|cotizar|tarifa|tarifas|price|prices|cost|costs|quote|quotation|rate|rates|budget|presupuesto)\b/i.test(normalized);
-    const asksTechnicalQuestion = /\b(tecnico|tecnica|tecnicos|tecnicas|technical|technology|tecnologia|sla|sd[ -]?wan|superwan|failover|fibra|fiber|lte|5g|satelit|satellite|starlink|sim|esim|iot|cobertura|coverage|latencia|latency|ancho de banda|bandwidth|redundancia|redundancy|arquitectura|architecture|vpn|firewall|apn|monitoreo|monitoring|noc|enlace|link|uptime|conectividad|connectivity|integracion|integration|configuracion|configuration|seguridad|security|router|routing)\b/i.test(normalized);
-    if (!leadFormVisible && (requestsPrice || asksTechnicalQuestion)) {
-      appendMessage(message, "user");
-      input.value = "";
-      handoffQualificationPending = true;
-      chatHistory.push({ role: "user", content: message });
-      showLeadForm(message);
-      chatHistory.push({ role: "assistant", content: copy.leadPrompt });
-      return;
-    }
-    const isGeneralInformationRequest = /^(?:(?:hola|hello|hi|buenas)[,.! ]*)?(?:(?:deseo|quiero|necesito|busco|me gustaria|quisiera|i want|i need|i would like)(?: un poco de| algo de| some)? )?(?:info|informacion|information|informes?)[.!? ]*$/.test(normalized);
-    const requestsServiceInformation = /\b(info|informacion|information|informes?|details?)\b.*\b(servicios?|services?)\b|\b(servicios?|services?)\b.*\b(info|informacion|information|informes?|details?)\b/i.test(normalized);
-    if (!leadFormVisible && isGeneralInformationRequest) {
-      appendMessage(message, "user");
-      input.value = "";
-      appendMessage(copy.clarification, "bot");
-      chatHistory.push({ role: "user", content: message }, { role: "assistant", content: copy.clarification });
-      awaitingClarificationChoice = true;
-      return;
-    }
-    if (!leadFormVisible && awaitingClarificationChoice && normalized === "2") {
-      appendMessage(message, "user");
-      input.value = "";
-      awaitingClarificationChoice = false;
-      handoffQualificationPending = true;
-      appendMessage(copy.qualificationPrompt, "bot");
-      chatHistory.push({ role: "user", content: message }, { role: "assistant", content: copy.qualificationPrompt });
-      return;
-    }
-    if (!leadFormVisible && awaitingClarificationChoice && normalized === "3") {
-      appendMessage(message, "user");
-      input.value = "";
-      appendMessage(copy.otherQuestion, "bot");
-      chatHistory.push({ role: "user", content: message }, { role: "assistant", content: copy.otherQuestion });
-      awaitingClarificationChoice = false;
-      return;
-    }
     if (!hubspotLeadSubmitted && !hasCompleteLead()) {
       if (leadFormVisible) {
         const warning = document.createElement("p");
@@ -422,10 +364,7 @@
       messages.scrollTop = messages.scrollHeight;
       return;
     }
-    const apiMessage = awaitingClarificationChoice && normalized === "1"
-      ? (english ? "What services does Vialterna offer?" : "¿Qué servicios ofrece Vialterna?")
-      : message;
-    awaitingClarificationChoice = false;
+    const apiMessage = message;
     const lead = leadDetails();
     const history = chatHistory.slice(-10);
     chatHistory.push({ role: "user", content: message });
@@ -495,13 +434,20 @@
       chatHistory.push({ role: "assistant", content: reply });
       await revealReply(pending, reply);
       if (data.nextAction === "qualify_business_need") handoffQualificationPending = true;
+      const normalized = message.toLocaleLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+      const isGreetingOnly = /^(?:(?:hola|hello|hi|hey|buen dia|buenos dias|buenas tardes|buenas noches|good morning|good afternoon|good evening|que tal|como estas|how are you)[,.!¿?¡ ]*)+$/.test(normalized.trim());
+      const requestsCommercialFollowUp = /\b(precio|precios|costo|costos|cotizacion|cotizar|presupuesto|asesor|experto|llamada|contactarme|price|prices|cost|costs|quote|quotation|budget|advisor|expert|call me|contact me)\b/i.test(normalized);
+      const visitorTurnCount = chatHistory.filter((item) => item.role === "user").length;
       const requiresHumanHandoff = data.handoffRecommended === true
         || data.intent === "handoff"
         || data.phase === "human_handoff"
         || data.nextAction === "offer_human_operator"
         || data.action === "show_lead_form";
-      if ((requiresHumanHandoff || requestsServiceInformation) && !hubspotLeadSubmitted && !leadFormVisible) {
-        if (requestsServiceInformation) handoffQualificationPending = true;
+      const completedShortConversation = !isGreetingOnly && (
+        visitorTurnCount >= 2 || data.nextAction !== "clarify_need"
+      );
+      if ((completedShortConversation || requestsCommercialFollowUp || requiresHumanHandoff) && !hubspotLeadSubmitted && !leadFormVisible) {
+        handoffQualificationPending = true;
         showLeadForm(message);
       }
       void oliviaFetch(`${api}/widget/conversations`, {
