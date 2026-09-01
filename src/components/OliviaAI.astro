@@ -115,6 +115,7 @@
     privacyFirst: "Before continuing, please read and accept Vialterna’s Privacy Notice.",
     interestPrompt: "Thank you. Please complete the form and a Vialterna advisor will contact you.",
     leadPrompt: "Of course, with pleasure. Could you please share your contact details so a Vialterna advisor can assist you?",
+    formTransition: "Of course, with pleasure. I’ll share a short form where you can leave your details so a Vialterna advisor can contact you.",
     leadThanks: "Thank you. Your request has been sent to a Vialterna human advisor, who will follow up using the contact details you provided.",
     submitLead: "Send request",
     consentRequired: "Please accept the Privacy Notice so an expert can contact you.",
@@ -139,6 +140,7 @@
     privacyFirst: "Antes de continuar, por favor lee y acepta el Aviso de Privacidad de Vialterna.",
     interestPrompt: "Gracias. Completa el formulario y un asesor de Vialterna se pondrá en contacto contigo.",
     leadPrompt: "Claro, con gusto. ¿Me podrías compartir tus datos para que un asesor de Vialterna pueda atenderte?",
+    formTransition: "Claro, con gusto. Le comparto un formulario para que deje sus datos y un asesor de Vialterna pueda contactarle.",
     leadThanks: "Gracias. Tu solicitud fue enviada a un asesor humano de Vialterna, quien dará seguimiento con los datos de contacto proporcionados.",
     submitLead: "Enviar solicitud",
     consentRequired: "Acepta el Aviso de Privacidad para que un experto pueda contactarte.",
@@ -197,7 +199,7 @@
     }
     setText("[data-send]", copy.send);
   };
-  const showLeadForm = (message: string) => {
+  const showLeadForm = (message: string, announce = true) => {
     leadFormVisible = true;
     pendingContactMessage = message;
     form?.classList.add("is-lead-form");
@@ -208,11 +210,13 @@
       input.value = "";
     }
     setText("[data-send]", copy.submitLead);
-    const prompt = document.createElement("p");
-    prompt.className = "bot";
-    prompt.textContent = copy.leadPrompt;
-    messages?.append(prompt);
-    messages?.scrollTo({ top: messages.scrollHeight });
+    if (announce) {
+      const prompt = document.createElement("p");
+      prompt.className = "bot";
+      prompt.textContent = copy.leadPrompt;
+      messages?.append(prompt);
+      messages?.scrollTo({ top: messages.scrollHeight });
+    }
   };
   const submitHubSpotLead = async (message: string) => {
     if (hubspotLeadSubmitted) return;
@@ -446,7 +450,11 @@
       const completedShortConversation = !isGreetingOnly && visitorTurnCount >= 2;
       if ((completedShortConversation || requestsCommercialFollowUp || requiresHumanHandoff) && !hubspotLeadSubmitted && !leadFormVisible) {
         handoffQualificationPending = true;
-        showLeadForm(message);
+        appendMessage(copy.formTransition, "bot");
+        chatHistory.push({ role: "assistant", content: copy.formTransition });
+        const formDelay = 5000 + Math.floor(Math.random() * 7001);
+        await new Promise((resolve) => window.setTimeout(resolve, formDelay));
+        showLeadForm(message, false);
       }
       void oliviaFetch(`${api}/widget/conversations`, {
         method: "PATCH", headers: { "Content-Type": "application/json" },
