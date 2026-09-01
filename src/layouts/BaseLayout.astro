@@ -37,6 +37,20 @@ const additionalStructuredData = Array.isArray(structuredData) ? structuredData 
 <!doctype html>
 <html lang={lang} id="top">
   <head>
+    <script is:inline>
+      (() => {
+        const version = "olivia-v2-20260901-1655";
+        const versionKey = "vialterna-site-version";
+        if (localStorage.getItem(versionKey) === version) return;
+        localStorage.setItem(versionKey, version);
+        localStorage.removeItem("vialterna-visitor-id");
+        const url = new URL(location.href);
+        if (url.searchParams.get("olivia-v") !== version) {
+          url.searchParams.set("olivia-v", version);
+          location.replace(url.toString());
+        }
+      })();
+    </script>
     <!-- Google Tag Manager -->
     <script is:inline>
       (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
