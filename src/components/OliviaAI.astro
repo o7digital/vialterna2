@@ -118,6 +118,7 @@
     privacyFirst: "Before continuing, please read and accept Vialterna’s Privacy Notice.",
     interestPrompt: "Thank you. What Vialterna solution, service or technical topic are you interested in?",
     leadPrompt: "This request requires a Vialterna specialist. I will pass it to a human advisor. Please complete the form with your first name, last name, email, phone, WhatsApp and comments about your request.",
+    leadThanks: "Thank you. Your request has been sent to a Vialterna human advisor, who will follow up using the contact details you provided.",
     consentRequired: "Please accept the Privacy Notice so an expert can contact you.",
     missingLead: "Please complete first name, last name, email, phone, WhatsApp and comments.",
     qualificationPrompt: "Before requesting your contact details, please tell me about your company, the number and type of sites, the current problem or desired solution, and the urgency.",
@@ -142,6 +143,7 @@
     privacyFirst: "Antes de continuar, por favor lee y acepta el Aviso de Privacidad de Vialterna.",
     interestPrompt: "Gracias. ¿En qué solución, servicio o tema técnico de Vialterna estás interesado?",
     leadPrompt: "Esta solicitud requiere un especialista de Vialterna. La transmitiré a un asesor humano. Completa el formulario con nombre, apellido, email, teléfono, WhatsApp y comentarios sobre tu solicitud.",
+    leadThanks: "Gracias. Tu solicitud fue enviada a un asesor humano de Vialterna, quien dará seguimiento con los datos de contacto proporcionados.",
     consentRequired: "Acepta el Aviso de Privacidad para que un experto pueda contactarte.",
     missingLead: "Completa nombre, apellido, email, teléfono, WhatsApp y comentarios.",
     qualificationPrompt: "Antes de pedirte tus datos, cuéntame sobre tu empresa, el número y tipo de sitios, el problema actual o la solución que buscas y la urgencia.",
@@ -437,7 +439,8 @@
     messages.append(pending);
     messages.scrollTop = messages.scrollHeight;
     try {
-      if (leadFormVisible) await submitHubSpotLead(lead.details || message);
+      const submittingLead = leadFormVisible;
+      if (submittingLead) await submitHubSpotLead(lead.details || message);
       const saveVisitorMessage = oliviaFetch(`${api}/widget/conversations`, {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -460,6 +463,12 @@
           }
         })
       });
+      if (submittingLead) {
+        void saveVisitorMessage.catch(() => undefined);
+        chatHistory.push({ role: "assistant", content: copy.leadThanks });
+        await revealReply(pending, copy.leadThanks);
+        return;
+      }
       const chatRequest = oliviaFetch(`${api}/olivia/chat`, {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
