@@ -113,6 +113,7 @@
     privacyUrl: "/en/aviso-de-privacidad/",
     firstName: "First name", lastName: "Last name", email: "Email", company: "Company", phone: "Phone",
     privacyFirst: "Before continuing, please read and accept Vialterna’s Privacy Notice.",
+    greetingReply: "Hello! How can we help you?",
     interestPrompt: "Thank you. Please complete the form and a Vialterna advisor will contact you.",
     leadPrompt: "Of course, with pleasure. Could you please share your contact details so a Vialterna advisor can assist you?",
     leadThanks: "Thank you. Your request has been sent to a Vialterna human advisor, who will follow up using the contact details you provided.",
@@ -137,6 +138,7 @@
     privacyUrl: "/aviso-de-privacidad/",
     firstName: "Nombre", lastName: "Apellido", email: "Email", company: "Empresa", phone: "Teléfono",
     privacyFirst: "Antes de continuar, por favor lee y acepta el Aviso de Privacidad de Vialterna.",
+    greetingReply: "Hola, buenas tardes. ¿En qué podemos ayudarte?",
     interestPrompt: "Gracias. Completa el formulario y un asesor de Vialterna se pondrá en contacto contigo.",
     leadPrompt: "Claro, con gusto. ¿Me podrías compartir tus datos para que un asesor de Vialterna pueda atenderte?",
     leadThanks: "Gracias. Tu solicitud fue enviada a un asesor humano de Vialterna, quien dará seguimiento con los datos de contacto proporcionados.",
@@ -347,6 +349,14 @@
       return;
     }
     const normalized = message.toLocaleLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+    const isGreetingOnly = /^(?:(?:hola|hello|hi|hey|buen dia|buenos dias|buenas tardes|buenas noches|good morning|good afternoon|good evening|que tal|como estas|how are you)[,.!¿?¡ ]*)+$/.test(normalized);
+    if (!leadFormVisible && isGreetingOnly) {
+      appendMessage(message, "user");
+      input.value = "";
+      appendMessage(copy.greetingReply, "bot");
+      chatHistory.push({ role: "user", content: message }, { role: "assistant", content: copy.greetingReply });
+      return;
+    }
     if (!leadFormVisible) {
       appendMessage(message, "user");
       input.value = "";
