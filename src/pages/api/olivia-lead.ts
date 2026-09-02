@@ -35,11 +35,9 @@ export const POST: APIRoute = async ({ request }) => {
   if (payload.consent !== true) return json({ ok: false, error: "Consent required" }, 400);
   if (!emailPattern.test(email) || !name) return json({ ok: false, error: "Name and valid email required" }, 400);
 
-  const [firstname, ...lastParts] = name.split(/\s+/);
   const fields = [
     { objectTypeId: "0-1", name: "email", value: email },
-    { objectTypeId: "0-1", name: "firstname", value: firstname },
-    { objectTypeId: "0-1", name: "lastname", value: lastParts.join(" ") },
+    { objectTypeId: "0-1", name: "firstname", value: name },
     { objectTypeId: "0-1", name: "phone", value: phone },
     { objectTypeId: "0-1", name: "company", value: company || "No especificada - Olivia AI" }
   ];
