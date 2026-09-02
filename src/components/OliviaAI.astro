@@ -223,24 +223,22 @@
   const submitHubSpotLead = async (message: string) => {
     if (hubspotLeadSubmitted) return;
     const lead = leadDetails();
-    const formData = new FormData();
-    formData.set("formspreeEndpoint", "https://formspree.io/f/mzdnjgze");
-    formData.set("name", lead.name);
-    formData.set("company", lead.company);
-    formData.set("email", lead.email);
-    formData.set("phone", lead.phone);
-    formData.set("need", lead.need);
-    formData.set("message", `${message}\n\nNecesidad: ${lead.need}`);
-    formData.set("language", english ? "en" : "es");
-    formData.set("requestType", "olivia-human-handoff");
-    formData.set("privacyConsent", "accepted");
-    formData.set("privacyConsentAt", localStorage.getItem("oliviaConsentAt:vialterna") || "");
-    formData.set("privacyConsentVersion", "vialterna-privacy-chat-2026-09-01");
-    formData.set("notificationTo", "fmariscal@vialterna.com, dayala@vialterna.com");
-    formData.set("notificationBcc", "olivier.steineur@gmail.com");
-    formData.set("conversation", chatHistory.slice(-12).map((item) => `${item.role}: ${item.content}`).join("\n\n"));
-    formData.set("subject", `Olivia Vialterna — solicitud de atención humana — ${lead.name}`);
-    const response = await fetch("/api/contact", { method: "POST", body: formData });
+    const response = await fetch("/api/olivia-lead", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: lead.name,
+        company: lead.company,
+        email: lead.email,
+        phone: lead.phone,
+        language: english ? "en" : "es",
+        consent: consentInput?.checked === true,
+        visitorId,
+        need: lead.need,
+        message,
+        transcript: chatHistory.slice(-12).map((item) => `${item.role}: ${item.content}`).join("\n\n")
+      })
+    });
     if (!response.ok) throw new Error("Lead submission failed");
     hubspotLeadSubmitted = true;
     hideLeadForm();
