@@ -15,6 +15,9 @@
       <button type="button" data-scroll-up aria-label="Mensajes anteriores">↑</button>
       <button type="button" data-scroll-down aria-label="Mensajes siguientes">↓</button>
     </nav>
+    <div class="olivia__form-typing olivia__typing" data-form-typing hidden aria-live="polite">
+      <span data-form-typing-label>Olivia está escribiendo…</span><i></i><i></i><i></i>
+    </div>
     <form data-form>
       <label><input type="checkbox" data-consent /> <span><span data-consent-label>Acepto compartir mis datos para recibir atención de Vialterna.</span> <button type="button" class="olivia__privacy-link" data-privacy-open>Aviso de Privacidad</button></span></label>
       <div class="olivia__lead-fields" data-lead-fields hidden>
@@ -60,6 +63,7 @@
   const privacyAccept = root?.querySelector("[data-privacy-accept]");
   const scrollUp = root?.querySelector("[data-scroll-up]");
   const scrollDown = root?.querySelector("[data-scroll-down]");
+  const formTyping = root?.querySelector<HTMLElement>("[data-form-typing]");
   const api = "https://olivia-ai.o7digital.com/api";
   // Each page visit starts a clean conversation so previous tests cannot skip the greeting.
   const visitorId = crypto.randomUUID();
@@ -167,6 +171,7 @@
   if (consentInput) consentInput.checked = localStorage.getItem("oliviaConsent:vialterna") === "accepted";
   setText("[data-teaser]", copy.teaser);
   setText("[data-send]", copy.send);
+  setText("[data-form-typing-label]", copy.typing);
   if (input) input.placeholder = copy.placeholder;
   if (firstNameInput) firstNameInput.placeholder = copy.firstName;
   if (emailInput) emailInput.placeholder = copy.email;
@@ -444,13 +449,9 @@
         || data.action === "show_lead_form";
       if ((requestsCommercialFollowUp || requiresHumanHandoff) && !hubspotLeadSubmitted && !leadFormVisible) {
         handoffQualificationPending = true;
-        const formPending = document.createElement("div");
-        formPending.className = "bot olivia__typing";
-        formPending.innerHTML = `<span>${copy.typing}</span><i></i><i></i><i></i>`;
-        messages.append(formPending);
-        messages.scrollTo({ top: messages.scrollHeight, behavior: "smooth" });
-        await new Promise((resolve) => window.setTimeout(resolve, 3000));
-        formPending.remove();
+        formTyping?.removeAttribute("hidden");
+        await new Promise((resolve) => window.setTimeout(resolve, 3500));
+        formTyping?.setAttribute("hidden", "");
         showLeadForm(message, false);
       }
       void oliviaFetch(`${api}/widget/conversations`, {
@@ -480,6 +481,8 @@
   .olivia__reply .olivia__question{margin-top:11px;padding-top:10px;border-top:1px solid #ceb27a52;color:#f4d99f;font-weight:700}
   .olivia__scroll-controls{display:flex;justify-content:flex-end;gap:7px;padding:6px 12px;background:#171717;border-top:1px solid #ffffff12}
   .olivia__scroll-controls button{display:grid;place-items:center;width:32px;height:32px;padding:0;border:1px solid #ceb27a70!important;background:#24211d!important;color:#f1d99f!important;font-size:18px;line-height:1}
+  .olivia__form-typing{min-height:42px;padding:10px 16px;background:#171717;border-top:1px solid #ffffff12;color:#ffffffb8!important}
+  .olivia__form-typing[hidden]{display:none!important}
   .olivia__panel.has-lead-form .olivia__messages{height:145px}
   .olivia form.is-lead-form{max-height:390px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:#ceb27a #171717}
   .olivia form.is-lead-form input[data-input]{display:none}
