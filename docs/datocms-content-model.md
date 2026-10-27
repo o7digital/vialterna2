@@ -7,6 +7,14 @@ The site reads editable page content from `SitePage`, blog articles from `Blog`,
 - `DATOCMS_API_TOKEN`: read-only DatoCMS API token.
 - `DATOCMS_ENVIRONMENT`: optional DatoCMS environment name.
 
+## Spanish and English content
+
+Enable localization (`es` and `en`) for all fields containing visible text: homepage card titles, descriptions, eyebrows and visual labels; page SEO, hero copy, CTA labels and sections; solution/industry text, items and benefits; and blog titles, excerpts, content and categories.
+
+Selecting a locale on a collection does not translate fields that are shared between languages. The site checks the model schema and reads only localized editorial fields, with cross-language fallbacks disabled. Shared or missing fields use the site's existing translation; fields with an editor-provided translation remain editable. Build logs identify shared fields that still need localization in DatoCMS.
+
+Homepage card URLs may remain shared: the site maps known Spanish destinations to their English routes and matches each card with its translated fallback. Page CTA URLs should be localized because their destinations differ between Spanish and English.
+
 ## Model: SitePage
 
 Create one record per editable route/area.

@@ -135,10 +135,48 @@ function normalizeHrefForLocale(href: string | undefined, locale: "es" | "en"): 
   return cleanHref;
 }
 
-async function datoRequest<T>(query: string, variables: Record<string, unknown> = {}): Promise<T | null> {
+const localizedFieldsByModel = new Map<string, Promise<Set<string>>>();
+const reportedSharedModels = new Set<string>();
+
+async function getLocalizedFields(model: string): Promise<Set<string>> {
+  if (!localizedFieldsByModel.has(model)) {
+    localizedFieldsByModel.set(model, (async () => {
+      const schema = await datoRequest<{
+        __type: { fields: { name: string; args: { name: string }[] }[] } | null;
+      }>(`query LocalizedFields($model: String!) {
+        __type(name: $model) { fields { name args { name } } }
+      }`, { model });
+
+      return new Set(schema?.__type?.fields
+        .filter((field) => ["locale", "fallbackLocales"].every((name) => field.args.some((arg) => arg.name === name)))
+        .map((field) => field.name) ?? []);
+    })());
+  }
+  return localizedFieldsByModel.get(model)!;
+}
+
+async function datoRequest<T>(query: string, variables: Record<string, unknown> = {}, localizedModel?: string): Promise<T | null> {
   if (!token) return null;
 
   try {
+    if (localizedModel) {
+      const localizedFields = await getLocalizedFields(localizedModel);
+      const requestedFields = [...query.matchAll(/(\w+)\(locale: \$locale, fallbackLocales: \[\]\)/g)]
+        .map((match) => match[1]);
+      const sharedFields = requestedFields.filter((field) => !localizedFields.has(field));
+      if (sharedFields.length) {
+        if (!reportedSharedModels.has(localizedModel)) {
+          console.warn(`[DatoCMS] ${localizedModel}: shared fields (${sharedFields.join(", ")}) use translated site content.`);
+          reportedSharedModels.add(localizedModel);
+        }
+        if (sharedFields.length === requestedFields.length) return null;
+        // Keep the fields the editor can translate and leave shared fields to
+        // the fallback for this language, instead of dropping the whole record.
+        query = query.replace(/^\s*(?:\w+:\s*)?(\w+)\(locale: \$locale, fallbackLocales: \[\]\)\s*$/gm,
+          (selection, field) => sharedFields.includes(field) ? "" : selection);
+      }
+    }
+
     const response = await fetch(endpoint, {
       method: "POST",
       headers: {
@@ -272,12 +310,12 @@ export async function getBlogPosts(
       allBlogs(locale: $locale, orderBy: date_DESC) {
         id
         slug
-        title
+        title(locale: $locale, fallbackLocales: [])
         date
         author
-        categories
-        excerpt
-        content
+        categories(locale: $locale, fallbackLocales: [])
+        excerpt(locale: $locale, fallbackLocales: [])
+        content(locale: $locale, fallbackLocales: [])
         image {
           url
           alt
@@ -285,7 +323,8 @@ export async function getBlogPosts(
         sourceUrl
       }
     }`,
-    { locale }
+    { locale },
+    "BlogRecord"
   );
 
   const posts = data?.allBlogs
@@ -345,19 +384,21 @@ export async function getSitePage(
   const data = await datoRequest<{ allSitePages: DatoSitePage[] }>(
     `query SitePage($pageId: String, $locale: SiteLocale) {
       allSitePages(filter: { pageId: { eq: $pageId } }, locale: $locale, first: 1) {
-        seoTitle
-        seoDescription
-        eyebrow
-        heading
-        intro
-        ctaLabel
-        ctaHref
-        secondaryCtaLabel
-        secondaryCtaHref
-        sections
+        id
+        seoTitle(locale: $locale, fallbackLocales: [])
+        seoDescription(locale: $locale, fallbackLocales: [])
+        eyebrow(locale: $locale, fallbackLocales: [])
+        heading(locale: $locale, fallbackLocales: [])
+        intro(locale: $locale, fallbackLocales: [])
+        ctaLabel(locale: $locale, fallbackLocales: [])
+        ctaHref(locale: $locale, fallbackLocales: [])
+        secondaryCtaLabel(locale: $locale, fallbackLocales: [])
+        secondaryCtaHref(locale: $locale, fallbackLocales: [])
+        sections(locale: $locale, fallbackLocales: [])
       }
     }`,
-    { pageId, locale }
+    { pageId, locale },
+    "SitePageRecord"
   );
 
   const page = data?.allSitePages?.[0];
@@ -377,21 +418,37 @@ export async function getSitePage(
   };
 }
 
+function mergeHomeCards(value: unknown, locale: "es" | "en", fallback: EditableCard[]): EditableCard[] {
+  const cards = Array.isArray(value) && value.length
+    ? value.map((item) => normalizeCards([item], [])[0] ?? { href: getText(asRecord(item) ?? {}, ["href"]) })
+    : fallback;
+  const merged = cards.map((card) => {
+    const href = normalizeHrefForLocale(card.href, locale);
+    const translated = fallback.find((item) => normalizeHrefForLocale(item.href, locale) === href);
+    const populated = Object.fromEntries(Object.entries(card).filter(([, value]) => value !== undefined && value !== ""));
+    return { ...translated, ...populated, href };
+  }).filter((card) => card.title || card.text);
+  return merged.length ? merged : fallback;
+}
+
 export async function getHomeSolutions(locale: "es" | "en", fallback: EditableCard[]): Promise<EditableCard[]> {
+  // A collection-level locale does not translate shared CMS fields. Require
+  // localized copy; models without it use the site's translated fallback.
   const data = await datoRequest<{ allHomeSolutions: EditableCard[] }>(
     `query HomeSolutions($locale: SiteLocale) {
       allHomeSolutions(locale: $locale, orderBy: _createdAt_ASC) {
-        eyebrow
-        title
-        text
+        eyebrow(locale: $locale, fallbackLocales: [])
+        title(locale: $locale, fallbackLocales: [])
+        text(locale: $locale, fallbackLocales: [])
         href
-        label
+        label(locale: $locale, fallbackLocales: [])
       }
     }`,
-    { locale }
+    { locale },
+    "HomeSolutionRecord"
   );
 
-  const cards = normalizeCards(data?.allHomeSolutions, fallback).map((card) => ({
+  const cards = mergeHomeCards(data?.allHomeSolutions, locale, fallback).map((card) => ({
     ...card,
     href: normalizeHrefForLocale(card.href, locale),
     type: card.type ?? (
@@ -409,18 +466,16 @@ export async function getHomeIndustries(locale: "es" | "en", fallback: EditableC
   const data = await datoRequest<{ allHomeIndustries: EditableCard[] }>(
     `query HomeIndustries($locale: SiteLocale) {
       allHomeIndustries(locale: $locale, orderBy: _createdAt_ASC) {
-        title
-        text
+        title(locale: $locale, fallbackLocales: [])
+        text(locale: $locale, fallbackLocales: [])
         href
       }
     }`,
-    { locale }
+    { locale },
+    "HomeIndustryRecord"
   );
 
-  return normalizeCards(data?.allHomeIndustries, fallback).map((card) => ({
-    ...card,
-    href: normalizeHrefForLocale(card.href, locale)
-  }));
+  return mergeHomeCards(data?.allHomeIndustries, locale, fallback);
 }
 
 export async function getDatoDetailPage(
@@ -444,17 +499,18 @@ export async function getDatoDetailPage(
     `query DetailPage($slug: String, $locale: SiteLocale) {
       records: ${model}(locale: $locale, filter: { slug: { eq: $slug } }, first: 1) {
         slug
-        eyebrow
-        title
-        text
-        problemTitle: problemtitle
-        problem
-        sectionTitle: sectiontitle
-        items
-        benefits
+        eyebrow(locale: $locale, fallbackLocales: [])
+        title(locale: $locale, fallbackLocales: [])
+        text(locale: $locale, fallbackLocales: [])
+        problemTitle: problemtitle(locale: $locale, fallbackLocales: [])
+        problem(locale: $locale, fallbackLocales: [])
+        sectionTitle: sectiontitle(locale: $locale, fallbackLocales: [])
+        items(locale: $locale, fallbackLocales: [])
+        benefits(locale: $locale, fallbackLocales: [])
       }
     }`,
-    { slug: datoSlug, locale }
+    { slug: datoSlug, locale },
+    type === "solution" ? "SolutionPageRecord" : "SolutionPageCopy1Record"
   );
 
   const page = data?.records?.[0];

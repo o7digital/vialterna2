@@ -3,19 +3,24 @@ import type { SitePageContent } from "../lib/dato";
 
 interface Props {
   content?: SitePageContent;
+  lang?: "es" | "en";
 }
 
-const { content } = Astro.props;
-const eyebrow = content?.eyebrow ?? "Para empresas mexicanas donde el downtime tiene un costo medible.";
-const heading = content?.heading ?? "Las redes se caen. Tu negocio no.";
+const { content, lang = "es" } = Astro.props;
+const en = lang === "en";
+const capabilities = en
+  ? ["Multi-carrier", "Automatic failover", "Managed SLA", "Nationwide coverage", "24/7 monitoring"]
+  : ["Multioperador", "Respaldo automático", "SLA gestionado", "Cobertura nacional", "Monitoreo 24/7"];
+const eyebrow = content?.eyebrow ?? (en ? "For Mexican enterprises where downtime has a measurable cost." : "Para empresas mexicanas donde el downtime tiene un costo medible.");
+const heading = content?.heading ?? (en ? "Networks break. Your business does not." : "Las redes se caen. Tu negocio no.");
 const [headingStart, headingAccent] = heading.includes("|")
   ? heading.split("|", 2)
   : [heading, ""];
-const intro = content?.intro ?? "Vialterna es la capa de resiliencia multinetwork para grandes empresas distribuidas en México: independiente de red y tecnología, monitoreada 24/7 y respaldada por SLA. No vendemos un enlace. Entregamos continuidad operativa.";
-const ctaLabel = content?.ctaLabel ?? "Solicita tu auditoría Telco gratuita";
-const ctaHref = content?.ctaHref ?? "/contacto/";
-const secondaryCtaLabel = content?.secondaryCtaLabel ?? "Habla con un experto";
-const secondaryCtaHref = content?.secondaryCtaHref ?? "/contacto/";
+const intro = content?.intro ?? (en ? "Vialterna is the multi-network resilience layer for large distributed enterprises in Mexico: network and technology independent, monitored 24/7 and backed by SLA. We do not sell a link. We deliver uptime." : "Vialterna es la capa de resiliencia multinetwork para grandes empresas distribuidas en México: independiente de red y tecnología, monitoreada 24/7 y respaldada por SLA. No vendemos un enlace. Entregamos continuidad operativa.");
+const ctaLabel = content?.ctaLabel ?? (en ? "Get your free Telco audit" : "Solicita tu auditoría Telco gratuita");
+const ctaHref = content?.ctaHref ?? (en ? "/en/contact/" : "/contacto/");
+const secondaryCtaLabel = content?.secondaryCtaLabel ?? (en ? "Talk to an expert" : "Habla con un experto");
+const secondaryCtaHref = content?.secondaryCtaHref ?? (en ? "/en/contact/" : "/contacto/");
 ---
 <section class="hero">
   <div class="shell hero-grid">
@@ -33,15 +38,15 @@ const secondaryCtaHref = content?.secondaryCtaHref ?? "/contacto/";
       <div class="orbit orbit-middle"></div>
       <div class="orbit orbit-inner"></div>
       <div class="network-center"><strong>NOC</strong><span>24 / 7</span></div>
-      <span class="tech-label label-fiber">Fibra</span>
+      <span class="tech-label label-fiber">{en ? "Fiber" : "Fibra"}</span>
       <span class="tech-label label-lte">LTE</span>
       <span class="tech-label label-5g">5G</span>
-      <span class="tech-label label-sat">Satelital</span>
+      <span class="tech-label label-sat">{en ? "Satellite" : "Satelital"}</span>
     </div>
   </div>
 </section>
-<div class="capabilities" aria-label="Capacidades Vialterna">
+<div class="capabilities" aria-label={en ? "Vialterna capabilities" : "Capacidades Vialterna"}>
   <div class="capabilities-track">
-    {[0, 1].map(() => <span>Multioperador <i></i> Respaldo automático <i></i> SLA gestionado <i></i> Cobertura nacional <i></i> Monitoreo 24/7 <i></i></span>)}
+    {[0, 1].map(() => <span>{capabilities.map((capability) => <>{capability} <i></i> </>)}</span>)}
   </div>
 </div>

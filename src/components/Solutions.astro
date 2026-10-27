@@ -1,6 +1,7 @@
 ---
 import SectionHeading from "./SectionHeading.astro";
 import { solutions } from "../data/site";
+import { homeSolutionsEn } from "../data/siteEn";
 import type { EditableSection } from "../lib/dato";
 
 interface Props {
@@ -10,7 +11,7 @@ interface Props {
 
 const { content, lang = "es" } = Astro.props;
 const en = lang === "en";
-const cards = content?.items?.length ? content.items : solutions;
+const cards = content?.items?.length ? content.items : en ? homeSolutionsEn : solutions;
 ---
 <section class="section solutions-section" id={en ? "solutions" : "soluciones"}>
   <div class="shell">

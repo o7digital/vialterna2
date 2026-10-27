@@ -6,7 +6,7 @@ import SectionHeading from "../../components/SectionHeading.astro";
 import OperationsVisual from "../../components/OperationsVisual.astro";
 import Solutions from "../../components/Solutions.astro";
 import Footer from "../../components/Footer.astro";
-import { solutionPagesEn, industryPagesEn } from "../../data/detailPagesEn";
+import { homeSolutionsEn, homeIndustriesEn } from "../../data/siteEn";
 import { getHomePage } from "../../lib/dato";
 
 const fallbackHome = {
@@ -57,12 +57,7 @@ const fallbackHome = {
     eyebrow: "Four solutions",
     title: "Four solutions. One platform.",
     intro: "Whatever it takes to keep your operations online.",
-    items: solutionPagesEn.map((page) => ({
-      eyebrow: page.eyebrow,
-      title: page.title,
-      text: page.description,
-      href: `/en/solutions/${page.slug}/`
-    }))
+    items: homeSolutionsEn
   },
   architecture: {
     eyebrow: "Architecture",
@@ -76,11 +71,7 @@ const fallbackHome = {
   industries: {
     eyebrow: "Who it is for",
     title: "Built for distributed operations where downtime has a price tag.",
-    items: industryPagesEn.map((page) => ({
-      title: page.title,
-      text: page.description,
-      href: `/en/industries/${page.slug}/`
-    }))
+    items: homeIndustriesEn
   },
   contact: {
     eyebrow: "Start with a diagnostic",
@@ -100,7 +91,7 @@ const [riskTitle, riskAccent] = home.risk.title.includes("|") ? home.risk.title.
 <BaseLayout title={home.seoTitle} description={home.seoDescription} lang="en">
   <Header lang="en" />
   <main>
-    <Hero content={home.hero} />
+    <Hero content={home.hero} lang="en" />
 
     <section class="detail-strip">
       <div class="shell detail-strip-grid">
@@ -145,7 +136,7 @@ const [riskTitle, riskAccent] = home.risk.title.includes("|") ? home.risk.title.
       </div>
     </section>
 
-    <OperationsVisual />
+    <OperationsVisual lang="en" />
 
     <section class="section phases-section">
       <div class="shell">

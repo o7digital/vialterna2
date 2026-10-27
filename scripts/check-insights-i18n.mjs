@@ -1,4 +1,8 @@
 import fs from "node:fs";
+import { join } from "node:path";
+import { getBuildOutputDirectory } from "./build-output.mjs";
+
+const outputDirectory = getBuildOutputDirectory();
 
 function loadPosts(file, exportName) {
   const source = fs.readFileSync(file, "utf8");
@@ -54,9 +58,9 @@ for (const spanishPost of spanishPosts) {
   }
 
   const expectedPages = [
-    `dist/insights/${spanishPost.slug}/index.html`,
-    `dist/en/insights/${spanishPost.slug}/index.html`,
-    `dist/en/insights/${englishPost.slug}/index.html`
+    join(outputDirectory, `insights/${spanishPost.slug}/index.html`),
+    join(outputDirectory, `en/insights/${spanishPost.slug}/index.html`),
+    join(outputDirectory, `en/insights/${englishPost.slug}/index.html`)
   ];
 
   for (const page of expectedPages) {
@@ -78,7 +82,7 @@ for (const spanishPost of spanishPosts) {
   }
 }
 
-const englishIndex = fs.readFileSync("dist/en/insights/index.html", "utf8");
+const englishIndex = fs.readFileSync(join(outputDirectory, "en/insights/index.html"), "utf8");
 const spanishTitlesOnEnglishIndex = spanishPosts
   .filter((post) => englishIndex.includes(post.title))
   .map((post) => post.slug);

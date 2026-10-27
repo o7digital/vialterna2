@@ -1,8 +1,8 @@
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join, relative, sep } from "node:path";
+import { getBuildOutputDirectory } from "./build-output.mjs";
 
-const root = new URL("../", import.meta.url).pathname;
-const dist = join(root, "dist");
+const dist = getBuildOutputDirectory();
 const errors = [];
 
 const walk = (directory) => readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
