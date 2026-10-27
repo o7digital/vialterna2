@@ -1,10 +1,10 @@
 import { readFileSync, readdirSync } from "node:fs";
 import { join, relative } from "node:path";
 import { getBuildOutputDirectory } from "./build-output.mjs";
+import { findSpanishCopy } from "../src/lib/language.mjs";
 
 // Check rendered copy, including accessibility labels and the chat's initial
 // HTML. Scripts and URLs may legitimately contain both languages.
-const spanishCopy = /\b(?:conectividad|soluciones|operaci[oó]n|operaciones|monitoreo|multioperador|gesti[oó]n|respaldo|sensores|gobierno|financieros|franquicias|privacidad|enviar|escribe|cerrar|navegaci[oó]n|fibra|satelital|combinamos|nuestro|nuestras|conoce|abrir men[uú]|sitio realizado|datos personales|en l[ií]nea)\b/giu;
 const errors = [];
 const origin = process.argv[2];
 
@@ -15,7 +15,7 @@ function checkPage(route, html) {
   const markup = html.replace(/<(script|style)\b[^>]*>[\s\S]*?<\/\1>/gi, "");
   const labels = [...markup.matchAll(/(?:aria-label|placeholder|title|alt)="([^"]*)"/gi)].map((match) => match[1]);
   const text = [markup.replace(/<[^>]+>/g, " "), ...labels].join(" ");
-  const remaining = [...new Set([...text.matchAll(spanishCopy)].map((match) => match[0]))];
+  const remaining = findSpanishCopy(text);
   if (remaining.length) errors.push(`${route}: Spanish copy remains: ${remaining.join(", ")}`);
 }
 

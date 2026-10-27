@@ -11,7 +11,7 @@ The site reads editable page content from `SitePage`, blog articles from `Blog`,
 
 Enable localization (`es` and `en`) for all fields containing visible text: homepage card titles, descriptions, eyebrows and visual labels; page SEO, hero copy, CTA labels and sections; solution/industry text, items and benefits; and blog titles, excerpts, content and categories.
 
-Selecting a locale on a collection does not translate fields that are shared between languages. The site checks the model schema and reads only localized editorial fields, with cross-language fallbacks disabled. Shared or missing fields use the site's existing translation; fields with an editor-provided translation remain editable. English prose copied unchanged from the Spanish source also uses the site's translation. Build logs identify shared fields that still need localization in DatoCMS.
+Selecting a locale on a collection does not translate fields that are shared between languages. The site checks the model schema and reads only localized editorial fields, with cross-language fallbacks disabled. Shared or missing fields use the site's existing translation; fields with an editor-provided translation remain editable. English fields containing known Spanish copy also use the site's translation. Build logs identify shared fields that still need localization in DatoCMS. The build checks the generated English pages with the same Spanish-copy markers before allowing deployment.
 
 Homepage card URLs may remain shared: the site maps known Spanish destinations to their English routes and matches each card with its translated fallback. Page CTA URLs should be localized because their destinations differ between Spanish and English.
 
