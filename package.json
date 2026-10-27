@@ -5,10 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "astro build && node scripts/check-languages.mjs",
     "preview": "astro preview",
     "check": "astro check",
-    "check:languages": "npm run build && node scripts/check-languages.mjs",
+    "check:languages": "npm run build",
     "check:insights": "npm run build && node scripts/check-insights-i18n.mjs",
     "check:seo": "npm run build && node scripts/check-seo.mjs"
   },

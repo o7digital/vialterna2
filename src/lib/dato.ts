@@ -137,6 +137,27 @@ function normalizeHrefForLocale(href: string | undefined, locale: "es" | "en"): 
 
 const localizedFieldsByModel = new Map<string, Promise<Set<string>>>();
 const reportedSharedModels = new Set<string>();
+const translatedProseFields = new Set(["text", "intro", "problem", "sections", "items", "benefits", "excerpt", "content", "seoDescription"]);
+
+function removeUntranslatedProse(value: unknown): void {
+  if (!value || typeof value !== "object") return;
+  if (Array.isArray(value)) {
+    value.forEach(removeUntranslatedProse);
+    return;
+  }
+  const record = value as Record<string, unknown>;
+  for (const key of Object.keys(record)) {
+    if (key.startsWith("_spanish_")) {
+      const field = key.slice("_spanish_".length);
+      const source = record[key];
+      const normalize = (item: unknown) => typeof item === "string" ? item.replace(/\s+/g, " ").trim() : JSON.stringify(item);
+      if (source && normalize(record[field]) === normalize(source)) delete record[field];
+      delete record[key];
+    } else {
+      removeUntranslatedProse(record[key]);
+    }
+  }
+}
 
 async function getLocalizedFields(model: string): Promise<Set<string>> {
   if (!localizedFieldsByModel.has(model)) {
@@ -177,6 +198,15 @@ async function datoRequest<T>(query: string, variables: Record<string, unknown> 
       }
     }
 
+    if (localizedModel && variables.locale === "en") {
+      // A localizable field may still contain a copied Spanish value. Compare
+      // prose with its source in the same request; keep brand names unchanged.
+      query = query.replace(/^(\s*)(?:(\w+):\s*)?(\w+)\(locale: \$locale, fallbackLocales: \[\]\)\s*$/gm,
+        (selection, indent, alias, field) => translatedProseFields.has(alias ?? field)
+          ? `${selection}\n${indent}_spanish_${alias ?? field}: ${field}(locale: es, fallbackLocales: [])`
+          : selection);
+    }
+
     const response = await fetch(endpoint, {
       method: "POST",
       headers: {
@@ -191,6 +221,7 @@ async function datoRequest<T>(query: string, variables: Record<string, unknown> 
 
     const payload = await response.json();
     if (payload.errors?.length) return null;
+    removeUntranslatedProse(payload.data);
 
     return payload.data as T;
   } catch {
